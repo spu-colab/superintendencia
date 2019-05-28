@@ -1,11 +1,6 @@
 export default {
   base () {
     return ''
-    // process.env.NODE_ENV === 'production' ? '10.209.232.158' : 'localhost'
-    let host = process.env.HOST
-    let port = process.env.NODE_ENV === 'production' ? '' : ':8000'
-    let subfolder = process.env.NODE_ENV === 'production' ? '/laravel-spu-sc' : ''
-    return 'http://' + host + port + subfolder;
   },
   rotas () {
     return {
