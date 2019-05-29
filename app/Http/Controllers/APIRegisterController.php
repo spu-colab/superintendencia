@@ -24,7 +24,7 @@ class APIRegisterController extends Controller
         User::create([
             'name' => $request->get('name'),
             'email' => $request->get('email'),
-            'password' => bcrypt($request->get('password')),
+            'password' => Hash::make($request->get('password')),
         ]);
         $user = User::first();
         $token = JWTAuth::fromUser($user);

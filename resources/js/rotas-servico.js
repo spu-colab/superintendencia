@@ -5,68 +5,69 @@ export default {
   rotas () {
     return {
       autenticacao: {
-        login: this.base() + '/api/user/login',
-        refresh: this.base() + '/api/user/refresh'
+        // login: this.base() + '/user/login',
+        login: this.base() + '/login',
+        refresh: this.base() + '/user/refresh'
       },
       demanda: {
-        listar: this.base() + '/api/demanda',
-        listarPorProcedimentoExterno: this.base() + '/api/demanda/procedimento/',
-        criar: this.base() + '/api/demanda',
-        editar: this.base() + '/api/demanda/',
-        obter: this.base() + '/api/demanda/',
-        consultar: this.base() + '/api/demanda/',
-        cancelar: this.base() + '/api/demanda/cancelar',
-        resolver: this.base() + '/api/demanda/resolver',
-        aguardarAssinatura: this.base() + '/api/demanda/aguardar-assinatura',
-        aguardarAR: this.base() + '/api/demanda/aguardar-AR',
-        entidadeAtribuivel: this.base() + '/api/demanda/entidadeAtribuivel',
-        distribuicao: this.base() + '/api/demanda/distribuicao',
+        listar: this.base() + '/demanda',
+        listarPorProcedimentoExterno: this.base() + '/demanda/procedimento/',
+        criar: this.base() + '/demanda',
+        editar: this.base() + '/demanda/',
+        obter: this.base() + '/demanda/',
+        consultar: this.base() + '/demanda/',
+        cancelar: this.base() + '/demanda/cancelar',
+        resolver: this.base() + '/demanda/resolver',
+        aguardarAssinatura: this.base() + '/demanda/aguardar-assinatura',
+        aguardarAR: this.base() + '/demanda/aguardar-AR',
+        entidadeAtribuivel: this.base() + '/demanda/entidadeAtribuivel',
+        distribuicao: this.base() + '/demanda/distribuicao',
         relatorio: {
-          entradaSaidaDiaria: this.base() + '/api/demanda/relatorio/entrada-saida-diaria',
-          abertasPorSituacao: this.base() + '/api/demanda/relatorio/abertas-situacao',
-          abertasPorDistribuicao: this.base() + '/api/demanda/relatorio/abertas-distribuicao',
-          abertasPorDemandante: this.base() + '/api/demanda/relatorio/abertas-demandante'
+          entradaSaidaDiaria: this.base() + '/demanda/relatorio/entrada-saida-diaria',
+          abertasPorSituacao: this.base() + '/demanda/relatorio/abertas-situacao',
+          abertasPorDistribuicao: this.base() + '/demanda/relatorio/abertas-distribuicao',
+          abertasPorDemandante: this.base() + '/demanda/relatorio/abertas-demandante'
         }
       },
       autorDemanda: {
-        listar: this.base() + '/api/autorDemanda',
-        criar: this.base() + '/api/autorDemanda',
-        editar: this.base() + '/api/autorDemanda/',
+        listar: this.base() + '/autorDemanda',
+        criar: this.base() + '/autorDemanda',
+        editar: this.base() + '/autorDemanda/',
       },
       cargo: {
-        listar: this.base() + '/api/cargo',
-        criar: this.base() + '/api/cargo',
-        editar: this.base() + '/api/cargo/'
+        listar: this.base() + '/cargo',
+        criar: this.base() + '/cargo',
+        editar: this.base() + '/cargo/'
       },
       orgao: {
-        listar: this.base() + '/api/orgao',
-        criar: this.base() + '/api/orgao',
-        editar: this.base() + '/api/orgao/'
+        listar: this.base() + '/orgao',
+        criar: this.base() + '/orgao',
+        editar: this.base() + '/orgao/'
       },
       tipoDocumento: {
-        listar: this.base() + '/api/tipoDocumento'
+        listar: this.base() + '/tipoDocumento'
       },
       situacaoDemanda: {
-        listar: this.base() + '/api/situacaoDemanda'
+        listar: this.base() + '/situacaoDemanda'
       },
       divisaoOrganograma: {
-        listar: this.base() + '/api/divisaoOrganograma'
+        listar: this.base() + '/divisaoOrganograma'
       },
       procedimentoExterno: {
-        listar: this.base() + '/api/procedimentoExterno',
-        buscar: this.base() + '/api/procedimentoExterno/',
-        criar: this.base() + '/api/procedimentoExterno',
-        editar: this.base() + '/api/procedimentoExterno/'
+        listar: this.base() + '/procedimentoExterno',
+        buscar: this.base() + '/procedimentoExterno/',
+        criar: this.base() + '/procedimentoExterno',
+        editar: this.base() + '/procedimentoExterno/'
       },
       tipoProcedimentoExterno: {
-        listar: this.base() + '/api/tipoProcedimentoExterno'
+        listar: this.base() + '/tipoProcedimentoExterno'
       },
       poloProcedimentoExterno: {
-        listar: this.base() + '/api/poloProcedimentoExterno'
+        listar: this.base() + '/poloProcedimentoExterno'
       },
       arquivo: {
-        listar: this.base() + '/api/arquivo',
-        upload: this.base() + '/api/arquivo'
+        listar: this.base() + '/arquivo',
+        upload: this.base() + '/arquivo'
       }
     }
   }

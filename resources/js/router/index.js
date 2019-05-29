@@ -2,10 +2,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './../components/Home'
 import Login from './../components/Login'
-import DemandaCRUD from './../components/DemandaCrud'
-import AutorDemandaCRUD from './../components/AutorDemandaCRUD'
-import OrgaoCRUD from './../components/OrgaoCRUD'
-import ProcedimentoExternoCRUD from './../components/ProcedimentoExternoCRUD'
+import DemandaCrud from './../components/DemandaCrud'
+import AutorDemandaCrud from './../components/AutorDemandaCrud'
+import OrgaoCrud from './../components/OrgaoCrud'
+import ProcedimentoExternoCrud from './../components/ProcedimentoExternoCrud'
 import GeoReferenciamento from './../components/GeoReferenciamento'
 import FileUpload from './../components/FileUpload'
 import store from './../store'
@@ -30,7 +30,7 @@ let router = new Router({
     {
       path: '/demanda',
       name: 'Demanda',
-      component: DemandaCRUD,
+      component: DemandaCrud,
       meta: {
         requiresAuth: true,
       }
@@ -38,7 +38,7 @@ let router = new Router({
     {
       path: '/demanda/:id',
       name: 'DemandaEditor',
-      component: DemandaCRUD,
+      component: DemandaCrud,
       meta: {
         requiresAuth: true,
       }
@@ -46,7 +46,7 @@ let router = new Router({
     {
       path: '/demandante',
       name: 'Demandante',
-      component: AutorDemandaCRUD,
+      component: AutorDemandaCrud,
       meta: {
         requiresAuth: true
       }
@@ -54,7 +54,7 @@ let router = new Router({
     {
       path: '/orgao',
       name: 'Orgao',
-      component: OrgaoCRUD,
+      component: OrgaoCrud,
       meta: {
         requiresAuth: true
       }
@@ -62,7 +62,7 @@ let router = new Router({
     {
       path: '/procedimento',
       name: 'ProcedimentoExterno',
-      component: ProcedimentoExternoCRUD,
+      component: ProcedimentoExternoCrud,
       meta: {
         requiresAuth: true
       }

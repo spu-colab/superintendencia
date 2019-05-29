@@ -44,6 +44,8 @@ Vue.http.interceptors.push((request) => {
     let token = store.getters['auth/token']
     request.headers.set('Accept', 'application/json')
     request.headers.set('Authorization', 'Bearer ' + token)
+
+    request.headers.set('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
   
     return function(response) {
       if(response.headers.get('authorization') != null) {

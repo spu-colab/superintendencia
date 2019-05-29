@@ -12,17 +12,16 @@
     </head>
     <body>
         <div id=app>
-            <app/>
             <!--
+            <app/>
+            -->
             <app-template>
-            @guest
-            elseif (Auth::check())
+            @if (Auth::check())
                 @yield('content')
             @else
                 <login/>
             @endif
             </app-template>
-            -->
         </div>
         <script src="{{ asset('js/app.js') }}" defer></script>
     </body>

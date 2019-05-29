@@ -1,5 +1,5 @@
 @extends('template')
 
 @section('content')
-    <demanda-crud/>
+    <home/>
 @endsection

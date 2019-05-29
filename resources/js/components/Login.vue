@@ -1,7 +1,7 @@
 <template>
     <v-layout row justify-center>
         <v-flex xs12 lg5>
-            <v-form v-model="valid">
+            <v-form v-model="valid" method="POST">
                 <v-card>
                     <v-card-title>
                     <span class="headline">Identifique-se</span>
@@ -56,12 +56,16 @@ export default {
             formData.append('cpf', this.email)
             formData.append('password', this.password)
 
+            // formData.append('csrf_token', $('meta[name="csrf-token"]').attr('content'));
+
             this.$http
                 .post(rotas.rotas().autenticacao.login, formData)
                 .then(
                     response => {
                         this.$store.commit('auth/setToken', response.data.token)
-                        this.$router.push({ path: '/' })
+                        // this.$router.push({ path: '/' })
+
+                        window.location = rotas.rotas().autenticacao.login
                     },
                     error => {
                         console.log(error)

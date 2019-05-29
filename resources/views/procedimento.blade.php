@@ -1,5 +1,5 @@
 @extends('template')
 
 @section('content')
-    <demanda-Crud/>
+    <procedimento-externo-Crud/>
 @endsection

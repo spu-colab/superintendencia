@@ -1,5 +1,5 @@
 @extends('template')
 
 @section('content')
-    <demanda-Crud/>
+    <autor-demanda-crud/>
 @endsection

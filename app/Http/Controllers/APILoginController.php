@@ -32,7 +32,7 @@ class APILoginController extends Controller
         if(@$user->id) {
             $user->cpf      = $usuarioLDAP['cpf'];
             $user->telefone = $usuarioLDAP['telefone'];
-            $user->password = \bcrypt($credentials['password']);
+            $user->password = Hash::make($credentials['password']);
             $user->update();
         } else {
             $user = new User();
@@ -40,7 +40,7 @@ class APILoginController extends Controller
             $user->email    = $usuarioLDAP['mail'];
             $user->cpf      = $usuarioLDAP['cpf'];
             $user->telefone = $usuarioLDAP['telefone'];
-            $user->password = \bcrypt($credentials['password']);
+            $user->password = Hash::make($credentials['password']);
             $user->save();
         }
 
@@ -56,7 +56,7 @@ class APILoginController extends Controller
         return response()->json(compact('token'));
     }
 
-    public function valida_ldap($cpf = '00715334948', $senha = '$pu$pu02')  
+    public function valida_ldap($cpf, $senha)  
     {
         if(Adldap::auth()->attempt("$cpf@mp.intra", $senha)) {
             $search = Adldap::search()

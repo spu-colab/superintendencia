@@ -25,24 +25,24 @@
             <v-list-tile slot="activator">
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <router-link :to="item.route">
+                  <a :href="item.route">
                     {{ item.text }}
-                  </router-link>
+                  </a>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-list-tile v-for="(child, i) in item.children" :key="i">
               <v-list-tile-action v-if="child.icon">
-                <router-link :to="child.route">
+                <a :href="child.route">
                   <v-icon>{{ child.icon }}</v-icon>
-                </router-link>
+                </a>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
-                  <router-link :to="child.route">
+                  <a :href="child.route">
                     {{ child.text }}
-                  </router-link>
+                  </a>
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -58,9 +58,9 @@
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
-                <router-link :to="item.route">
+                <a :href="item.route">
                 {{ item.text }}
-                </router-link>
+                </a>
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -102,23 +102,23 @@ export default {
       { 
         text: 'Demandas',
         icon: 'assignment', 
-        route: '/demanda',
+        route: '/demandas',
         model: true,
         children: [
           {
             text: 'Procedimentos',
             icon: 'account_balance', 
-            route: '/procedimento'
+            route: '/procedimentos'
           },
           {
             text: 'Demandantes',
             icon: 'record_voice_over', 
-            route: '/demandante'
+            route: '/demandantes'
           },
           {
             text: 'Órgãos',
             icon: 'business', 
-            route: '/orgao'
+            route: '/orgaos'
           },
         ]
       },
