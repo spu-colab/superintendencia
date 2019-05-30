@@ -25,24 +25,39 @@
             <v-list-tile slot="activator">
               <v-list-tile-content>
                 <v-list-tile-title>
+                  <router-link :to="item.route">
+                    {{ item.text }}
+                  </router-link>
+                  <!--
                   <a :href="item.route">
                     {{ item.text }}
                   </a>
+                  -->
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <v-list-tile v-for="(child, i) in item.children" :key="i">
               <v-list-tile-action v-if="child.icon">
+                <router-link :to="child.route">
+                  <v-icon>{{ child.icon }}</v-icon>
+                </router-link>
+                <!--
                 <a :href="child.route">
                   <v-icon>{{ child.icon }}</v-icon>
                 </a>
+                -->
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>
+                  <router-link :to="child.route">
+                    {{ child.text }}
+                  </router-link>
+                  <!--
                   <a :href="child.route">
                     {{ child.text }}
                   </a>
+                  -->
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
@@ -58,9 +73,14 @@
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
+                <router-link :to="item.route">
+                  {{ item.text }}
+                </router-link>
+                <!--
                 <a :href="item.route">
                 {{ item.text }}
                 </a>
+                -->
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -102,23 +122,23 @@ export default {
       { 
         text: 'Demandas',
         icon: 'assignment', 
-        route: '/demandas',
+        route: '/demanda',
         model: true,
         children: [
           {
             text: 'Procedimentos',
             icon: 'account_balance', 
-            route: '/procedimentos'
+            route: '/procedimento'
           },
           {
             text: 'Demandantes',
             icon: 'record_voice_over', 
-            route: '/demandantes'
+            route: '/demandante'
           },
           {
             text: 'Órgãos',
             icon: 'business', 
-            route: '/orgaos'
+            route: '/orgao'
           },
         ]
       },

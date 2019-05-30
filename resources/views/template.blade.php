@@ -12,9 +12,8 @@
     </head>
     <body>
         <div id=app>
-            <!--
             <app/>
-            -->
+            <!--
             <app-template>
             @if (Auth::check())
                 @yield('content')
@@ -22,6 +21,7 @@
                 <login/>
             @endif
             </app-template>
+            -->
         </div>
         <script src="{{ asset('js/app.js') }}" defer></script>
     </body>

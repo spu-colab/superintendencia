@@ -63,9 +63,8 @@ export default {
                 .then(
                     response => {
                         this.$store.commit('auth/setToken', response.data.token)
-                        // this.$router.push({ path: '/' })
-
-                        window.location = rotas.rotas().autenticacao.login
+                        this.$router.push({ path: '/' })
+                        // window.location = rotas.rotas().autenticacao.login
                     },
                     error => {
                         console.log(error)

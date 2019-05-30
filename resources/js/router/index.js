@@ -89,6 +89,7 @@ let router = new Router({
 
 router.beforeEach((to, from, next) => {
   let tokenArmazenado = store.getters['auth/token']
+  console.log(tokenArmazenado)
 
   if(to.matched.some(record => record.meta.requiresAuth)) {
 

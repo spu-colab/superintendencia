@@ -1,12 +1,12 @@
 export default {
   base () {
-    return ''
+    return '/api'
   },
   rotas () {
     return {
       autenticacao: {
-        // login: this.base() + '/user/login',
-        login: this.base() + '/login',
+        login: this.base() + '/user/login', //jwt.auth
+        // login: this.base() + '/login', //auth
         refresh: this.base() + '/user/refresh'
       },
       demanda: {

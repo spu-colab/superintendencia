@@ -9,6 +9,7 @@ use JWTAuth;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Adldap\Laravel\Facades\Adldap;
+use Illuminate\Support\Facades\Hash;
 
 class APILoginController extends Controller
 {
