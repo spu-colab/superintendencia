@@ -25,7 +25,7 @@
               vertical
             ></v-divider>
             <v-flex>
-              <slot name="beforeTable">
+              <slot name="beforeAdd">
               </slot>
             </v-flex>
             <v-spacer></v-spacer>
@@ -37,8 +37,11 @@
                 </v-layout>
             </v-container>
           </v-card-title>
+
+            <slot name="beforeTable">
+            </slot>
           
-          <v-data-table :headers="headers" :items="items" :search="search"
+          <v-data-table :headers="headers" :items="filteredItems" :search="search"
             v-model="selected" select-all item-key="id" 
             :loading="carregando" :pagination.sync="pagination"
             :rows-per-page-items="registrosPorPagina()" rows-per-page-text="Registros por página">
@@ -50,12 +53,25 @@
                 <th v-for="(header, index) in headers" :key="index" 
                   :style="estiloDaColuna(header)" 
                   role="columnheader" @click="toggleSort(index)">
-                  <h4>
+                  <h4 v-if="header.type == 'filter'">
+                    <v-layout align-center row fill-height>
+                      
+                        <v-autocomplete :label="header.text" tabindex="2" clearable 
+                          :items="computedColumnFilterItems(index, header.valueProperty)" v-model="columnFilters[index]" 
+                        >
+                        </v-autocomplete>
+                        <v-icon small :color="colunaSelecionadaOrdenacao(index) ? 'blue' : 'gray'">
+                          {{ setaOrdenacaoColuna(index) }}
+                        </v-icon>
+                      
+                    </v-layout>
+                  </h4>
+                  <v-card-text v-else>
                     {{ header.text }}
                     <v-icon small :color="colunaSelecionadaOrdenacao(index) ? 'blue' : 'gray'">
                       {{ setaOrdenacaoColuna(index) }}
                     </v-icon>
-                  </h4>
+                  </v-card-text>
                 </th>
               </tr>
             </template>
@@ -201,6 +217,9 @@ export default {
       search: '',
       selected: [],
       valid: false,
+      filteredItems: [],
+      columnFilters: [],
+      columnFilterProperties: []
     };
   },
   props: {
@@ -268,8 +287,49 @@ export default {
     },
     colunaSelecionadaOrdenacao(index) {
       return this.pagination.sortBy == this.headers[index].value
-    }
+    },
+
+    computedColumnFilterItems(index, valueProperty) {
+      this.columnFilterProperties[index] = valueProperty
+      let filterItems = new Array()
+      if(Array.isArray(this.$props.items)) {
+        var i;
+        for(i = 0; i < this.$props.items.length; i++) {
+          let item = this.$props.items[i]
+          if(!filterItems.includes(item[valueProperty])) {
+            filterItems.push(item[valueProperty])
+          }
+        }
+      }
+      return filterItems.sort()
+    },
   },
+  watch: {
+
+    items: function (val) {
+      this.columnFilters = this.columnFilters.slice(0)
+    },
+    
+    columnFilters: function (columnFilters) {
+      console.log(columnFilters)
+      this.filteredItems = this.$props.items.filter(item => {
+        var coluna;
+        for(coluna = 0;coluna < columnFilters.length; coluna++) {
+          if(columnFilters[coluna] && columnFilters[coluna] !== undefined) {
+            if (item[this.columnFilterProperties[coluna]] !== columnFilters[coluna]) {
+              return false
+            }
+          }
+        }
+        return true
+      })
+    }
+
+  },
+
+  computed: {
+  },
+
   mounted() {
     if(this.$route.params.id) {
       this.exibirGrid = false

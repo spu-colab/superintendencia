@@ -7,7 +7,7 @@
         @clicou-cancelar="cancelar"
         @clicou-novo="novo">
         
-        <template slot="beforeTable">
+        <template slot="beforeAdd">
             <v-tooltip bottom>
                 <template slot="activator">
                     <v-btn icon 
@@ -354,6 +354,8 @@ export default {
             cabecalhos: [
                 {
                     text: 'Demanda',
+                    type: 'filter',
+                    valueProperty: 'nupSEI',
                     align: 'left',
                     value: 'nupSEI',
                     subheader: 'documentoExterno',
@@ -363,6 +365,8 @@ export default {
                 },
                 {
                     text: 'Procedimento Externo', 
+                    type: 'filter',
+                    valueProperty: 'procedimentoExterno',
                     value: 'procedimentoExterno',
                     sortable: true,
                     subheader: 'tipoProcedimentoExterno',
@@ -373,6 +377,8 @@ export default {
                 },
                 {
                     text: 'Demandante', 
+                    type: 'filter',
+                    valueProperty: 'demandante',
                     value: 'demandante',
                     subheader: 'orgao'
                 },
