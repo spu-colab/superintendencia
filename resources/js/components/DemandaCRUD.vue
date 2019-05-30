@@ -654,29 +654,7 @@ export default {
                         response.body.forEach(element => {
                         element.orgao = element.autor.orgao.sigla
                         element.demandante = element.autor.nome
-                        if(element.procedimento_externo) {
-                            element.procedimentoExterno = element.procedimento_externo.procedimento
-                            if(element.procedimento_externo.tipo_procedimento_externo) {
-                                element.tipoProcedimentoExterno = element.procedimento_externo.tipo_procedimento_externo.tipoprocedimento
-                                if(element.procedimento_externo.resumo && element.procedimento_externo.resumo != 'null') {
-                                    element.procedimentoExternoResumo = element.procedimento_externo.resumo
-                                }
-                            }
-                        }
-                        if(element.sentencajudicial) {
-                            element.iconeSentenca = 'gavel'
-                            element.corIconeSentenca = 'red'
-                            element.iconTooltip = 'Cumprimento de sentença'
-
-                        }
-                        if(element.dataPrazo) {
-                            let prazo = new Date(element.dataPrazo)
-                            if(prazo < new Date()) {
-                                element.iconeAtrazo = 'access_alarm'
-                                element.iconTooltip = 'Resposta atrasada'
-                            }
-                        }
-
+                        
                         this.prepararDistribuicoes(element)
                         element.situacao = element.situacao.situacao
                         switch (element.situacao) {
@@ -711,6 +689,32 @@ export default {
                             default:
                                 break;
                         }
+
+                        if(element.procedimento_externo) {
+                            element.procedimentoExterno = element.procedimento_externo.procedimento
+                            if(element.procedimento_externo.tipo_procedimento_externo) {
+                                element.tipoProcedimentoExterno = element.procedimento_externo.tipo_procedimento_externo.tipoprocedimento
+                                if(element.procedimento_externo.resumo && element.procedimento_externo.resumo != 'null') {
+                                    element.procedimentoExternoResumo = element.procedimento_externo.resumo
+                                }
+                            }
+                        }
+                        if(element.sentencajudicial) {
+                            element.iconeSentenca = 'gavel'
+                            element.corIconeSentenca = 'red'
+                            element.iconTooltip = 'Cumprimento de sentença'
+
+                        }
+                        if(element.dataPrazo) {
+                            if(element.situacao != 'Cancelada' && element.situacao != 'Resolvida') {
+                                let prazo = new Date(element.dataPrazo)
+                                if(prazo < new Date()) {
+                                    element.iconeAtrazo = 'access_alarm'
+                                    element.iconTooltip = 'Resposta atrasada'
+                                }
+                            }
+                        }
+
                         this.registros.push(element)
                         })
                     },
