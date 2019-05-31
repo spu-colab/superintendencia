@@ -9,12 +9,14 @@
     >
       <v-list dense>
 
+        <!--
         <v-list-tile>
           <v-list-tile-action>
             <v-icon v-if="!miniMenu" @click.stop="miniMenu = !miniMenu">keyboard_arrow_left</v-icon>
             <v-icon v-else @click.stop="miniMenu = !miniMenu">keyboard_arrow_right</v-icon>
           </v-list-tile-action>
         </v-list-tile>
+        -->
 
         <template v-for="item in items">
 
@@ -93,7 +95,7 @@
 
     <v-content>
       <mensagem-sistema/>
-      <v-container fluid fill-height>
+      <v-container fluid justify-center row fill-height>
         <transition name="fade">
             <slot></slot>
           <!-- <router-view></router-view> -->
@@ -120,11 +122,21 @@ export default {
         model: true
       },
       { 
-        text: 'Demandas',
-        icon: 'assignment', 
-        route: '/demanda',
-        model: true,
+        text: 'Judiciais e Controle',
+        icon: 'gavel', 
+        route: '/',
+        model: false,
         children: [
+          {
+            text: 'Painel de Controle',
+            icon: 'dashboard', 
+            route: '/nujuc'
+          },
+          {
+            text: 'Demandas',
+            icon: 'assignment', 
+            route: '/demanda'
+          },
           {
             text: 'Procedimentos',
             icon: 'account_balance', 

@@ -35,7 +35,7 @@ class DemandaController extends Controller
                 'distribuicoes.colaboradorDe',
                 'distribuicoes.assignable'
             ]
-        )->orderBy('dataPrazo', 'asc')->get();
+        )->orderBy('dataPrazo')->get();
     }
 
     /**
@@ -69,6 +69,8 @@ class DemandaController extends Controller
         $demanda->idTipoDocumento = $request->demanda['idTipoDocumento'];
         $demanda->documentoExterno = $request->demanda['documentoExterno'];
         $demanda->demanda = $request->demanda['demanda'];
+        if(@$request->demanda['dataDocumento'])
+            $demanda->dataDocumento = $request->demanda['dataDocumento'];
         $demanda->nupSEI = $request->demanda['nupSEI'];
         if(@$request->demanda['dataPrazo'])
             $demanda->dataPrazo = $request->demanda['dataPrazo'];
@@ -128,6 +130,7 @@ class DemandaController extends Controller
         $demanda->idTipoDocumento = $request->demanda['idTipoDocumento'];
         $demanda->documentoExterno = $request->demanda['documentoExterno'];
         $demanda->demanda = $request->demanda['demanda'];
+        $demanda->dataDocumento = @$request->demanda['dataDocumento'];
         $demanda->nupSEI = $request->demanda['nupSEI'];
         $demanda->dataPrazo = @$request->demanda['dataPrazo'];
         $demanda->sentencajudicial = $request->demanda['sentencajudicial'];
@@ -299,12 +302,12 @@ class DemandaController extends Controller
                 -- CRIADAS POR DIA
                 LEFT JOIN (
                     SELECT
-                        DATE_FORMAT(d.created_at, '%Y-%m-%d') as dia_c,
+                        DATE_FORMAT(d.datadocumento, '%Y-%m-%d') as dia_c,
                         count(d.id) as criada
                     FROM 
                         demanda d
                     WHERE
-                        d.created_at >= DATE_SUB(NOW(), INTERVAL 30 day)
+                        d.datadocumento >= DATE_SUB(NOW(), INTERVAL 30 day)
                     GROUP BY dia_c
                 ) criadas ON dias.dia = criadas.dia_c 
 

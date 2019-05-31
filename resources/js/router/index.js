@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './../components/Home'
 import Login from './../components/Login'
+import PanielJudiciais from './../components/PainelJudiciais'
 import DemandaCrud from './../components/DemandaCrud'
 import AutorDemandaCrud from './../components/AutorDemandaCrud'
 import OrgaoCrud from './../components/OrgaoCrud'
@@ -26,6 +27,11 @@ let router = new Router({
       meta: {
         guest: true
       }
+    },
+    {
+      path: '/nujuc',
+      name: 'Nujuc',
+      component: PanielJudiciais
     },
     {
       path: '/demanda',

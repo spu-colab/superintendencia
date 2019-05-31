@@ -311,7 +311,7 @@ export default {
     },
     
     columnFilters: function (columnFilters) {
-      console.log(columnFilters)
+      // console.log(columnFilters)
       this.filteredItems = this.$props.items.filter(item => {
         var coluna;
         for(coluna = 0;coluna < columnFilters.length; coluna++) {

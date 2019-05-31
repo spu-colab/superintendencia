@@ -28,6 +28,7 @@ class DemandaRequest extends FormRequest
             'demanda.idProcedimentoExterno' => 'required|int',
             'demanda.idTipoDocumento' => 'required|int',
             'demanda.documentoExterno' => 'required',
+            'demanda.dataDocumento' => 'required|date',
             'demanda.nupSEI' => 'required',
             // 'demanda.idSituacaoDemanda' => 'required|int',
             'demanda.demanda' => 'required'

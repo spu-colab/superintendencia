@@ -1,86 +1,14 @@
 <template>
      <v-container fluid grid-list-md>
-        <v-layout row wrap>
-            <v-flex d-flex xs12>
-                <card-grafico titulo="Entrada x Saída Diária">
-                    <grafico-barra 
-                        v-if="carregouDemandasEntradaSaidaDiaria" 
-                        :chartdata="demandasEntradaSaidaDiaria"
-                        :options="opcoesRelatorioEntradaSaidaDiaria" style="height:200px; position: 'relative';"/>
+        <v-layout justify-center row fill-height>
+            <v-flex d-flex xs6>
+                <card-grafico titulo="Base de Conhecimento">        
                 </card-grafico>
             </v-flex>
-        </v-layout>
-        <v-layout row wrap>
-            <v-flex d-flex xs4>
-                <card-grafico titulo="Origem das Demandas">
-                    <!--
-                    <v-layout row>
-                        <v-flex d-flex xs6>
-                            <v-menu ref="menuDataDeDemandante"
-                                :close-on-content-click="false"
-                                v-model="menuDataDeDemandante"
-                                :nudge-right="40"
-                                lazy
-                                transition="scale-transition"
-                                offset-y
-                                full-width>
-
-                                <v-text-field  tabindex="7" 
-                                    slot="activator"
-                                    v-model="computedDataDeDemandasPorDemandante"
-                                    label="De"
-                                    persistent-hint
-                                    prepend-icon="event"
-                                    />
-                                <v-date-picker v-model="dataDeDemandasPorDemandante" no-title @input="menuDataDeDemandante = false" locale="pt-br" />
-                            </v-menu>
-                        </v-flex>
-                        <v-flex d-flex xs6>
-                            <v-menu ref="menuDataAteDemandante"
-                                :close-on-content-click="false"
-                                v-model="menuDataAteDemandante"
-                                :nudge-right="40"
-                                lazy
-                                transition="scale-transition"
-                                offset-y
-                                full-width>
-
-                                <v-text-field  tabindex="7" 
-                                    slot="activator"
-                                    v-model="computedDataAteDemandasPorDemandante"
-                                    label="Até"
-                                    persistent-hint
-                                    />
-                                <v-date-picker v-model="dataAteDemandasPorDemandante" no-title @input="menuDataAteDemandante = false" locale="pt-br" />
-                            </v-menu>
-                        </v-flex>
-                    </v-layout>
-                    -->
-                    <grafico-barra-horizontal 
-                        v-if="carregouDemandasPorDemandante" 
-                        :chartdata="demandasPorDemandante"
-                        :options="opcoesRelatorioDemandasPorDemandante" 
-                        />
+            <v-flex d-flex xs6>
+                <card-grafico titulo="NUJUC - Painel de Controle">
                 </card-grafico>
             </v-flex>
-            <v-flex d-flex xs4>
-                <card-grafico titulo="Distribuição">
-                    <grafico-barra-horizontal 
-                        v-if="carregouDemandasAbertasPorDistribuicao" 
-                        :chartdata="demandasAbertasPorDistribuicao"
-                        :options="opcoesRelatorioDemandasAbertasPorDistribuicao"/>
-                </card-grafico>
-            </v-flex>
-            <v-flex d-flex xs4>
-                <card-grafico titulo="Situação das Demandas com Resposta Pendente">
-                    <grafico-pizza 
-                        v-if="carregouDemandasAbertasPorSituacao" 
-                        :chartdata="demandasAbertasPorSituacao"
-                        :options="opcoesRelatorioDemandasAbertasPorSituacao"
-                        style="height:200px; position: 'relative';"
-                        />
-                </card-grafico>
-            </v-flex>            
         </v-layout>
     </v-container>
 </template>

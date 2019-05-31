@@ -43,8 +43,8 @@
         <template slot="detalhe">
             <div v-if="entidadeAtual">
                 <v-container>
-                    <!-- Demandante -->
                     <v-layout row wrap>
+                        <!-- Demandante -->
                         <v-flex xs6>
                             <v-autocomplete
                                 v-model="entidadeAtual.autor" :items="demandantes" :loading="carregando" :search-input.sync="search" color="white"
@@ -73,7 +73,7 @@
                         </v-flex>
                         <!-- Procedimento Externo -->
                         <v-flex xs6>
-                            <v-autocomplete tabindex="4"
+                            <v-autocomplete tabindex="2"
                                 v-model="entidadeAtual.procedimento_externo"
                                 :items="computedProcedimentos"
                                 :loading="carregandoProcedimentos"
@@ -111,7 +111,7 @@
                     <!-- Documento -->
                     <v-layout row wrap>
                         <v-flex xs2>
-                            <v-autocomplete label="Tipo Documento" tabindex="2" 
+                            <v-autocomplete label="Tipo Documento" tabindex="3" 
                                 :items="tiposDocumento" v-model="entidadeAtual.idTipoDocumento" 
                                 item-text="tipodocumento" item-value="id" 
                                 :rules="[validacao.obrigatorio]"
@@ -119,30 +119,61 @@
                         </v-flex>
                         <!-- :rules="[validacao.obrigatorio, validacao.email]" required  -->
                         <v-flex xs2>
-                            <v-text-field label="Documento" tabindex="3" 
+                            <v-text-field label="Documento" tabindex="4" 
                                 v-model="entidadeAtual.documentoExterno" placeholder="0123/2018"
                                 :rules="[validacao.obrigatorio]" required 
                                 ></v-text-field>
                             
                         </v-flex>
+
+                        <!-- Data Documento -->
+                        <v-flex xs2>
+                            <v-menu ref="menuDataDocumento"
+                                :close-on-content-click="false"
+                                v-model="menuDataDocumento"
+                                :nudge-right="40"
+                                lazy
+                                transition="scale-transition"
+                                offset-y
+                                full-width
+                                max-width="290px"
+                                min-width="290px">
+
+                                <v-text-field  tabindex="5" 
+                                    slot="activator"
+                                    v-model="computedDataDocumento"
+                                    label="Data Documento"
+                                    hint="DD/MM/AAAA"
+                                    persistent-hint
+                                    prepend-icon="event" 
+                                    :rules="[validacao.obrigatorio]" required 
+                                    />
+                                <v-date-picker v-model="entidadeAtual.dataDocumento" no-title @input="menuDataDocumento = false" locale="pt-br" />
+                            </v-menu>
+                        </v-flex>
+
+                        <!-- Órgão -->
                         <v-flex xs2>
                             <v-layout align-center>
                             <v-text-field label="Órgão"
                                 v-model="computedOrgaoSelecionado" disabled></v-text-field>
                             </v-layout>
                         </v-flex>
-                        <v-flex xs6>
+
+                        <!-- NUP Sei -->
+                        <v-flex xs4>
                             <v-text-field label="NUP SEI" tabindex="5" 
                                 v-model="entidadeAtual.nupSEI" 
                                 :rules="[validacao.obrigatorio, validacao.min15]" required 
                                 counter="20" maxlength="20"/>
                         </v-flex>
+
                     </v-layout>
 
                     <v-layout row wrap>
                         
+                        <!-- Prazo -->
                         <v-flex xs2>
-                            <!-- Prazo -->
                             <v-menu ref="menu1"
                                 :close-on-content-click="false"
                                 v-model="menu1"
@@ -165,11 +196,13 @@
                                 <v-date-picker v-model="entidadeAtual.dataPrazo" no-title @input="menu1 = false" locale="pt-br" />
                             </v-menu>
                         </v-flex>
+                            <!-- Cumprimento de sentença? -->
                         <v-flex xs4>
                             <v-switch tabindex="8"  v-model="entidadeAtual.sentencajudicial" label="Trata-se de cumprimento de sentença?" color="red"></v-switch>
-                        
                         </v-flex>
+
                         <v-spacer/>
+
                         <!-- Situação -->
                         <v-flex xs3>
                             <v-select tabindex="6" label="Situacao" disabled
@@ -178,6 +211,8 @@
                             />                            
                         </v-flex>
                         <v-spacer/>
+
+                        <!-- Botões de situação -->
                         <v-flex xs2>
                             <v-layout row wrap>                            
                                 <v-flex xs6>
@@ -461,6 +496,7 @@ export default {
             tiposDocumento: [],
             situacoes: [],
             menu1: false,
+            menuDataDocumento: false,
             divisoesOrganogramas: [],
 
             procedimentos: [],
@@ -503,7 +539,7 @@ export default {
     },
     methods: {
         selecionarParaEdicao(item) {           
-            console.log('Item selecionado: ' + item.id)
+            // console.log('Item selecionado: ' + item.id)
             if(!item.id) {
                 this.entidadeAtual = {
                     dataPrazo: new Date().toISOString().substr(0, 10),
@@ -546,6 +582,9 @@ export default {
             
             formData.append('demanda[idSituacaoDemanda]', this.entidadeAtual.idSituacaoDemanda)
             formData.append('demanda[demanda]', this.entidadeAtual.demanda)
+            if(this.entidadeAtual.dataDocumento) {
+                formData.append('demanda[dataDocumento]', this.entidadeAtual.dataDocumento)     
+            }
             formData.append('demanda[nupSEI]', this.entidadeAtual.nupSEI)
             
             formData.append('demanda[atribuidaPara]', this.entidadeAtual.atribuidaPara)
@@ -940,6 +979,9 @@ export default {
         },
         computedDateFormatted () {
             return this.formatDate(this.entidadeAtual.dataPrazo)
+        },
+        computedDataDocumento () {
+            return this.formatDate(this.entidadeAtual.dataDocumento)
         },
         computedProcedimentos () {
             return this.procedimentos
