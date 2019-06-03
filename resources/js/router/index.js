@@ -18,7 +18,7 @@ let router = new Router({
     {
       path: '/',
       name: 'Inicio',
-      component: Home
+      component: PanielJudiciais
     },
     {
       path: '/login',

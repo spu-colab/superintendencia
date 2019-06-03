@@ -69,20 +69,21 @@
 
           <v-list-tile v-else :key="item.text">
             <v-list-tile-action>
-              <router-link :to="item.route">
+              <a v-if="item.url" :href="item.url">
+                <v-icon>{{ item.icon }}</v-icon>
+              </a>
+              <router-link v-else :to="item.route">
                 <v-icon>{{ item.icon }}</v-icon>
               </router-link>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>
-                <router-link :to="item.route">
-                  {{ item.text }}
-                </router-link>
-                <!--
-                <a :href="item.route">
+                <a v-if="item.url" :href="item.url">
                 {{ item.text }}
                 </a>
-                -->
+                <router-link v-else :to="item.route">
+                  {{ item.text }}
+                </router-link>
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -121,17 +122,29 @@ export default {
         route: '/',
         model: true
       },
+      {
+        text: 'Base de Conhecimento',
+        icon: 'local_library',
+        url: 'http://10.209.232.158/wordpress'
+      },
+      {
+        text: 'SPU-Admin',
+        icon: 'desktop_windows',
+        url: 'http://10.209.232.190/'
+      },
       { 
         text: 'Judiciais e Controle',
         icon: 'gavel', 
-        route: '/',
-        model: false,
+        route: '/nujuc',
+        model: true,
         children: [
+          /*
           {
             text: 'Painel de Controle',
             icon: 'dashboard', 
             route: '/nujuc'
           },
+          */
           {
             text: 'Demandas',
             icon: 'assignment', 
