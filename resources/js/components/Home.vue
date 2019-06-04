@@ -1,11 +1,26 @@
 <template>
-     <v-container fluid grid-list-md>
-        <v-layout justify-center row fill-height>
-            <v-flex d-flex xs6>
-                <card-grafico titulo="Base de Conhecimento">        
-                </card-grafico>
+     <v-container fill-height fluid grid-list>
+        <v-layout align-start justify-start row fill-height wrap>
+            <v-flex d-flex xs12 md4 xl3>
+                <v-card>
+                    <v-card-title primary title>
+                        <div>
+                            <h3>Base de Conhecimento</h3>
+                            <div>
+                                Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e consumir o conhecimento produzido na Superintendência.
+                            </div>
+                        </div>
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-layout justify-end row fill-height wrap>
+                            <v-btn primary>
+                                <a href="/wordpress">Acessar</a>
+                            </v-btn>
+                        </v-layout>
+                    </v-card-actions>
+                </v-card>
             </v-flex>
-            <v-flex d-flex xs6>
+            <v-flex d-flex xs12 md4 xs3>
                 <card-grafico titulo="NUJUC - Painel de Controle">
                 </card-grafico>
             </v-flex>

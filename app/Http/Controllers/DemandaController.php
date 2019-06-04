@@ -77,6 +77,8 @@ class DemandaController extends Controller
         $demanda->sentencajudicial = $request->demanda['sentencajudicial'];
 
         $demanda->idUsuarioCriacao = Auth::id();
+
+        $this->authorize('create', $demanda);
     
         $demanda->save();        
         return response()->json($demanda);
@@ -137,6 +139,7 @@ class DemandaController extends Controller
 
         $demanda->idUsuarioAlteracao = Auth::id();
 
+        $this->authorize('update', $demanda);
         $demanda->update();
         return response()->json($demanda);
     }
@@ -168,6 +171,10 @@ class DemandaController extends Controller
     public function salvarDistribuicao(DistribuicaoDemandaRequest $request, $id = null)
     {
         $validatedData = $request->validated();
+
+        $demanda = Demanda::findOrFail($request->distribuicao['idDemanda']);
+        $this->authorize('update', $demanda);
+
         if(!is_null($id)) {
             $distribuicao = DistribuicaoDemanda::findOrFail($id);
         } else {
@@ -201,6 +208,7 @@ class DemandaController extends Controller
             ]
         );
         $demanda = Demanda::findOrFail($request->demanda['id']);
+        $this->authorize('update', $demanda);
 
         if ($demanda->idSituacaoDemanda == SituacaoDemanda::RESOLVIDA) {
             abort(403, 'Unauthorized action.');
@@ -220,6 +228,8 @@ class DemandaController extends Controller
             ]
         );
         $demanda = Demanda::findOrFail($request->demanda['id']);
+        $this->authorize('update', $demanda);
+        
 
         if ($demanda->idSituacaoDemanda != SituacaoDemanda::PRONTA) {
             abort(403, 'Unauthorized action.');
@@ -239,6 +249,7 @@ class DemandaController extends Controller
             ]
         );
         $demanda = Demanda::findOrFail($request->demanda['id']);
+        $this->authorize('update', $demanda);
 
         if ($demanda->idSituacaoDemanda != SituacaoDemanda::AGUARDANDO_ASSINATURA) {
             abort(403, 'Unauthorized action.');
@@ -259,6 +270,7 @@ class DemandaController extends Controller
             ]
         );
         $demanda = Demanda::findOrFail($request->demanda['id']);
+        $this->authorize('update', $demanda);
 
         if ($demanda->idSituacaoDemanda != SituacaoDemanda::AGUARDANDO_AR) {
             abort(403, 'Unauthorized action.');
