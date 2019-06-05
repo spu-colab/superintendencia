@@ -108,8 +108,8 @@
                         
                     </v-layout>
 
-                    <!-- Documento -->
                     <v-layout row wrap>
+                        <!-- Tipo Documento -->
                         <v-flex xs2>
                             <v-autocomplete label="Tipo Documento" tabindex="3" 
                                 :items="tiposDocumento" v-model="entidadeAtual.idTipoDocumento" 
@@ -117,7 +117,8 @@
                                 :rules="[validacao.obrigatorio]"
                             />
                         </v-flex>
-                        <!-- :rules="[validacao.obrigatorio, validacao.email]" required  -->
+
+                        <!-- Documento  -->
                         <v-flex xs2>
                             <v-text-field label="Documento" tabindex="4" 
                                 v-model="entidadeAtual.documentoExterno" placeholder="0123/2018"
@@ -140,15 +141,17 @@
                                 min-width="290px">
 
                                 <v-text-field  tabindex="5" 
+                                    mask="##/##/####" return-masked-value
                                     slot="activator"
-                                    v-model="computedDataDocumento"
+                                    v-model="dataDocumentoFormatada"
                                     label="Data Documento"
                                     hint="DD/MM/AAAA"
                                     persistent-hint
                                     prepend-icon="event" 
-                                    :rules="[validacao.obrigatorio]" required 
+                                    :rules="[validacao.obrigatorio, validacao.date]" required 
+                                    @blur="dataDocumento = parseDate(dataDocumentoFormatada)"
                                     />
-                                <v-date-picker v-model="entidadeAtual.dataDocumento" no-title @input="menuDataDocumento = false" locale="pt-br" />
+                                <v-date-picker v-model="dataDocumento" no-title @input="menuDataDocumento = false" locale="pt-br" />
                             </v-menu>
                         </v-flex>
 
@@ -174,9 +177,9 @@
                         
                         <!-- Prazo -->
                         <v-flex xs2>
-                            <v-menu ref="menu1"
+                            <v-menu ref="menuDataPrazo"
                                 :close-on-content-click="false"
-                                v-model="menu1"
+                                v-model="menuDataPrazo"
                                 :nudge-right="40"
                                 lazy
                                 transition="scale-transition"
@@ -186,14 +189,17 @@
                                 min-width="290px">
 
                                 <v-text-field  tabindex="7" 
+                                    mask="##/##/####" return-masked-value
+                                    :rules="[validacao.date]" 
                                     slot="activator"
-                                    v-model="computedDateFormatted"
+                                    v-model="dataPrazoFormatada"
                                     label="Prazo"
                                     hint="DD/MM/AAAA"
                                     persistent-hint
                                     prepend-icon="event"
+                                    @blur="dataPrazo = parseDate(dataPrazoFormatada)"
                                     />
-                                <v-date-picker v-model="entidadeAtual.dataPrazo" no-title @input="menu1 = false" locale="pt-br" />
+                                <v-date-picker v-model="dataPrazo" no-title @input="menuDataPrazo = false" locale="pt-br" />
                             </v-menu>
                         </v-flex>
                             <!-- Cumprimento de sentença? -->
@@ -376,11 +382,12 @@
 <script>
 import rotas from './../rotas-servico.js'
 import CRUD from './CRUD'
+import { isNull } from 'util';
 export default {
     components: {
         'crud' : CRUD
     },
-    data: () => {
+    data: (vm) => {
         return {
             switchSomenteAbertas: true,
             switchSomenteAtrasadas: false,
@@ -479,6 +486,7 @@ export default {
             //formulario
             entidadeAtual: {
                 dataPrazo: new Date().toISOString().substr(0, 10),
+                dataDocumento: new Date().toISOString().substr(0, 10),
                 autor: {
                     orgao: {
                     }
@@ -489,14 +497,22 @@ export default {
                 min15: v => !!v && v.length >= 15 || 'No mínimo 15 caracteres' ,
                 min8: v => !!v && v.length >= 8 || 'No mínimo 8 caracteres' ,
                 min2: v => !!v && v.length >= 2 || 'No mínimo 2 caracteres',
-                email: v => /.+@.+\..+/.test(v) || 'E-mail precisa ser válido'
+                email: v => /.+@.+\..+/.test(v) || 'E-mail precisa ser válido',
+                date: v => (isNull(v) || v.length == 0 || !isNaN(new Date(v))) || 'Informe uma data válida'
             },
             search: null,
             demandantes: [],
             tiposDocumento: [],
             situacoes: [],
-            menu1: false,
+            
+            menuDataPrazo: false,
+            dataPrazo: new Date().toISOString().substr(0, 10),
+            dataPrazoFormatada: vm.formatDate(new Date().toISOString().substr(0, 10)),
+
             menuDataDocumento: false,
+            dataDocumento: new Date().toISOString().substr(0, 10),
+            dataDocumentoFormatada: vm.formatDate(new Date().toISOString().substr(0, 10)),
+
             divisoesOrganogramas: [],
 
             procedimentos: [],
@@ -541,8 +557,9 @@ export default {
         selecionarParaEdicao(item) {           
             // console.log('Item selecionado: ' + item.id)
             if(!item.id) {
+                this.dataPrazo = new Date().toISOString().substr(0, 10),
+                this.dataDocumento = new Date().toISOString().substr(0, 10),
                 this.entidadeAtual = {
-                    dataPrazo: new Date().toISOString().substr(0, 10),
                     autor: {
                         orgao: {
                         }
@@ -679,6 +696,8 @@ export default {
         
         novo(item) {
             this.carregarElementosTela()
+            this.dataDocumento = null
+            this.dataPrazo = null
             this.entidadeAtual = {
                 id: null
             }
@@ -848,6 +867,7 @@ export default {
 
         formatDate (date) {
             if (!date) return null
+            // console.log(date)
 
             const [year, month, day] = date.split('-')
             return `${day}/${month}/${year}`
@@ -855,6 +875,7 @@ export default {
 
         parseDate (date) {
             if (!date) return null
+            // console.log(date)
 
             const [day, month, year] = date.split('/')
             return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
@@ -977,12 +998,6 @@ export default {
         computedOrgaoSelecionado() {
         return this.entidadeAtual.autor ? "/" + this.entidadeAtual.autor.orgao.sigla : null
         },
-        computedDateFormatted () {
-            return this.formatDate(this.entidadeAtual.dataPrazo)
-        },
-        computedDataDocumento () {
-            return this.formatDate(this.entidadeAtual.dataDocumento)
-        },
         computedProcedimentos () {
             return this.procedimentos
         },
@@ -1048,8 +1063,15 @@ export default {
             if (this.carregandoProcedimentos) return
 
             this.carregarProcedimentosExternos()
-            
-      }
+        },
+        dataDocumento(val) {
+            this.dataDocumentoFormatada = this.formatDate(this.dataDocumento)
+            this.entidadeAtual.dataDocumento = this.dataDocumento
+        },
+        dataPrazo(val) {
+            this.dataPrazoFormatada = this.formatDate(this.dataPrazo)
+            this.entidadeAtual.dataPrazo = this.dataPrazo
+        }
     },
     mounted() {
         this.carregarItens()
