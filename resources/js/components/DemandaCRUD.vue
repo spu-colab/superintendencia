@@ -498,7 +498,7 @@ export default {
                 min8: v => !!v && v.length >= 8 || 'No mínimo 8 caracteres' ,
                 min2: v => !!v && v.length >= 2 || 'No mínimo 2 caracteres',
                 email: v => /.+@.+\..+/.test(v) || 'E-mail precisa ser válido',
-                date: v => (isNull(v) || v.length == 0 || !isNaN(new Date(v))) || 'Informe uma data válida'
+                date: v => vm.dataValida(v) || 'Informe uma data válida'
             },
             search: null,
             demandantes: [],
@@ -554,6 +554,16 @@ export default {
         }
     },
     methods: {
+        dataValida(v) {
+            if(isNull(v)) return true
+            if(v.length == 0) return true
+            if(v.length != 10) return false
+            let date = this.parseDate(v)
+            console.log('date: ' + date)
+            console.log(!isNaN(new Date(this.parseDate(v))))
+            return !isNaN(new Date(this.parseDate(v)))
+        },
+
         selecionarParaEdicao(item) {           
             // console.log('Item selecionado: ' + item.id)
             if(!item.id) {
