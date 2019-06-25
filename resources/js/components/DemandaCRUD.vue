@@ -164,11 +164,15 @@
                         </v-flex>
 
                         <!-- NUP Sei -->
-                        <v-flex xs4>
+                        <v-flex xs3>
                             <v-text-field label="NUP SEI" tabindex="5" 
                                 v-model="entidadeAtual.nupSEI" 
                                 :rules="[validacao.obrigatorio, validacao.min15]" required 
                                 counter="20" maxlength="20"/>
+                        </v-flex>
+
+                        <v-flex xs1>
+                            <v-switch tabindex="8"  v-model="entidadeAtual.seiMP" label="MP"></v-switch>
                         </v-flex>
 
                     </v-layout>
@@ -202,7 +206,7 @@
                                 <v-date-picker v-model="dataPrazo" no-title @input="menuDataPrazo = false" locale="pt-br" />
                             </v-menu>
                         </v-flex>
-                            <!-- Cumprimento de sentença? -->
+                        <!-- Cumprimento de sentença? -->
                         <v-flex xs4>
                             <v-switch tabindex="8"  v-model="entidadeAtual.sentencajudicial" label="Trata-se de cumprimento de sentença?" color="red"></v-switch>
                         </v-flex>
@@ -559,8 +563,8 @@ export default {
             if(v.length == 0) return true
             if(v.length != 10) return false
             let date = this.parseDate(v)
-            console.log('date: ' + date)
-            console.log(!isNaN(new Date(this.parseDate(v))))
+            // console.log('date: ' + date)
+            // console.log(!isNaN(new Date(this.parseDate(v))))
             return !isNaN(new Date(this.parseDate(v)))
         },
 
@@ -586,6 +590,8 @@ export default {
                             response.body.forEach(element => {
                                 this.prepararDistribuicoes(element)
                                 this.entidadeAtual = element
+                                this.dataDocumento = element.dataDocumento
+                                this.dataPrazo = element.dataPrazo
                             })
                         },
                         error => {
@@ -613,6 +619,7 @@ export default {
                 formData.append('demanda[dataDocumento]', this.entidadeAtual.dataDocumento)     
             }
             formData.append('demanda[nupSEI]', this.entidadeAtual.nupSEI)
+            formData.append('demanda[seiMP]', this.entidadeAtual.seiMP ? 1 : 0)
             
             formData.append('demanda[atribuidaPara]', this.entidadeAtual.atribuidaPara)
             if(this.entidadeAtual.dataPrazo) {

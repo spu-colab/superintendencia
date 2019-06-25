@@ -74,6 +74,7 @@ class DemandaController extends Controller
         if(@$request->demanda['dataDocumento'])
             $demanda->dataDocumento = $request->demanda['dataDocumento'];
         $demanda->nupSEI = $request->demanda['nupSEI'];
+        $demanda->seiMP = $request->demanda['seiMP'];
         if(@$request->demanda['dataPrazo'])
             $demanda->dataPrazo = $request->demanda['dataPrazo'];
         $demanda->sentencajudicial = $request->demanda['sentencajudicial'];
@@ -136,6 +137,7 @@ class DemandaController extends Controller
         $demanda->demanda = $request->demanda['demanda'];
         $demanda->dataDocumento = @$request->demanda['dataDocumento'];
         $demanda->nupSEI = $request->demanda['nupSEI'];
+        $demanda->seiMP = $request->demanda['seiMP'];
         $demanda->dataPrazo = @$request->demanda['dataPrazo'];
         $demanda->sentencajudicial = $request->demanda['sentencajudicial'];
 
