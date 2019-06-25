@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use PDF;
+
 
 
 class DemandaController extends Controller
@@ -441,5 +443,17 @@ class DemandaController extends Controller
             // 'distribuicoes.colaboradorDe',
             // 'distribuicoes.assignable'
         ])->where('idProcedimentoExterno', $idProcedimentoExterno)->get();
+    }
+
+    public function gerarPDF($idDemanda) {
+        $demanda = $this->show($idDemanda);
+        return view('demanda.pdf')->with('demanda', compact($demanda));
+        /*
+        $pdf = PDF::loadView('demanda.pdf', [
+            'demanda'   => $demanda
+        ]);
+        return $pdf->download('eSPU-SC_Demanda.pdf');
+        */
+
     }
 }
