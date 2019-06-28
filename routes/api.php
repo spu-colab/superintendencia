@@ -66,3 +66,5 @@ Route::get('demanda/relatorio/entrada-saida-diaria', 'DemandaController@relatori
 Route::get('demanda/relatorio/abertas-situacao', 'DemandaController@relatorioAbertasPorSituacao');
 Route::get('demanda/relatorio/abertas-distribuicao', 'DemandaController@relatorioAbertasPorDistribuicao');
 Route::get('demanda/relatorio/abertas-demandante', 'DemandaController@relatorioAbertasPorDemandante');
+
+Route::get('demanda/pdf/{id?}', 'DemandaController@gerarPDF');

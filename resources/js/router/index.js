@@ -7,6 +7,7 @@ import DemandaCrud from './../components/DemandaCrud'
 import AutorDemandaCrud from './../components/AutorDemandaCrud'
 import OrgaoCrud from './../components/OrgaoCrud'
 import ProcedimentoExternoCrud from './../components/ProcedimentoExternoCrud'
+import Conteudo from './../components/Conteudo'
 import GeoReferenciamento from './../components/GeoReferenciamento'
 import FileUpload from './../components/FileUpload'
 import store from './../store'
@@ -27,6 +28,14 @@ let router = new Router({
       meta: {
         guest: true
       }
+    },
+    {
+      path: '/conteudo/:id',
+      name: 'Conteudo',
+      component: Conteudo,
+      meta: {
+        requiresAuth: true,
+      }            
     },
     {
       path: '/nujuc',
