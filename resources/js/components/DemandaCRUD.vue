@@ -280,7 +280,16 @@
                             v-model="entidadeAtual.demanda"
                             :rules="[validacao.obrigatorio, validacao.min8]" required>
                         </v-textarea>
+                    </v-layout>
 
+                    <v-layout row wrap>
+                        <!-- Resumo / Situação -->
+                        <v-textarea box tabindex="11" 
+                            name="input-7-4"
+                            label="Situação (Resumo Gerencial):"
+                            placeholder="Anotação sobre o resumo da situação da demanda para fins gerenciais"
+                            v-model="entidadeAtual.resumoSituacao">
+                        </v-textarea>
                     </v-layout>
 
                     <v-layout row wrap>
@@ -432,6 +441,10 @@ export default {
                     text: 'Distribuída para', 
                     value: 'distribuidaParaChips',
                     type: 'chip'
+                },
+                {
+                    text: 'Resumo/Situação', 
+                    value: 'resumoSituacao',
                 },
                 {
                     text: 'Prazo', 
@@ -615,6 +628,7 @@ export default {
             
             formData.append('demanda[idSituacaoDemanda]', this.entidadeAtual.idSituacaoDemanda)
             formData.append('demanda[demanda]', this.entidadeAtual.demanda)
+            formData.append('demanda[resumoSituacao]', this.entidadeAtual.resumoSituacao)
             if(this.entidadeAtual.dataDocumento) {
                 formData.append('demanda[dataDocumento]', this.entidadeAtual.dataDocumento)     
             }
