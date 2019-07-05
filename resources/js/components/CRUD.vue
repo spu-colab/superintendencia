@@ -44,6 +44,7 @@
           <v-data-table :headers="headers" :items="filteredItems" :search="search"
             v-model="selected" select-all item-key="id" 
             :loading="carregando" :pagination.sync="pagination"
+            :hide-actions="!exibirPaginacao"
             :rows-per-page-items="registrosPorPagina()" rows-per-page-text="Registros por página">
             <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
@@ -75,14 +76,6 @@
                 </th>
               </tr>
             </template>
-
-            <!--
-            <template slot="headerCell" slot-scope="props">
-              <span v-if="props.header.type != 'hidden'">
-                {{ props.header.text }}
-              </span>
-            </template>
-            -->
 
             <template slot="items" slot-scope="props">
               <td>
@@ -161,6 +154,14 @@
                   </div>
               </td>
             </template>
+
+            <template slot="footer">
+              <td :colspan="headers.length">
+                <slot name="footer">
+                </slot>
+              </td>
+            </template>
+
             <v-alert
               slot="no-results"
               :value="true"
@@ -227,6 +228,10 @@ export default {
       nomeEntidadePlural: String,
       headers: Array,
       items: Array,
+      exibirPaginacao: {
+        type: Boolean,
+        default: true
+      },
       carregando: {
         type: Boolean,
         default: true

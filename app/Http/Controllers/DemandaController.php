@@ -26,9 +26,10 @@ class DemandaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Demanda::with(
+        $per_page = $request->input('per_page');
+        $result = Demanda::with(
             [
                 'autor.cargo', 
                 'autor.orgao',
@@ -38,6 +39,8 @@ class DemandaController extends Controller
                 'distribuicoes.assignable'
             ]
         )->orderBy('dataPrazo')->get();
+        // ->paginate($per_page);
+        return $result;
     }
 
     /**

@@ -1,7 +1,7 @@
 <template>
     <crud 
         nomeEntidade="Demanda" nomeEntidadePlural="Demandas"
-        :headers="cabecalhos" :items="computedRegistros" :carregando="carregando" :podeSalvar="podeSalvar"
+        :headers="cabecalhos" :items="computedRegistros" :carregando="carregando" :podeSalvar="podeSalvar" :exibirPaginacao="true"
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -39,6 +39,31 @@
                 Somente demandas referentes a sentenças judiciais
             </v-tooltip>
         </template>
+
+        <!--
+        <template slot="footer">
+            <v-layout row fill-height wrap>
+                <v-spacer></v-spacer>
+                <v-flex d-flex column align-center>
+                    <v-pagination
+                        v-model="paginacao.current_page"
+                        :length="paginacao.last_page"
+                        :value="paginacao.current_page"
+                        total-visible=7
+                        @input="carregarItens"
+                    ></v-pagination>
+                </v-flex>
+                <v-flex xs1>
+                    <v-text-field v-model="paginacao.per_page" @blur="carregarItens">
+                    </v-text-field>
+                </v-flex>
+                <v-flex d-flex column>
+                    Exibindo de {{ paginacao.from + ' a ' + paginacao.to + ' do total de ' + paginacao.total }} registros.
+                </v-flex>
+                <v-spacer></v-spacer>
+            </v-layout>
+        </template>
+        -->
 
         <template slot="detalhe">
             <div v-if="entidadeAtual">
@@ -499,6 +524,13 @@ export default {
             ],
             registros: [
                 ],
+            paginacao: {
+                current_page: 1,
+                per_page: 100,
+                from: 0,
+                to: 0,
+                total: 0,
+            },
 
             //formulario
             entidadeAtual: {
@@ -733,13 +765,51 @@ export default {
                 id: null
             }
         },
-        carregarItens() {
+        obterDadosPaginacao(rBody) {
+            var {
+                current_page, 
+                first_page_url, 
+                from, 
+                last_page, 
+                last_page_url,
+                next_page_url,
+                per_page,
+                prev_page_url,
+                to,
+                total
+            } = rBody;
+            this.paginacao = {
+                current_page, 
+                first_page_url, 
+                from, 
+                last_page, 
+                last_page_url,
+                next_page_url,
+                per_page,
+                prev_page_url,
+                to,
+                total
+            }
+        },
+        carregarItens(pagina = 1) {
             this.carregando = true;
             this.registros = [];
-            this.$http.get(rotas.rotas().demanda.listar)
-                .then(
+            let url = rotas.rotas().demanda.listar
+            /* PAGINACAO 
+            let config = {
+                params: {
+                    per_page: this.paginacao.per_page,
+                    page: pagina
+                }
+            }   
+            this.$http.get(url, config).then(
+            */
+            this.$http.get(url).then(
                     response => {
                         // console.log(response);
+                        // PAGINACAO this.obterDadosPaginacao(response.body);
+
+                        // PAGINACAO response.body.data.forEach(element => {
                         response.body.forEach(element => {
                         element.orgao = element.autor.orgao.sigla
                         element.demandante = element.autor.nome
@@ -806,12 +876,13 @@ export default {
 
                         this.registros.push(element)
                         })
+                        this.carregando = false;
                     },
                     error => {
                         console.log(error)
+                        this.carregando = false;
                     }
                 )
-            this.carregando = false;
         },
         carregarAutoresDemanda () {
             this.carregando = true
