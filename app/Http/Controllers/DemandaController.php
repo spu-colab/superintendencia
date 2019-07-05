@@ -71,6 +71,7 @@ class DemandaController extends Controller
         $demanda->idTipoDocumento = $request->demanda['idTipoDocumento'];
         $demanda->documentoExterno = $request->demanda['documentoExterno'];
         $demanda->demanda = $request->demanda['demanda'];
+        $demanda->resumoSituacao = $request->demanda['resumoSituacao'];
         if(@$request->demanda['dataDocumento'])
             $demanda->dataDocumento = $request->demanda['dataDocumento'];
         $demanda->nupSEI = $request->demanda['nupSEI'];
@@ -135,6 +136,7 @@ class DemandaController extends Controller
         $demanda->idTipoDocumento = $request->demanda['idTipoDocumento'];
         $demanda->documentoExterno = $request->demanda['documentoExterno'];
         $demanda->demanda = $request->demanda['demanda'];
+        $demanda->resumoSituacao = $request->demanda['resumoSituacao'];
         $demanda->dataDocumento = @$request->demanda['dataDocumento'];
         $demanda->nupSEI = $request->demanda['nupSEI'];
         $demanda->seiMP = $request->demanda['seiMP'];
