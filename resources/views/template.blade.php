@@ -9,6 +9,8 @@
 
         <title>SPU-SC</title>
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+        @include('ckfinder::setup')
     </head>
     <body>
         <div id=app>

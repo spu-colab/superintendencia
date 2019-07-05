@@ -23,6 +23,7 @@ Route::middleware('jwt.auth')->get('procedimentoExterno/{search}', 'Procedimento
 
 
 Route::middleware('jwt.auth')->group(function () {
+    Route::resource('conteudo', 'ConteudoController');
     Route::get('demanda/entidadeAtribuivel', 'DemandaController@listarAtribuiveis');
     Route::post('demanda/cancelar', 'DemandaController@cancelar');
     Route::post('demanda/aguardar-assinatura', 'DemandaController@aguardarAssinatura');
@@ -56,6 +57,7 @@ Route::middleware('jwt.auth')->group(function () {
         });
     }
 );
+
 
 Route::get('arquivo', 'ArquivoController@index');
 Route::get('arquivo/criar', 'ArquivoController@create');

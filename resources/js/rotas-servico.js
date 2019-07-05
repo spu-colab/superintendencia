@@ -9,6 +9,12 @@ export default {
         // login: this.base() + '/login', //auth
         refresh: this.base() + '/user/refresh'
       },
+      conteudo: {
+        consultar: this.base() + '/conteudo/',
+        criar: this.base() + '/conteudo',
+        editar: this.base() + '/conteudo/',
+        upload: ':8000/ckfinder/connector?command=QuickUpload&type=Images&responseType=json'
+      },
       demanda: {
         listar: this.base() + '/demanda',
         listarPorProcedimentoExterno: this.base() + '/demanda/procedimento/',
