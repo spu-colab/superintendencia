@@ -73,11 +73,11 @@ export default {
             this.carregando = true;
             this.editando = false;
             console.log(id);
-            if(!id) {
+            if(id>0) {
                 this.entidadeAtual = {
                     id: null,
-                    titulo: 'Título do documento',
-                    conteudo:'Opa! Deu certo'
+                    titulo: 'Documento não encontrado',
+                    conteudo:'Ocorreu alum'
                 }
             } else {
                 this.entidadeAtual = {

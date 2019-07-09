@@ -1,28 +1,43 @@
 <template>
      <v-container fill-height fluid grid-list>
-        <v-layout align-start justify-start row fill-height wrap>
-            <v-flex d-flex xs12 md4 xl3>
+        <v-layout align-start justify-start row wrap>
+            <v-flex d-flex col xs12 md6>
                 <v-card>
                     <v-card-title primary title>
                         <div>
                             <h3>Base de Conhecimento</h3>
                             <div>
-                                Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e consumir o conhecimento produzido na Superintendência.
+                                Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e ter acesso ao conhecimento produzido na Superintendência.
                             </div>
                         </div>
                     </v-card-title>
                     <v-card-actions>
                         <v-layout justify-end row fill-height wrap>
                             <v-btn primary>
-                                <a href="/wordpress">Acessar</a>
+                                <a href="http://10.209.232.158/wordpress">Acessar</a>
                             </v-btn>
                         </v-layout>
                     </v-card-actions>
                 </v-card>
             </v-flex>
-            <v-flex d-flex xs12 md4 xs3>
-                <card-grafico titulo="NUJUC - Painel de Controle">
-                </card-grafico>
+            <v-flex d-flex col xs12 md6>
+                <v-card>
+                    <v-card-title primary title>
+                        <div>
+                            <h3>Demandas Judicias e Controle</h3>
+                            <div>
+                                Módulo de gestão das demandas judiciais, ministeriais e de controle
+                            </div>
+                        </div>
+                    </v-card-title>
+                    <v-card-actions>
+                        <v-layout justify-end row fill-height wrap>
+                            <v-btn primary>
+                                <a href="/#/nujuc">Acessar</a>
+                            </v-btn>
+                        </v-layout>
+                    </v-card-actions>
+                </v-card>
             </v-flex>
         </v-layout>
     </v-container>
