@@ -30,7 +30,8 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('demanda/aguardar-AR', 'DemandaController@aguardarAR');
     Route::post('demanda/resolver', 'DemandaController@resolver');
     Route::get('demanda/procedimento/{idProcedimentoExterno}', 'DemandaController@listarPorProcedimentoExterno');
-
+    Route::get('demanda/pdf/{ids}', 'DemandaController@gerarPDF');
+    
     Route::post('demanda/distribuicao/{id?}', 'DemandaController@salvarDistribuicao');
 
     Route::resource('demanda', 'DemandaController');
@@ -69,4 +70,3 @@ Route::get('demanda/relatorio/abertas-situacao', 'DemandaController@relatorioAbe
 Route::get('demanda/relatorio/abertas-distribuicao', 'DemandaController@relatorioAbertasPorDistribuicao');
 Route::get('demanda/relatorio/abertas-demandante', 'DemandaController@relatorioAbertasPorDemandante');
 
-Route::get('demanda/pdf/{id?}', 'DemandaController@gerarPDF');

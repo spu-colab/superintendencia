@@ -1,11 +1,12 @@
 <template>
     <crud 
         nomeEntidade="Demanda" nomeEntidadePlural="Demandas"
-        :headers="cabecalhos" :items="computedRegistros" :carregando="carregando" :podeSalvar="podeSalvar" :exibirPaginacao="true"
+        :headers="cabecalhos" :items="computedRegistros" :carregando="carregando" :podeSalvar="podeSalvar" :exibirPaginacao="true" :imprimir="true"
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
-        @clicou-novo="novo">
+        @clicou-novo="novo" 
+        @clicou-imprimir="imprimir">
         
         <template slot="beforeAdd">
             <v-tooltip bottom>
@@ -421,6 +422,7 @@
 import rotas from './../rotas-servico.js'
 import CRUD from './CRUD'
 import { isNull } from 'util';
+import { setTimeout } from 'timers';
 export default {
     components: {
         'crud' : CRUD
@@ -1076,6 +1078,38 @@ export default {
             this.carregarTiposDocumento()
             this.carregarSituacoes()
             this.carregarEntidadesAtribuiveis()
+        },
+
+        imprimir(selecionados) {
+            let ids = []
+            selecionados.forEach(element => {
+                ids.push(element.id)
+            });
+            if(ids.length == 0) {
+                this.$store.commit('sistema/mensagem', 'Nenhum registro selecionado para impressão')
+                return
+            }
+
+            // let formData = new FormData()
+            // formData.append('demandaIds', ids)
+
+            let url = rotas.rotas().demanda.pdf + ids;
+
+            this.$http.get(url, { responseType: 'arraybuffer' })
+            .then(
+                response => {
+                    console.log(response.data)
+                    let blob = new Blob([response.data], {
+                        type: response.headers.get('content-type'),
+                    })
+                    const data = window.URL.createObjectURL(blob)
+                    window.open(data,'_blank');
+                },
+                error => {
+                    console.log(error.body)
+                    this.$store.commit('sistema/alerta', error.body.message)
+                }
+            )
         }
     },
     computed: {

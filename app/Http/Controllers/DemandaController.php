@@ -100,6 +100,7 @@ class DemandaController extends Controller
     public function show($id)
     {
         return Demanda::with([
+            'tipoDocumento',
             'autor.cargo', 
             'autor.orgao',
             'procedimentoExterno.tipoProcedimentoExterno',
@@ -452,15 +453,21 @@ class DemandaController extends Controller
         ])->where('idProcedimentoExterno', $idProcedimentoExterno)->get();
     }
 
-    public function gerarPDF($idDemanda) {
-        $demanda = $this->show($idDemanda);
-        return view('demanda.pdf')->with('demanda', compact($demanda));
-        /*
+    public function gerarPDF($ids) {
+        //$demandasIds = explode(",", $request->input('demandaIds'));
+        $demandasIds = explode(",", $ids);
+        $demandas = [];
+        foreach ($demandasIds as $idDemanda) {
+            $demanda = @$this->show($idDemanda)[0];
+            if($demanda) {
+                $demandas[] = $demanda;
+            }
+        }
+        // return $demandas;
+        // return view('demanda.pdf')->with('demandas', $demandas);
         $pdf = PDF::loadView('demanda.pdf', [
-            'demanda'   => $demanda
-        ]);
+            'demandas'   => $demandas
+            ]);
         return $pdf->download('eSPU-SC_Demanda.pdf');
-        */
-
     }
 }

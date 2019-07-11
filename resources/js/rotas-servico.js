@@ -28,6 +28,7 @@ export default {
         aguardarAR: this.base() + '/demanda/aguardar-AR',
         entidadeAtribuivel: this.base() + '/demanda/entidadeAtribuivel',
         distribuicao: this.base() + '/demanda/distribuicao',
+        pdf: this.base() + '/demanda/pdf/',
         relatorio: {
           entradaSaidaDiaria: this.base() + '/demanda/relatorio/entrada-saida-diaria',
           abertasPorSituacao: this.base() + '/demanda/relatorio/abertas-situacao',

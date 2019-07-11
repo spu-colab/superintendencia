@@ -13,6 +13,11 @@ class Demanda extends Model
         return $this->hasOne('App\AutorDemanda', 'id', 'idAutorDemanda');
     }
 
+    public function tipoDocumento()
+    {
+        return $this->hasOne('App\TipoDocumento', 'id', 'idTipoDocumento');
+    }
+
     public function situacao()
     {
         return $this->hasOne('App\SituacaoDemanda', 'id', 'idSituacaoDemanda');

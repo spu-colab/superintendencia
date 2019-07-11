@@ -156,7 +156,14 @@
             </template>
 
             <template slot="footer">
-              <td :colspan="headers.length">
+
+              <td v-if="imprimir" colspan="2">
+                <v-btn @click="print">
+                  <v-icon>print</v-icon>
+                   Imprimir
+                </v-btn>
+              </td>
+              <td :colspan="headers.length - 2">
                 <slot name="footer">
                 </slot>
               </td>
@@ -232,6 +239,10 @@ export default {
         type: Boolean,
         default: true
       },
+      imprimir: {
+        type: Boolean,
+        default: false
+      },
       carregando: {
         type: Boolean,
         default: true
@@ -259,6 +270,9 @@ export default {
     cancelar() {
       this.$emit('clicou-cancelar')
       this.exibirGrid = true;
+    },
+    print() {
+      this.$emit('clicou-imprimir', this.selected)
     },
     registrosPorPagina() {
       return [50,100,200,{"text":"Todos","value":-1}]
