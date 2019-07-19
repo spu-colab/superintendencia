@@ -64,7 +64,7 @@
                 </tr>
                 <tr>
                     <td class="rotulo">Resumo Gerencial:</td>
-                    <td class="valor" colspan="{{ $colspan_1 }}">{!! html_entity_decode($demanda->resumoSituacao) !!}</td>
+                    <td class="valor" colspan="{{ $colspan_1 }}">{!! nl2br($demanda->resumoSituacao) !!}</td>
                 </tr>
         @endforeach
             </tbody>

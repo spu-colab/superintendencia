@@ -143,7 +143,7 @@
                         </div>
                     </v-badge>
                     <div v-else>
-                      {{ props.item[header.value] }}
+                      <span v-html="props.item[header.value] ? props.item[header.value].replace(/(?:\r\n|\r|\n)/g, '<br>') : ''"></span>
                       <div v-if="props.item[header.subheader]" class="caption grey--text">
                           {{ props.item[header.subheader] }}
                       </div>
