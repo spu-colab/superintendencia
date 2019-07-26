@@ -10,6 +10,7 @@ use App\User;
 use App\Http\Resources\DemandaResource;
 use App\Http\Requests\DemandaRequest;
 use App\Http\Requests\DistribuicaoDemandaRequest;
+use App\Repositories\DemandaRepositoryI;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,6 +22,11 @@ use PDF;
 
 class DemandaController extends Controller
 {
+
+    public function __construct(DemandaRepositoryI $demandaRepository) {
+        $this->repository = $demandaRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -469,5 +475,13 @@ class DemandaController extends Controller
             'demandas'   => $demandas
             ]);
         return $pdf->download('eSPU-SC_Demanda.pdf');
+    }
+
+    public function listarDistribuidasParaUsuario(User $user) {
+        return $this->repository->listarDistribuidasParaUsuario($user);
+    }
+
+    public function listarDistribuidasParaDivisaoOrganograma(DivisaoOrganograma $divisaoOrganograma) {
+        return $this->repository->listarDistribuidasParaDivisaoOrganograma($divisaoOrganograma);
     }
 }

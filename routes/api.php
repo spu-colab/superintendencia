@@ -22,6 +22,7 @@ Route::post('user/login', 'APILoginController@login');
 Route::middleware('jwt.auth')->get('procedimentoExterno/{search}', 'ProcedimentoExternoController@search');
 
 
+
 Route::middleware('jwt.auth')->group(function () {
     Route::resource('conteudo', 'ConteudoController');
     Route::get('demanda/entidadeAtribuivel', 'DemandaController@listarAtribuiveis');
@@ -31,6 +32,8 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('demanda/resolver', 'DemandaController@resolver');
     Route::get('demanda/procedimento/{idProcedimentoExterno}', 'DemandaController@listarPorProcedimentoExterno');
     Route::get('demanda/pdf/{ids}', 'DemandaController@gerarPDF');
+    Route::get('demanda/usuario/{user}', 'DemandaController@listarDistribuidasParaUsuario');
+    Route::get('demanda/divisao-organograma/{divisaoOrganograma}', 'DemandaController@listarDistribuidasParaDivisaoOrganograma');
     
     Route::post('demanda/distribuicao/{id?}', 'DemandaController@salvarDistribuicao');
 
