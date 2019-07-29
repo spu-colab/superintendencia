@@ -477,6 +477,33 @@ class DemandaController extends Controller
         return $pdf->download('eSPU-SC_Demanda.pdf');
     }
 
+    public function gerarPDFAcompanhamento(DemandaRepositoryI $respository) {
+        $demandas = array();
+
+        $divisoesOrganogramas = DivisaoOrganograma::select(['id', 'nome', 'sigla'])->orderBy('nome')->get();
+        foreach ($divisoesOrganogramas as $key => $divisaoOrganograma) {
+            $demandas['divisoesOrganogramas'][$key] = $divisaoOrganograma;
+            
+            $demandasIds = $respository->listarIdsDemandasDistribuidasPara($divisaoOrganograma);
+            $demandas['divisoesOrganogramas'][$key]['demandas'] = Demanda::with(
+                [
+                    'autor.cargo', 
+                    'autor.orgao',
+                    'procedimentoExterno.tipoProcedimentoExterno'
+                ]
+            )->whereIn('id', $demandasIds)->get();
+
+        }
+
+        // return $demandas;
+        // return view('demanda.acompanhamento_pdf')->with('demandas', $demandas);
+
+        $pdf = PDF::loadView('demanda.acompanhamento_pdf', [
+            'demandas'   => $demandas
+            ]);
+        return $pdf->download('eSPU-SC_Demanda.pdf');
+    }
+
     public function listarDistribuidasParaUsuario(User $user) {
         return $this->repository->listarDistribuidasParaUsuario($user);
     }

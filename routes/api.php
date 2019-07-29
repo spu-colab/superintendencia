@@ -22,7 +22,6 @@ Route::post('user/login', 'APILoginController@login');
 Route::middleware('jwt.auth')->get('procedimentoExterno/{search}', 'ProcedimentoExternoController@search');
 
 
-
 Route::middleware('jwt.auth')->group(function () {
     Route::resource('conteudo', 'ConteudoController');
     Route::get('demanda/entidadeAtribuivel', 'DemandaController@listarAtribuiveis');
@@ -32,11 +31,13 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('demanda/resolver', 'DemandaController@resolver');
     Route::get('demanda/procedimento/{idProcedimentoExterno}', 'DemandaController@listarPorProcedimentoExterno');
     Route::get('demanda/pdf/{ids}', 'DemandaController@gerarPDF');
-    Route::get('demanda/usuario/{user}', 'DemandaController@listarDistribuidasParaUsuario');
-    Route::get('demanda/divisao-organograma/{divisaoOrganograma}', 'DemandaController@listarDistribuidasParaDivisaoOrganograma');
     
     Route::post('demanda/distribuicao/{id?}', 'DemandaController@salvarDistribuicao');
-
+    
+    Route::get('demanda/usuario/{user}', 'DemandaController@listarDistribuidasParaUsuario');
+    Route::get('demanda/divisao-organograma/{divisaoOrganograma}', 'DemandaController@listarDistribuidasParaDivisaoOrganograma');
+    Route::get('demanda/relatorio/acompanhamento', 'DemandaController@gerarPDFAcompanhamento');
+    
     Route::resource('demanda', 'DemandaController');
     Route::resource('autorDemanda', 'AutorDemandaController');
     Route::resource('cargo', 'CargoController');
@@ -47,7 +48,7 @@ Route::middleware('jwt.auth')->group(function () {
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
     Route::resource('poloProcedimentoExterno', 'PoloProcedimentoExternoController');
-
+    
     Route::middleware('jwt.refresh')->post('demanda', 'DemandaController@store');
     Route::middleware('jwt.refresh')->put('demanda/{demanda}', 'DemandaController@update');
     Route::middleware('jwt.refresh')->post('procedimentoExterno', 'ProcedimentoExternoController@store');
@@ -58,8 +59,8 @@ Route::middleware('jwt.auth')->group(function () {
     Route::middleware('jwt.refresh')->put('orgao/{orgao}', 'OrgaoController@update');
     Route::middleware('jwt.refresh')->get('user/refresh', function () {
         return "OK";
-        });
-    }
+    });
+}
 );
 
 

@@ -33,7 +33,8 @@ export default {
           entradaSaidaDiaria: this.base() + '/demanda/relatorio/entrada-saida-diaria',
           abertasPorSituacao: this.base() + '/demanda/relatorio/abertas-situacao',
           abertasPorDistribuicao: this.base() + '/demanda/relatorio/abertas-distribuicao',
-          abertasPorDemandante: this.base() + '/demanda/relatorio/abertas-demandante'
+          abertasPorDemandante: this.base() + '/demanda/relatorio/abertas-demandante',
+          abertasPorDivisaoOrganograma: this.base() + '/demanda/relatorio/acompanhamento',
         }
       },
       autorDemanda: {

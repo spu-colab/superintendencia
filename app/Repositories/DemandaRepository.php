@@ -20,7 +20,7 @@ class DemandaRepository implements DemandaRepositoryI {
         return $this->listarDistribuidasPara($divisaoOrganograma);
     }
 
-    private function listarDistribuidasPara (Model $assignable) {
+    public function listarIdsDemandasDistribuidasPara(Model $assignable) : array {
         $assignable_type = 'App\\User';
         if($assignable instanceof DivisaoOrganograma) {
             $assignable_type = 'App\\DivisaoOrganograma';
@@ -39,6 +39,11 @@ class DemandaRepository implements DemandaRepositoryI {
         foreach ($ids as $id) {
             $arr_ids[] = $id->id;
         }
+        return $arr_ids;
+    }
+
+    private function listarDistribuidasPara (Model $assignable) : array {
+        $arr_ids = $this->listarIdsDemandasDistribuidasPara($assignable);
         $demandas = Demanda::whereIn('id', $arr_ids)
         ->with([
             'autor.cargo', 

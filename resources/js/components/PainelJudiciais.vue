@@ -12,6 +12,18 @@
         </v-layout>
         <v-layout row wrap>
             <v-flex d-flex xs4>
+                <!--
+                <v-card>
+                    <v-card-title>
+                        <h3>Relatórios</h3>
+                    </v-card-title>
+                    <v-card-text>
+                        <p class="text-md-center">
+                            <v-btn @click="gerarRelatorioDemandasPorNucleo">Demandas por núcleo</v-btn>
+                        </p>
+                    </v-card-text>
+                </v-card>
+                -->
                 <card-grafico titulo="Origem das Demandas">
                     <!--
                     <v-layout row>
@@ -325,6 +337,26 @@ export default {
                 .catch(err => {
                     console.log(err)
                 })
+        },
+
+        gerarRelatorioDemandasPorNucleo () {
+            let url = rotas.rotas().demanda.relatorio.abertasPorDivisaoOrganograma
+            this.$http.get(url, { responseType: 'arraybuffer' })
+            .then(
+                response => {
+                    console.log(response.data)
+                    let blob = new Blob([response.data], {
+                        type: response.headers.get('content-type'),
+                    })
+                    const data = window.URL.createObjectURL(blob)
+                    window.open(data,'_blank');
+                },
+                error => {
+                    console.log(error.body)
+                    this.$store.commit('sistema/alerta', error.body.message)
+                }
+            )
+
         },
         
         formatDate (date) {
