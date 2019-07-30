@@ -14,7 +14,7 @@
                     <v-btn icon 
                         :color="switchSomenteAbertas ? 'green' : 'grey'" 
                         @click="switchSomenteAbertas = !switchSomenteAbertas">
-                        <v-icon>lock_open</v-icon>
+                        <v-icon>play_arrow</v-icon>
                     </v-btn>
                 </template>
                 Somente demandas abertas
