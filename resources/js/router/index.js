@@ -19,14 +19,30 @@ let router = new Router({
     {
       path: '/',
       name: 'Inicio',
-      component: Home
+      component: Home,
+      meta: {
+        breadcrumb: [
+          {
+            text: 'Início'
+          }
+        ]
+      }
     },
     {
       path: '/login',
       name: 'Login',
       component: Login,
       meta: {
-        guest: true
+        guest: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Login'
+          },
+        ]
       }
     },
     {
@@ -35,12 +51,32 @@ let router = new Router({
       component: Conteudo,
       meta: {
         requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Conteúdo'
+          },
+        ]
       }            
     },
     {
       path: '/nujuc',
       name: 'Nujuc',
-      component: PainelJudiciais
+      component: PainelJudiciais,
+      meta: {
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Demandas Judiciais'
+          },
+        ]
+      }
     },
     {
       path: '/demanda',
@@ -48,6 +84,19 @@ let router = new Router({
       component: DemandaCrud,
       meta: {
         requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Demandas Judiciais',
+            href: '/#/nujuc'
+          },
+          {
+            text: 'Demandas'
+          },
+        ]
       }
     },
     {
@@ -56,6 +105,19 @@ let router = new Router({
       component: DemandaCrud,
       meta: {
         requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Demandas Judiciais',
+            href: '/#/nujuc'
+          },
+          {
+            text: 'Demanda'
+          },
+        ]
       }
     },
     {
@@ -63,7 +125,20 @@ let router = new Router({
       name: 'Demandante',
       component: AutorDemandaCrud,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Demandas Judiciais',
+            href: '/#/nujuc'
+          },
+          {
+            text: 'Demandantes'
+          },
+        ]
       }
     },
     {
@@ -71,7 +146,20 @@ let router = new Router({
       name: 'Orgao',
       component: OrgaoCrud,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Demandas Judiciais',
+            href: '/#/nujuc'
+          },
+          {
+            text: 'Órgãos'
+          },
+        ]
       }
     },
     {
@@ -79,7 +167,20 @@ let router = new Router({
       name: 'ProcedimentoExterno',
       component: ProcedimentoExternoCrud,
       meta: {
-        requiresAuth: true
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Demandas Judiciais',
+            href: '/#/nujuc'
+          },
+          {
+            text: 'Procedimentos Externos'
+          },
+        ]
       }
     },
     {
@@ -87,7 +188,16 @@ let router = new Router({
       name: 'Geo',
       component: GeoReferenciamento,
       meta: {
-        guest: true
+        guest: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Geo Visualizador (teste)',
+          }
+        ]
       }
     },
 
@@ -96,7 +206,16 @@ let router = new Router({
       name: 'Arquivo',
       component: FileUpload,
       meta: {
-        guest: true
+        guest: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Arquivo (teste)'
+          },
+        ]
       }
     }
   ]

@@ -96,6 +96,7 @@
 
     <v-content>
       <mensagem-sistema/>
+      <v-breadcrumbs :items="$route.meta.breadcrumb"></v-breadcrumbs>
       <v-container fluid justify-center row fill-height>
         <transition name="fade">
             <slot></slot>
@@ -167,7 +168,24 @@ export default {
           },
         ]
       },
-    ]
+    ],
+    breadcrumb: [
+        {
+          text: 'Dashboard',
+          disabled: false,
+          href: 'breadcrumbs_dashboard',
+        },
+        {
+          text: 'Link 1',
+          disabled: false,
+          href: 'breadcrumbs_link_1',
+        },
+        {
+          text: 'Link 2',
+          disabled: true,
+          href: 'breadcrumbs_link_2',
+        },
+      ],
   }),
   props: {
     source: String
@@ -175,6 +193,11 @@ export default {
   computed: {
     exibirMenu () {
       return this.$store.getters['sistema/exibirMenu']
+    }
+  },
+  watch: {
+    '$route' () {
+      this.breadcrumb = this.$route.meta.breadcrumb
     }
   }
 }
