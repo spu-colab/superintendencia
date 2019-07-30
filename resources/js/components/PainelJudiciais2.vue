@@ -15,19 +15,90 @@
 
       <!-- segunda linha -->
       <v-flex d-flex col xs12 md4>
-        <card-numero-destaque titulo="Em Análise" icon="lock_open" color="yellow">123</card-numero-destaque>
+        <card-numero-destaque titulo="Em Análise" icon="play_arrow" color="green">
+          {{ demandasAbertasPorSituacao.em_analise }}
+        </card-numero-destaque>
       </v-flex>
 
       <v-flex d-flex col xs12 md4>
-        <card-numero-destaque titulo="Atrasadas" icon="alarm" color="orange">78</card-numero-destaque>
+        <card-numero-destaque titulo="Atrasadas" icon="alarm" color="orange">
+          {{ demandasAbertasPorSituacao.atrasadas }}
+        </card-numero-destaque>
       </v-flex>
 
       <v-flex d-flex col xs12 md4>
-        <card-numero-destaque titulo="Senteças Judiciais" icon="gavel" color="red">21</card-numero-destaque>
+        <card-numero-destaque titulo="Senteças Judiciais" icon="gavel" color="red">
+          {{ demandasAbertasPorSituacao.sentencas_judiciais }}
+        </card-numero-destaque>
       </v-flex>
 
       <!-- terceira linha -->
-      <v-flex d-flex col xs12 md4>
+      <v-flex d-flex col xs12 md6>
+        <!--
+        <v-card>
+            <v-card-title>
+                <h3>Relatórios</h3>
+            </v-card-title>
+            <v-card-text>
+                <p class="text-md-center">
+                    <v-btn @click="gerarRelatorioDemandasPorNucleo">Demandas por núcleo</v-btn>
+                </p>
+            </v-card-text>
+        </v-card>
+        -->
+        <card-grafico titulo="Origem das Demandas">
+          <!--
+          <v-layout row>
+              <v-flex d-flex xs6>
+                  <v-menu ref="menuDataDeDemandante"
+                      :close-on-content-click="false"
+                      v-model="menuDataDeDemandante"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width>
+
+                      <v-text-field  tabindex="7" 
+                          slot="activator"
+                          v-model="computedDataDeDemandasPorDemandante"
+                          label="De"
+                          persistent-hint
+                          prepend-icon="event"
+                          />
+                      <v-date-picker v-model="dataDeDemandasPorDemandante" no-title @input="menuDataDeDemandante = false" locale="pt-br" />
+                  </v-menu>
+              </v-flex>
+              <v-flex d-flex xs6>
+                  <v-menu ref="menuDataAteDemandante"
+                      :close-on-content-click="false"
+                      v-model="menuDataAteDemandante"
+                      :nudge-right="40"
+                      lazy
+                      transition="scale-transition"
+                      offset-y
+                      full-width>
+
+                      <v-text-field  tabindex="7" 
+                          slot="activator"
+                          v-model="computedDataAteDemandasPorDemandante"
+                          label="Até"
+                          persistent-hint
+                          />
+                      <v-date-picker v-model="dataAteDemandasPorDemandante" no-title @input="menuDataAteDemandante = false" locale="pt-br" />
+                  </v-menu>
+              </v-flex>
+          </v-layout>
+          -->
+          <grafico-barra-horizontal 
+              v-if="carregouDemandasPorDemandante" 
+              :chartdata="demandasPorDemandante"
+              :options="opcoesRelatorioDemandasPorDemandante" 
+              />
+        </card-grafico>
+      </v-flex>
+
+      <v-flex d-flex col xs12 md6>
         <card-grafico titulo="Distribuição">
           <grafico-barra-horizontal
             v-if="carregouDemandasAbertasPorDistribuicao"
@@ -36,7 +107,8 @@
           />
         </card-grafico>
       </v-flex>
-      <v-flex d-flex col xs12 md4>
+      <!--
+      <v-flex d-flex col xs12 md6>
         <card-grafico titulo="Situação das Demandas com Resposta Pendente">
           <grafico-pizza
             v-if="carregouDemandasAbertasPorSituacao"
@@ -46,6 +118,7 @@
           />
         </card-grafico>
       </v-flex>
+      -->
     </v-layout>
   </v-container>
 </template>
@@ -294,7 +367,7 @@ export default {
         });
     },
 
-    carregarDemandasAbertasPorSituacao() {
+    carregarDemandasAbertasPorSituacao_() {
       this.carregouDemandasAbertasPorSituacao = false;
       this.demandasAbertasPorSituacao = {
         labels: [
@@ -328,6 +401,23 @@ export default {
             this.demandasAbertasPorSituacao.datasets[0].data.push(
               element.aguardando_ar
             );
+          });
+          this.carregouDemandasAbertasPorSituacao = true;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+
+    carregarDemandasAbertasPorSituacao() {
+      this.carregouDemandasAbertasPorSituacao = false;
+      this.demandasAbertasPorSituacao = {
+      };
+      this.$http
+        .get(rotas.rotas().demanda.relatorio.abertasPorSituacao)
+        .then(res => {
+          res.data.forEach(element => {
+            this.demandasAbertasPorSituacao = element
           });
           this.carregouDemandasAbertasPorSituacao = true;
         })
@@ -377,8 +467,8 @@ export default {
   async mounted() {
     this.carregarDemandasEntradaSaidaDiaria();
     this.carregarDemandasAbertasPorDistribuicao();
-    this.carregarDemandasAbertasPorSituacao();
     this.carregarDemandasPorDemandante();
+    this.carregarDemandasAbertasPorSituacao();
   }
 };
 </script>

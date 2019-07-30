@@ -376,7 +376,8 @@ class DemandaController extends Controller
             ")));
     }
 
-    public function relatorioAbertasPorSituacao()
+    /*
+    public function relatorioAbertasPorSituacao_()
     {
         return response()->json(DB::select( DB::raw
             ('
@@ -391,6 +392,19 @@ class DemandaController extends Controller
             -- WHERE 
             --    idSituacaoDemanda IN (SELECT id FROM situacaodemanda WHERE situacao IN ("Nova", "Em análise", "Pronta"))
             ')));
+    }
+    */
+    public function relatorioAbertasPorSituacao()
+    {
+        return response()->json(DB::select( DB::raw("
+            SELECT
+                (SELECT count(id) FROM demanda WHERE idsituacaodemanda NOT IN (3,4)) as em_analise,
+                (SELECT count(id) FROM demanda WHERE idsituacaodemanda NOT IN (3,4) 
+                    AND DATE_FORMAT(dataPrazo, '%Y-%m-%d') < DATE_FORMAT(NOW(), '%Y-%m-%d')
+                    AND dataResposta IS NULL) as atrasadas,
+                (SELECT count(id) FROM demanda WHERE idsituacaodemanda NOT IN (3,4) 
+                    AND sentencajudicial = true) as sentencas_judiciais
+            ")));
     }
 
     public function relatorioAbertasPorDistribuicao()
