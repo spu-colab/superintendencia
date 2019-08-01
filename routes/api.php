@@ -68,6 +68,7 @@ Route::middleware('jwt.auth')->group(function () {
 // Route::get('arquivo/criar', 'ArquivoController@create');
 // Route::post('arquivo', 'ArquivoController@uploadFile');
 Route::get('geo/camada', 'GeoController@listarCamadas');
+Route::get('geo/camada/{camada}/referencia', 'GeoController@listarReferenciasPorCamada');
 
 
 //RELATÓRIOS

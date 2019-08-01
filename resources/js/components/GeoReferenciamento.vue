@@ -7,19 +7,29 @@
             <v-flex d-flex xs2>
               <v-container>
                 <v-layout>
-                  <v-checkbox  v-for="layer in layers" :key="layer.id" 
-                    v-model="layer.active" 
-                    @change="layerChanged(layer.id, layer.active)" 
-                    class="mx-2" :label="layer.name"></v-checkbox>
+                  <div  v-for="layer in layers" :key="layer.id">
+                    <v-checkbox v-model="layer.active" 
+                      @change="layerChanged(layer.id, layer.active)" 
+                      class="mx-2" :label="layer.name">
+                    </v-checkbox>
+
+                    <v-checkbox  v-for="feature in layer.features" :key="feature.id" 
+                      v-model="feature.active" 
+                      @change="featureChanged(layer.id, feature.id)" 
+                      class="mx-2" :label="feature.name"></v-checkbox>
+                  </div>
+                    
+
+
                 </v-layout>
-                <!--
+                
                 <v-layout row wrap>
                   <input type="file" id="files" ref="files" v-on:change="handleFiles()"/>
                   <p>
                       Drop your files here <br>or click to search
                   </p>
                 </v-layout>
-                -->
+                
               </v-container>
 
             </v-flex>
@@ -35,7 +45,8 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet.pm/dist/leaflet.pm.min'
 import 'leaflet.pm/dist/leaflet.pm.css'
 
-require('./../shp')
+//require('./../shp')
+import shp from './../shp'
 require('./../leaflet.shpfile')
 
 export default {
@@ -79,6 +90,13 @@ export default {
             }
           ]
         }
+
+        // ST_GeoFromText('MULTIPOLYGON(((0 0,11 0,12 11,0 9,0 0)),((3 5,7 4,4 7,7 7,3 5)))')
+        // UPDATE `geo_referencia` SET `poligonais` = GeomFromText('MULTIPOLYGON(((4386527.743637 6825410.124561, 4386527.743637 6825410.134561, 4386527.753637 6825410.134561)), 5641') WHERE `geo_referencia`.`id` = 1;
+        // UPDATE `geo_referencia` SET `poligonais` = GeomFromText('MULTIPOLYGON(((4386527.743637 6825410.124561, 4386527.743637 6825410.134561, 4386527.753637 6825410.134561))),5641'), `created_at` = NULL, `updated_at` = NULL WHERE `geo_referencia`.`id` = 1 
+        // 'MULTIPOLYGON(((4386527.743637 6825410.124561,4386527.743637 6825410.124761,4386527.743837 6825410.124761,4386527.743637 6825410.124561)))',5641
+        MULTIPOLYGON(((-5400581.80 -3196290.77, -5400581.80 -3196390.77, -5400681.80 -3196390.77,-5400681.80 -3196290.77))),3857
+        
         */
       ],
       files: []
@@ -91,6 +109,23 @@ export default {
     // this.initLayers()
   },
   methods: {
+    initMap () {
+      this.map = L.map('map', {
+        crs: L.CRS.EPSG3857
+      }).setView([-28.1, -47.5], 7)
+      this.map.pm.addControls({
+        position: 'topleft',
+      });
+
+      this.tileLayer = L.tileLayer(
+        'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
+          maxZoom: 18,
+          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
+        })
+
+      this.tileLayer.addTo(this.map)
+    },
+
     carregarCamadas() {
       this.carregandoCamadas = true
       this.$http.get(rotas.rotas().geo.camada.listar)
@@ -103,7 +138,7 @@ export default {
                   active: false,
                   features: []
                 }
-                  this.layers.push(layer)
+                this.layers.push(layer)
               })
               this.carregandoCamadas = false
             },
@@ -113,24 +148,63 @@ export default {
             }
         )
     },
-    initMap () {
-      this.map = L.map('map').setView([-28.1, -47.5], 7)
-      //*
-      this.map.pm.addControls({
-        position: 'topleft',
-        // drawCircle: false,
-      });
-      //*/
 
-      this.tileLayer = L.tileLayer(
-        'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
-          maxZoom: 18,
-          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
-        })
-
-      this.tileLayer.addTo(this.map)
+    layerChanged (layerId, active) {
+      const layer = this.layers.find(layer => layer.id === layerId)
+      if (layer) {
+        layer.features = []
+        this.carregandoCamada = true
+        let url = rotas.rotas().geo.camada.referencia.listar
+        url = url.replace('[idCamada]', layer.id)
+        this.$http.get(url)
+          .then(
+            response => {
+                response.body.forEach(element => {
+                  let feature = {
+                    id: element.id,
+                    active: true,
+                    name: 'element.titulo',
+                    type: 'polygon', // element.poligonais.type,
+                    coords: element.poligonais.coordinates[0],
+                  }
+                  feature.leafletObject = this.criarLeafletObject(feature)
+                  layer.features.push(feature)
+                  this.featureChanged(layer.id, feature.id)
+                })
+                this.carregandoCamada = false
+              },
+              error => {
+                console.log(error)
+                this.carregandoCamada = false
+              }
+          )
+      } else {
+        console.log('Camada não encontrada')
+      }
     },
 
+    criarLeafletObject(feature) {
+      if(feature.type == 'polygon') {
+        console.log(feature.coords)
+        return L.polygon(feature.coords).bindPopup(feature.name)
+      }
+      // TODO temporário
+      return L.polygon(feature.coords).bindPopup(feature.name)
+    },
+
+    featureChanged(layerId, featureId) {
+      const layer = this.layers.find(layer => layer.id === layerId)
+      const feature = layer.features.find(feature => feature.id === featureId)
+      console.log(this.layers)
+      if (feature.active) {
+        console.log(feature.leafletObject)
+        feature.leafletObject.addTo(this.map)
+      } else {
+        feature.leafletObject.removeFrom(this.map)
+      }
+    },
+
+    /*
     initLayers () {
       this.layers.forEach((layer) => {
         const markerFeatures = layer.features.filter(feature => feature.type === 'marker')
@@ -143,52 +217,10 @@ export default {
         polygonFeatures.forEach((feature) => {
           feature.leafletObject = L.polygon(feature.coords).bindPopup(feature.name)
         })
+
       })
     },
-
-    layerChanged (layerId, active) {
-      const layer = this.layers.find(layer => layer.id === layerId)
-      if (layer) {
-        this.carregandoCamada = true
-        let url = rotas.rotas().geo.camada.referencia.listar
-        url = url.replace('[idCamada]', layer.id)
-        this.$http.get(url)
-          .then(
-              response => {
-                response.body.forEach(element => {
-                  let feature = {
-                    id: element.id,
-                    name: element.titulo,
-                    type: 'polygon',
-                    coords: [
-                      [-27.1, -47.5000001],
-                      [-27.1, -48.6000001],
-                      [-28.4, -47.6000010],
-                      [-28.4, -47.5000010]
-                    ]
-                  }
-                    layer.feature.push(feature)
-                })
-                this.carregandoCamada = false
-              },
-              error => {
-                console.log(error)
-                this.carregandoCamada = false
-              }
-          )
-        layer.features.forEach((feature) => {
-          console.log(feature)
-          // console.log(active)
-          if (active) {
-            feature.leafletObject.addTo(this.map)
-          } else {
-            feature.leafletObject.removeFrom(this.map)
-          }
-        })
-      } else {
-        console.log('Camada não encontrada')
-      }
-    },
+    */
 
     handleFiles() {
         let uploadedFiles = this.$refs.files.files;
@@ -234,6 +266,12 @@ export default {
               console.log(layer);
               layer.addTo(this.map); //More info: https://github.com/calvinmetcalf/leaflet.shapefile
             }.bind(this));
+    }
+
+  },
+  watch: {
+    layers() {
+      console.log(this.layers.length)
     }
   }
 }
