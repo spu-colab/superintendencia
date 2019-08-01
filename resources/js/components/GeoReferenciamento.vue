@@ -6,20 +6,20 @@
             </v-flex>
             <v-flex d-flex xs2>
               <v-container>
+                <v-layout>
+                  <v-checkbox  v-for="layer in layers" :key="layer.id" 
+                    v-model="layer.active" 
+                    @change="layerChanged(layer.id, layer.active)" 
+                    class="mx-2" :label="layer.name"></v-checkbox>
+                </v-layout>
+                <!--
                 <v-layout row wrap>
                   <input type="file" id="files" ref="files" v-on:change="handleFiles()"/>
                   <p>
                       Drop your files here <br>or click to search
                   </p>
                 </v-layout>
-                <v-layout v-for="layer in layers" :key="layer.id">
-                  <v-flex xs12>
-                    <v-checkbox
-                      v-model="layer.active"
-                      :label="layer.name"
-                      @change="layerChanged(layer.id, layer.active)" />
-                  </v-flex>
-                </v-layout>
+                -->
               </v-container>
 
             </v-flex>
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import rotas from './../rotas-servico.js'
+
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet.pm/dist/leaflet.pm.min'
@@ -85,9 +87,32 @@ export default {
   },
   mounted () {
     this.initMap()
+    this.carregarCamadas();
     // this.initLayers()
   },
   methods: {
+    carregarCamadas() {
+      this.carregandoCamadas = true
+      this.$http.get(rotas.rotas().geo.camada.listar)
+        .then(
+            response => {
+              response.body.forEach(element => {
+                let layer = {
+                  id: element.id,
+                  name: element.titulo,
+                  active: false,
+                  features: []
+                }
+                  this.layers.push(layer)
+              })
+              this.carregandoCamadas = false
+            },
+            error => {
+              console.log(error)
+              this.carregandoCamadas = false
+            }
+        )
+    },
     initMap () {
       this.map = L.map('map').setView([-28.1, -47.5], 7)
       //*
@@ -124,6 +149,33 @@ export default {
     layerChanged (layerId, active) {
       const layer = this.layers.find(layer => layer.id === layerId)
       if (layer) {
+        this.carregandoCamada = true
+        let url = rotas.rotas().geo.camada.referencia.listar
+        url = url.replace('[idCamada]', layer.id)
+        this.$http.get(url)
+          .then(
+              response => {
+                response.body.forEach(element => {
+                  let feature = {
+                    id: element.id,
+                    name: element.titulo,
+                    type: 'polygon',
+                    coords: [
+                      [-27.1, -47.5000001],
+                      [-27.1, -48.6000001],
+                      [-28.4, -47.6000010],
+                      [-28.4, -47.5000010]
+                    ]
+                  }
+                    layer.feature.push(feature)
+                })
+                this.carregandoCamada = false
+              },
+              error => {
+                console.log(error)
+                this.carregandoCamada = false
+              }
+          )
         layer.features.forEach((feature) => {
           console.log(feature)
           // console.log(active)
