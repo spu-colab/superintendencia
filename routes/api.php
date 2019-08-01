@@ -64,9 +64,11 @@ Route::middleware('jwt.auth')->group(function () {
 );
 
 
-Route::get('arquivo', 'ArquivoController@index');
-Route::get('arquivo/criar', 'ArquivoController@create');
-Route::post('arquivo', 'ArquivoController@uploadFile');
+// Route::get('arquivo', 'ArquivoController@index');
+// Route::get('arquivo/criar', 'ArquivoController@create');
+// Route::post('arquivo', 'ArquivoController@uploadFile');
+Route::get('geo/camada', 'GeoController@listarCamadas');
+
 
 //RELATÓRIOS
 Route::get('demanda/relatorio/entrada-saida-diaria', 'DemandaController@relatorioEntradaSaidaDiaria');

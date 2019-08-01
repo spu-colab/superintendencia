@@ -47,6 +47,14 @@ export default {
         criar: this.base() + '/cargo',
         editar: this.base() + '/cargo/'
       },
+      geo: {
+        camada: {
+          listar: this.base() + '/geo/camada',
+          referencia: {
+            listar: this.base() + '/geo/camada/[idCamada]/referencia'
+          }
+        }
+      },
       orgao: {
         listar: this.base() + '/orgao',
         criar: this.base() + '/orgao',
