@@ -1,18 +1,1 @@
-Subject of the issue - https://github.com/tymondesigns/jwt-auth/issues/1787
-
-Got error on 'jwt.auth' & jwt.refresh' middlewares
-"message": "Call to undefined method Illuminate\Events\Dispatcher::fire()",
-
-According to https://laravel.com/docs/5.8/upgrade#events
-The fire method (which was deprecated in Laravel 5.4) of the Illuminate/Events/Dispatcher class has been removed. You should use the dispatch method instead.
-
-I moved middleware and did some changes
-GetUserFromToken:
-
-    $this->events->fire('tymon.jwt.valid', $user);
-    -> $this->events->dispatch('tymon.jwt.valid', $user);
-
-BaseMiddleware:
-
-    $response = $this->events->fire($event, $payload, true);
-    -> $response = $this->events->dispatch($event, $payload, true);
+Está encontrando alguma problema na utilização/manutenção desse projeto? Visite a página de Wiki.
