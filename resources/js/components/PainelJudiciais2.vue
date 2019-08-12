@@ -27,7 +27,7 @@
       </v-flex>
 
       <v-flex d-flex col xs12 md4>
-        <card-numero-destaque titulo="Senteças Judiciais" icon="gavel" color="red">
+        <card-numero-destaque titulo="Sentenças Judiciais" icon="gavel" color="red">
           {{ demandasAbertasPorSituacao.sentencas_judiciais }}
         </card-numero-destaque>
       </v-flex>

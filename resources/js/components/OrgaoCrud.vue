@@ -10,6 +10,10 @@
             <div v-if="entidadeAtual">
                 <!-- Órgão -->
                 
+                <v-autocomplete label="Natureza" clearable
+                    :items="naturezas" v-model="entidadeAtual.natureza.id" 
+                    item-text="natureza" item-value="id"  />
+                
                 <v-autocomplete label="Órgão Pai" clearable
                     :items="orgaosRaiz" v-model="entidadeAtual.orgao_pai.id" 
                     item-text="orgao" item-value="id"  />
@@ -42,7 +46,12 @@ export default {
             carregando: true,
             carregandoOrgaos: false,
             orgaosRaiz: [],
+            naturezas: [],
             cabecalhos: [
+                { 
+                    text: 'Natureza',
+                    value: 'naturezaorgao'
+                },
                 { 
                     text: 'Órgão Pai',
                     value: 'orgaopai'
@@ -70,17 +79,24 @@ export default {
     methods: {
         selecionarParaEdicao(item) {
             this.carregarOrgaos()
+            this.carregarNaturezas()
             this.entidadeAtual = item
             if(this.entidadeAtual.orgao_pai == null) {
                 this.entidadeAtual.orgao_pai = {}
             }
-            console.log('Item selecionado: ' + item.id)
+            if(this.entidadeAtual.natureza == null) {
+                this.entidadeAtual.natureza = {}
+            }
+            // console.log('Item selecionado: ' + item.id)
         },
         salvar() {
             let formData = new FormData()
             formData.append('orgao[id]', this.entidadeAtual.id)
             if(this.entidadeAtual.orgao_pai.id) {
                 formData.append('orgao[idOrgaoPai]', this.entidadeAtual.orgao_pai.id)
+            }
+            if(this.entidadeAtual.natureza.id) {
+                formData.append('orgao[idNaturezaOrgao]', this.entidadeAtual.natureza.id)
             }
             formData.append('orgao[orgao]', this.entidadeAtual.orgao)
             formData.append('orgao[sigla]', this.entidadeAtual.sigla)
@@ -112,8 +128,10 @@ export default {
         },
         novo(item) {
             this.carregarOrgaos()
+            this.carregarNaturezas()
             this.entidadeAtual = {
                 id: null,
+                natureza: {},
                 orgao_pai: {}
             }
         },
@@ -127,6 +145,9 @@ export default {
                         response.body.forEach(element => {
                         // console.log(element)
                         element.orgaopai = ''
+                        if(element.natureza) {
+                            element.naturezaorgao = element.natureza.natureza
+                        }
                         if(element.orgao_pai) {
                             element.orgaopai = element.orgao_pai.orgao
                         }
@@ -155,6 +176,25 @@ export default {
                     error => {
                         console.log(error)
                         this.carregandoOrgaos = false
+                    }
+                )
+        },
+
+        carregarNaturezas () {
+            this.carregandoNaturezas = true
+            this.naturezas = []
+            this.$http
+                .get(rotas.rotas().orgao.listarNaturezas)
+                .then(
+                    response => {
+                        response.body.forEach(element => {
+                            this.naturezas.push(element)
+                        })
+                        this.carregandoNaturezas = false
+                    },
+                    error => {
+                        console.log(error)
+                        this.carregandoNaturezas = false
                     }
                 )
         },

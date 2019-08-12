@@ -57,6 +57,7 @@ export default {
       },
       orgao: {
         listar: this.base() + '/orgao',
+        listarNaturezas: this.base() + '/natureza-orgao',
         criar: this.base() + '/orgao',
         editar: this.base() + '/orgao/'
       },

@@ -42,6 +42,7 @@ Route::middleware('jwt.auth')->group(function () {
     Route::resource('autorDemanda', 'AutorDemandaController');
     Route::resource('cargo', 'CargoController');
     Route::resource('orgao', 'OrgaoController');
+    Route::get('natureza-orgao', 'OrgaoController@listarNaturezas');
     Route::resource('tipoDocumento', 'TipoDocumentoController');
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
     Route::resource('divisaoOrganograma', 'DivisaoOrganogramaController');

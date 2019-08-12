@@ -17,4 +17,14 @@ class Orgao extends Model
     {
         return $this->hasOne('App\Orgao', 'id', 'idOrgaoPai');
     }
+
+    /**
+     * Retorna a natureza do orgao
+     * 
+     * @return NaturezaOrgao
+     */
+    public function natureza()
+    {
+        return $this->hasOne('App\NaturezaOrgao', 'id', 'idNaturezaOrgao');
+    }
 }

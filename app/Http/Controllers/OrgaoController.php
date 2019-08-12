@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Orgao;
+use App\NaturezaOrgao;
 use App\Http\Requests\OrgaoRequest;
 // use Illuminate\Http\Request;
 
@@ -18,8 +19,19 @@ class OrgaoController extends Controller
     {
         return Orgao::with(
             [
-                'orgaoPai'
+                'orgaoPai',
+                'natureza'
             ])->orderBy('orgao', 'asc')->get();
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listarNaturezas()
+    {
+        return NaturezaOrgao::orderBy('natureza')->get();
     }
 
     /**
@@ -44,6 +56,9 @@ class OrgaoController extends Controller
         
         $orgao = new Orgao;
         $orgao->id = null;
+        if(@$request->orgao['idNaturezaOrgao']) {
+            $orgao->idNaturezaOrgao = $request->orgao['idNaturezaOrgao'];
+        }
         if(@$request->orgao['idOrgaoPai']) {
             $orgao->idOrgaoPai = $request->orgao['idOrgaoPai'];
         }
@@ -92,6 +107,9 @@ class OrgaoController extends Controller
         
         $orgao = Orgao::findOrFail($id);
         $this->authorize('update', $orgao);
+        if(@$request->orgao['idNaturezaOrgao']) {
+            $orgao->idNaturezaOrgao = $request->orgao['idNaturezaOrgao'];
+        }
         if(@$request->orgao['idOrgaoPai'] != null) {
             $orgao->idOrgaoPai = $request->orgao['idOrgaoPai'];
         }
