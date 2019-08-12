@@ -394,6 +394,25 @@ class DemandaController extends Controller
             ')));
     }
     */
+    public function relatorioAbertasPorNaturezaOrgao() 
+    {
+        return response()->json(DB::select( DB::raw("
+            SELECT 
+                nao.id, 
+                nao.natureza, 
+                count(d.id) as quantidade
+            FROM 
+                demanda d 
+                JOIN autordemanda ad ON d.idAutorDemanda = ad.id 
+                JOIN orgao o ON ad.idOrgao = o.id 
+                JOIN naturezaorgao nao ON o.idNaturezaOrgao = nao.id 
+            WHERE
+                d.idsituacaodemanda NOT IN (3,4) 
+            GROUP BY 1, 2 
+            ORDER BY 3 desc
+        ")));
+    }
+
     public function relatorioAbertasPorSituacao()
     {
         return response()->json(DB::select( DB::raw("

@@ -15,25 +15,45 @@
 
       <!-- segunda linha -->
       <v-flex d-flex col xs12 md4>
-        <card-numero-destaque titulo="Em Análise" icon="play_arrow" color="green">
-          {{ demandasAbertasPorSituacao.em_analise }}
-        </card-numero-destaque>
+        <card-numero-destaque
+          v-if="carregouDemandasAbertasPorSituacao"
+          titulo="Em Análise"
+          icon="play_arrow"
+          color="green"
+        >{{ demandasAbertasPorSituacao.em_analise }}</card-numero-destaque>
       </v-flex>
 
       <v-flex d-flex col xs12 md4>
-        <card-numero-destaque titulo="Atrasadas" icon="alarm" color="orange">
-          {{ demandasAbertasPorSituacao.atrasadas }}
-        </card-numero-destaque>
+        <card-numero-destaque
+          v-if="carregouDemandasAbertasPorSituacao"
+          titulo="Atrasadas"
+          icon="alarm"
+          color="orange"
+        >{{ demandasAbertasPorSituacao.atrasadas }}</card-numero-destaque>
       </v-flex>
 
       <v-flex d-flex col xs12 md4>
-        <card-numero-destaque titulo="Sentenças Judiciais" icon="gavel" color="red">
-          {{ demandasAbertasPorSituacao.sentencas_judiciais }}
-        </card-numero-destaque>
+        <card-numero-destaque
+          v-if="carregouDemandasAbertasPorSituacao"
+          titulo="Sentenças Judiciais"
+          icon="gavel"
+          color="red"
+        >{{ demandasAbertasPorSituacao.sentencas_judiciais }}</card-numero-destaque>
       </v-flex>
 
       <!-- terceira linha -->
-      <v-flex d-flex col xs12 md6>
+      <v-flex d-flex col xs12 md4>
+        <card-grafico titulo="Natureza das Demandas">
+          <grafico-pizza
+            v-if="carregouDemandasPorNaturezaOrgao"
+            :chartdata="demandasNaturezaOrgao"
+            :options="opcoesRelatorioNaturezaOrgao"
+            style="height:200px; position: 'relative';"
+          />
+        </card-grafico>
+      </v-flex>
+
+      <v-flex d-flex col xs12 md4>
         <!--
         <v-card>
             <v-card-title>
@@ -90,23 +110,14 @@
               </v-flex>
           </v-layout>
           -->
-          <grafico-barra-horizontal 
-              v-if="carregouDemandasPorDemandante" 
-              :chartdata="demandasPorDemandante"
-              :options="opcoesRelatorioDemandasPorDemandante" 
-              />
-        </card-grafico>
-      </v-flex>
-
-      <v-flex d-flex col xs12 md6>
-        <card-grafico titulo="Distribuição">
           <grafico-barra-horizontal
-            v-if="carregouDemandasAbertasPorDistribuicao"
-            :chartdata="demandasAbertasPorDistribuicao"
-            :options="opcoesRelatorioDemandasAbertasPorDistribuicao"
+            v-if="carregouDemandasPorDemandante"
+            :chartdata="demandasPorDemandante"
+            :options="opcoesRelatorioDemandasPorDemandante"
           />
         </card-grafico>
       </v-flex>
+      
       <!--
       <v-flex d-flex col xs12 md6>
         <card-grafico titulo="Situação das Demandas com Resposta Pendente">
@@ -117,13 +128,26 @@
             style="height:200px; position: 'relative';"
           />
         </card-grafico>
-      </v-flex>
+      </v-flex>      
       -->
+
+      <!-- quarta linha -->
+      <v-flex d-flex col xs12 md4>
+        <card-grafico titulo="Distribuição">
+          <grafico-barra-horizontal
+            v-if="carregouDemandasAbertasPorDistribuicao"
+            :chartdata="demandasAbertasPorDistribuicao"
+            :options="opcoesRelatorioDemandasAbertasPorDistribuicao"
+          />
+        </card-grafico>
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
 
 <script>
+const d3 = require("d3-scale-chromatic");
+
 import rotas from "./../rotas-servico.js";
 import CardGrafico from "./relatorios/CardGrafico";
 import CardNumeroDestaque from "./relatorios/CardNumeroDestaque";
@@ -147,6 +171,16 @@ export default {
         maintainAspectRatio: false,
         legend: {
           position: "bottom"
+        }
+      },
+
+      carregouDemandasPorNaturezaOrgao: false,
+      demandasNaturezaOrgao: null,
+      opcoesRelatorioNaturezaOrgao: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+          display: true
         }
       },
 
@@ -198,6 +232,29 @@ export default {
     };
   },
   methods: {
+
+    calculatePoint(colorRangeInfo, i, intervalSize) {
+      var { colorStart, colorEnd, useEndAsStart } = colorRangeInfo;
+      return useEndAsStart
+        ? colorEnd - i * intervalSize
+        : colorStart + i * intervalSize;
+    },
+
+    interpolateColors(dataLength, colorScale, colorRangeInfo) {
+      var { colorStart, colorEnd } = colorRangeInfo;
+      var colorRange = colorEnd - colorStart;
+      var intervalSize = colorRange / dataLength;
+      var i, colorPoint;
+      var colorArray = [];
+
+      for (i = 0; i < dataLength; i++) {
+        colorPoint = this.calculatePoint(colorRangeInfo, i, intervalSize);
+        colorArray.push(colorScale(colorPoint));
+      }
+
+      return colorArray;
+    },
+
     carregarDemandasEntradaSaidaDiaria() {
       this.carregouDemandasEntradaSaidaDiaria = false;
       this.demandasEntradaSaidaDiaria = {
@@ -238,6 +295,48 @@ export default {
             }
           });
           this.carregouDemandasEntradaSaidaDiaria = true;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+
+    carregarDemandasNaturezaOrgao() {
+      this.carregouDemandasPorNaturezaOrgao = false;
+      this.demandasNaturezaOrgao = {
+        labels: [],
+        datasets: [
+          {
+            data: []
+            // backgroundColor: ["#FF0000", "#FF2222", "#FF4444", "#FF6666", "#FF8888", "#FFAAAA"]
+          }
+        ]
+      };
+      this.$http
+        .get(rotas.rotas().demanda.relatorio.abertasPorNaturezaOrgao)
+        .then(res => {
+          res.data.forEach(element => {
+            this.demandasNaturezaOrgao.labels.push(element.natureza);
+            this.demandasNaturezaOrgao.datasets[0].data.push(
+              element.quantidade
+            );
+          });
+
+          const colorRangeInfo = {
+            colorStart: 0.2,
+            colorEnd: 1,
+            useEndAsStart: true
+          };
+
+          // gerar automaticamente as cores do grafico
+          let colors = this.interpolateColors(
+            this.demandasNaturezaOrgao.datasets[0].data.length,
+            d3.interpolateBlues,
+            colorRangeInfo
+          );
+          this.demandasNaturezaOrgao.datasets[0].backgroundColor = colors;
+
+          this.carregouDemandasPorNaturezaOrgao = true;
         })
         .catch(err => {
           console.log(err);
@@ -411,13 +510,12 @@ export default {
 
     carregarDemandasAbertasPorSituacao() {
       this.carregouDemandasAbertasPorSituacao = false;
-      this.demandasAbertasPorSituacao = {
-      };
+      this.demandasAbertasPorSituacao = {};
       this.$http
         .get(rotas.rotas().demanda.relatorio.abertasPorSituacao)
         .then(res => {
           res.data.forEach(element => {
-            this.demandasAbertasPorSituacao = element
+            this.demandasAbertasPorSituacao = element;
           });
           this.carregouDemandasAbertasPorSituacao = true;
         })
@@ -466,9 +564,10 @@ export default {
 
   async mounted() {
     this.carregarDemandasEntradaSaidaDiaria();
-    this.carregarDemandasAbertasPorDistribuicao();
-    this.carregarDemandasPorDemandante();
     this.carregarDemandasAbertasPorSituacao();
+    this.carregarDemandasNaturezaOrgao();
+    this.carregarDemandasPorDemandante();
+    this.carregarDemandasAbertasPorDistribuicao();
   }
 };
 </script>

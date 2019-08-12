@@ -31,6 +31,7 @@ export default {
         pdf: this.base() + '/demanda/pdf/',
         relatorio: {
           entradaSaidaDiaria: this.base() + '/demanda/relatorio/entrada-saida-diaria',
+          abertasPorNaturezaOrgao: this.base() + '/demanda/relatorio/abertas-natureza',
           abertasPorSituacao: this.base() + '/demanda/relatorio/abertas-situacao',
           abertasPorDistribuicao: this.base() + '/demanda/relatorio/abertas-distribuicao',
           abertasPorDemandante: this.base() + '/demanda/relatorio/abertas-demandante',
