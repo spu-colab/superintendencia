@@ -12,7 +12,7 @@
                     <v-tabs v-model="tabAtiva" color="grey lighten-5" @change="mudouDeTab">
                         <v-tab>Cadastro</v-tab>
                         <v-tab>Demandas</v-tab>
-                        <v-tab>Histórico</v-tab>
+                        <v-tab>Georreferenciamento</v-tab>
 
                         <v-tabs-slider color="primary"></v-tabs-slider>
 
@@ -91,14 +91,16 @@
                                 </v-data-table>
                             </v-container>
                         </v-tab-item>
+                        <!-- Fim de TAB DEMANDAS -->
 
+                        <!-- TAB GEORREFERENCIAMENTO -->
                         <v-tab-item>
                             <v-container>
-                                Em construção...
+                                <geo-referenciamento :idCamada="idCamada"></geo-referenciamento>
                             </v-container>
                         </v-tab-item>
+                        <!-- Fim da TAB GEORREFERENCIAMENTO -->
 
-                        <!-- Fim de TAB DEMANDAS -->
 
                     </v-tabs>
                 </v-card-text>
@@ -110,14 +112,16 @@
 <script>
 import rotas from './../rotas-servico.js'
 import CRUD from './CRUD'
-
+import GeoReferenciamento from './GeoReferenciamento'
 const PROCEDIMENTO_TAB_DEMANDAS = 1;
+const ID_GEO_CAMADA_PROCEDIMENTO_EXTERNO = 1;
 export default {
     components: {
         'crud' : CRUD
     },
     data: () => {
         return {
+            idCamada: ID_GEO_CAMADA_PROCEDIMENTO_EXTERNO,
             tabAtiva: 0,
             carregando: true,
             cabecalhos: [

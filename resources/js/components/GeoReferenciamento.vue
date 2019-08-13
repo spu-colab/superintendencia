@@ -18,15 +18,13 @@
                       @change="featureChanged(layer.id, feature.id)" 
                       class="mx-2" :label="feature.name"></v-checkbox>
                   </div>
-                    
-
 
                 </v-layout>
                 
                 <v-layout row wrap>
                   <input type="file" id="files" ref="files" v-on:change="handleFiles()"/>
                   <p>
-                      Drop your files here <br>or click to search
+                      Arreste seu arquivo .shp aqui <br>ou clique para localizá-lo em seu computador
                   </p>
                 </v-layout>
                 
@@ -45,7 +43,6 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet.pm/dist/leaflet.pm.min'
 import 'leaflet.pm/dist/leaflet.pm.css'
 
-//require('./../shp')
 import shp from './../shp'
 require('./../leaflet.shpfile')
 
@@ -58,55 +55,19 @@ export default {
       map: null,
       tileLayer: null,
       layers: [
-        /*
-        {
-          id: 0,
-          name: 'Imóveis',
-          active: false,
-          features: [
-            {
-              id: 2,
-              name: 'City of St. Louis',
-              type: 'polygon',
-              coords: [
-                [-27.1, -47.5000001],
-                [-27.1, -48.6000001],
-                [-28.4, -47.6000010],
-                [-28.4, -47.5000010]
-              ]
-            }
-          ]
-        },
-        {
-          id: 1,
-          name: 'Demandas Judiciais',
-          active: false,
-          features: [
-            {
-              id: 3,
-              name: 'City of St. Louis',
-              type: 'marker',
-              coords: [-27.1, -47.5000001]
-            }
-          ]
-        }
-
-        // ST_GeoFromText('MULTIPOLYGON(((0 0,11 0,12 11,0 9,0 0)),((3 5,7 4,4 7,7 7,3 5)))')
-        // UPDATE `geo_referencia` SET `poligonais` = GeomFromText('MULTIPOLYGON(((4386527.743637 6825410.124561, 4386527.743637 6825410.134561, 4386527.753637 6825410.134561)), 5641') WHERE `geo_referencia`.`id` = 1;
-        // UPDATE `geo_referencia` SET `poligonais` = GeomFromText('MULTIPOLYGON(((4386527.743637 6825410.124561, 4386527.743637 6825410.134561, 4386527.753637 6825410.134561))),5641'), `created_at` = NULL, `updated_at` = NULL WHERE `geo_referencia`.`id` = 1 
-        // 'MULTIPOLYGON(((4386527.743637 6825410.124561,4386527.743637 6825410.124761,4386527.743837 6825410.124761,4386527.743637 6825410.124561)))',5641
-        MULTIPOLYGON(((-5400581.80 -3196290.77, -5400581.80 -3196390.77, -5400681.80 -3196390.77,-5400681.80 -3196290.77))),3857
-        
-        */
       ],
       files: []
     }
-
+  },
+  props: {
+    idCamada: {
+        type: Number,
+        default: 0
+      },
   },
   mounted () {
     this.initMap()
-    this.carregarCamadas();
-    // this.initLayers()
+    this.carregarCamada();
   },
   methods: {
     initMap () {
@@ -126,27 +87,30 @@ export default {
       this.tileLayer.addTo(this.map)
     },
 
-    carregarCamadas() {
-      this.carregandoCamadas = true
-      this.$http.get(rotas.rotas().geo.camada.listar)
-        .then(
-            response => {
-              response.body.forEach(element => {
-                let layer = {
-                  id: element.id,
-                  name: element.titulo,
-                  active: false,
-                  features: []
-                }
-                this.layers.push(layer)
-              })
-              this.carregandoCamadas = false
-            },
-            error => {
-              console.log(error)
-              this.carregandoCamadas = false
-            }
-        )
+    carregarCamada() {
+      this.carregandoCamada = true
+      if(this.idCamada != null && this.idCamada > 0) {
+        let url = rotas.rotas().geo.camada.listar + '/' + this.idCamada
+        this.$http.get(url)
+          .then(
+              response => {
+                response.body.forEach(element => {
+                  let layer = {
+                    id: element.id,
+                    name: element.titulo,
+                    active: false,
+                    features: []
+                  }
+                  this.layers.push(layer)
+                })
+                this.carregandoCamada = false
+              },
+              error => {
+                console.log(error)
+                this.carregandoCamada = false
+              }
+          )
+      }
     },
 
     layerChanged (layerId, active) {
@@ -163,7 +127,7 @@ export default {
                   let feature = {
                     id: element.id,
                     active: true,
-                    name: 'element.titulo',
+                    name: element.titulo,
                     type: 'polygon', // element.poligonais.type,
                     coords: element.poligonais.coordinates[0],
                   }
@@ -197,30 +161,12 @@ export default {
       const feature = layer.features.find(feature => feature.id === featureId)
       console.log(this.layers)
       if (feature.active) {
-        console.log(feature.leafletObject)
+        // console.log(feature.leafletObject)
         feature.leafletObject.addTo(this.map)
       } else {
         feature.leafletObject.removeFrom(this.map)
       }
     },
-
-    /*
-    initLayers () {
-      this.layers.forEach((layer) => {
-        const markerFeatures = layer.features.filter(feature => feature.type === 'marker')
-        const polygonFeatures = layer.features.filter(feature => feature.type === 'polygon')
-
-        markerFeatures.forEach((feature) => {
-          feature.leafletObject = L.marker(feature.coords).bindPopup(feature.name)
-        })
-
-        polygonFeatures.forEach((feature) => {
-          feature.leafletObject = L.polygon(feature.coords).bindPopup(feature.name)
-        })
-
-      })
-    },
-    */
 
     handleFiles() {
         let uploadedFiles = this.$refs.files.files;
