@@ -96,7 +96,7 @@
                         <!-- TAB GEORREFERENCIAMENTO -->
                         <v-tab-item>
                             <v-container>
-                                <geo-referenciamento :idCamada="idCamada"></geo-referenciamento>
+                                <geo-referenciamento :idCamada="idCamada" :atualizarMapa="atualizarMapa"></geo-referenciamento>
                             </v-container>
                         </v-tab-item>
                         <!-- Fim da TAB GEORREFERENCIAMENTO -->
@@ -114,6 +114,7 @@ import rotas from './../rotas-servico.js'
 import CRUD from './CRUD'
 import GeoReferenciamento from './GeoReferenciamento'
 const PROCEDIMENTO_TAB_DEMANDAS = 1;
+const PROCEDIMENTO_TAB_GEORREFERENCIAMENTO = 2;
 const ID_GEO_CAMADA_PROCEDIMENTO_EXTERNO = 1;
 export default {
     components: {
@@ -122,6 +123,7 @@ export default {
     data: () => {
         return {
             idCamada: ID_GEO_CAMADA_PROCEDIMENTO_EXTERNO,
+            atualizarMapa: false,
             tabAtiva: 0,
             carregando: true,
             cabecalhos: [
@@ -184,7 +186,7 @@ export default {
         selecionarParaEdicao(item) {
             this.carregarTabelasApoio()
             this.entidadeAtual = item
-            console.log('Item selecionado: ' + item.id)
+            // console.log('Item selecionado: ' + item.id)
         },
         salvar() {
             let formData = new FormData()
@@ -305,9 +307,17 @@ export default {
             return this.tabAtiva == PROCEDIMENTO_TAB_DEMANDAS
         },
 
+        isTabGeorreferenciamento () {
+            return this.tabAtiva == PROCEDIMENTO_TAB_GEORREFERENCIAMENTO
+        },
+
         mudouDeTab() {
+            this.atualizarMapa = false;
             if(this.isTabDemandas()) {
                 this.carregarDemandas()
+            }
+            if(this.isTabGeorreferenciamento()) {
+                this.atualizarMapa = true;
             }
         },
 
