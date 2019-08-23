@@ -96,7 +96,10 @@
                         <!-- TAB GEORREFERENCIAMENTO -->
                         <v-tab-item>
                             <v-container>
-                                <geo-referenciamento :idCamada="idCamada" :atualizarMapa="atualizarMapa"></geo-referenciamento>
+                                <geo-referenciamento v-if="entidadeAtual"
+                                    :idCamada="idCamada" 
+                                    :idReferenciado="entidadeAtual.id" 
+                                    :atualizarMapa="atualizarMapa"></geo-referenciamento>
                             </v-container>
                         </v-tab-item>
                         <!-- Fim da TAB GEORREFERENCIAMENTO -->
@@ -186,7 +189,7 @@ export default {
         selecionarParaEdicao(item) {
             this.carregarTabelasApoio()
             this.entidadeAtual = item
-            // console.log('Item selecionado: ' + item.id)
+            console.log('Item selecionado: ' + item.id)
         },
         salvar() {
             let formData = new FormData()

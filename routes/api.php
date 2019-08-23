@@ -61,6 +61,8 @@ Route::middleware('jwt.auth')->group(function () {
     Route::middleware('jwt.refresh')->get('user/refresh', function () {
         return "OK";
     });
+    
+    Route::post('geo/referencia', 'GeoController@salvarReferencia');
 }
 );
 
@@ -69,8 +71,8 @@ Route::middleware('jwt.auth')->group(function () {
 // Route::get('arquivo/criar', 'ArquivoController@create');
 // Route::post('arquivo', 'ArquivoController@uploadFile');
 Route::get('geo/camada', 'GeoController@listarCamadas');
-Route::get('geo/camada/{id}', 'GeoController@obterCamada');
 Route::get('geo/camada/{camada}/referencia', 'GeoController@listarReferenciasPorCamada');
+Route::get('geo/camada/{id}', 'GeoController@obterCamada');
 
 
 //RELATÓRIOS

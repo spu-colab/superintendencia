@@ -59,12 +59,17 @@
         <!-- Coluna Importação -->
         <v-flex d-flex col xs12 md5>
           <v-container>
+            
+            <!-- Botão para importação do Shapefile -->
             <v-flex d-flex row xs12>
               <h3>Importar Shapefile</h3>
             </v-flex>
             <v-flex d-flex row xs12>
               <input type="file" id="files" ref="files" v-on:change="handleFiles()" value="Importar shapefile (.shp)"/>
+              <v-btn @click="salvarGeometrias">Salvar Geometrias Selecionadas</v-btn>
             </v-flex>
+            
+            <!-- Geometrias a Importar -->
             <v-flex d-flex row xs12 v-if="camadaImportacao">
               <v-list dense>
                 <v-list-group v-if="camadaImportacao.children.length > 0"
@@ -100,6 +105,7 @@
                 </v-list-group>
               </v-list>
             </v-flex>
+
           </v-container>
         </v-flex>
         <!-- Fim da Coluna Importação -->
@@ -132,6 +138,10 @@ export default {
   },
   props: {
     idCamada: {
+      type: Number,
+      default: 0
+    },
+    idReferenciado: {
       type: Number,
       default: 0
     },
@@ -226,7 +236,7 @@ export default {
                   name: element.titulo,
                   selected: true,
                   type: 'polygon', // element.poligonais.type,
-                  coords: element.poligonais.coordinates[0],
+                  coords: element.poligonais.coordinates,
                 }
                 feature.leafletObject = this.criarLeafletObject(feature)
                 camada.children.push(feature)
@@ -375,7 +385,74 @@ export default {
         }.bind(this))
       }
       return longLatArray
-    }
+    },
+
+    salvarGeometrias() {
+      var geometriasASalvar = []
+      if(isArray(this.camadaImportacao.children)) {
+        // this.camadaImportacao.children.forEach(function(feature, f) {
+        for(var f= 0; f < this.camadaImportacao.children.length; f++) {
+          var feature = this.camadaImportacao.children[f]
+          console.log('Importar geometrias do elemento ' + f + '? ' + feature.selected)
+          if(feature.selected) {
+            console.log(feature)
+            //feature.coords.forEach(function(geometria, g) {
+            for(var g= 0; g < feature.coords.length; g++) {
+              var geometria = feature.coords[g]              
+              geometriasASalvar.push(geometria)
+              console.log('Geometria ' + g + ':')
+              console.log(geometria)
+            }
+          }
+        }
+      }
+      console.log('Geometrias as salvar:')
+      console.log(geometriasASalvar)
+      this.salvarGeometriasAPI(geometriasASalvar)
+      
+    },
+
+    salvarGeometriasAPI(geometrias) {
+        if(geometrias.length < 0) {
+          this.$store.commit('sistema/alerta', 'Nenhuma geometria a ser salva')
+          return
+        }
+        let formData = new FormData()
+        // formData.append('geo_referencia[id]', this.entidadeAtual.id)
+        formData.append('geo_referencia[idCamada]', this.idCamada)
+        formData.append('geo_referencia[idReferenciado]', this.idReferenciado)
+        for(var g = 0; g < geometrias.length; g++) {
+          for(var p = 0; p < geometrias[g].length; p++) {
+            formData.append('geo_referencia[geometrias]['+g+']['+p+']', geometrias[g][p])
+          }
+        }
+        
+        /* TODO fazer ajuste para o update....
+        if(this.entidadeAtual.id != null) {
+            formData.append('_method', 'PUT') 
+        }
+        let url = this.entidadeAtual.id === null ? 
+           rotas.rotas().geo.camada.referencia.criar : 
+           rotas.rotas().geo.camada.referencia.editar + '' + this.entidadeAtual.id;
+        */
+        let url = rotas.rotas().geo.camada.referencia.criar        
+
+        this.$http.post(url, formData)
+            .then(
+                response => {
+                    console.log(response)
+                    this.$store.commit('sistema/mensagem', 'Geometrias salvas com sucesso!')
+                    // TODO o que fazer depois?
+                    // this.$router.push('/procedimento')
+                },
+                error => {
+                    console.log(error.body)
+                    this.$store.commit('sistema/alerta', error.body.message)
+                }
+            )
+            // this.carregarItens()
+    },
+
 
   },
 
