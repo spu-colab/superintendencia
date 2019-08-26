@@ -56,7 +56,7 @@ class GeoController extends Controller
             ['idReferenciado', '=', $idReferenciado],
         ])->first();
 
-        if(!$geoReferencia->id) {
+        if(@!$geoReferencia->id) {
             $geoReferencia = new GeoReferencia();
             $geoReferencia->idCamada = $idCamada;
             $geoReferencia->idReferenciado = $idReferenciado;

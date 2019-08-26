@@ -64,9 +64,9 @@
             <v-flex d-flex row xs12>
               <h3>Importar Shapefile</h3>
             </v-flex>
+
             <v-flex d-flex row xs12>
               <input type="file" id="files" ref="files" v-on:change="handleFiles()" value="Importar shapefile (.shp)"/>
-              <v-btn @click="salvarGeometrias">Salvar Geometrias Selecionadas</v-btn>
             </v-flex>
             
             <!-- Geometrias a Importar -->
@@ -104,6 +104,11 @@
                   </v-list-tile>
                 </v-list-group>
               </v-list>
+            </v-flex>            
+
+            <!-- Botão salvar -->
+            <v-flex d-flex row xs12 v-if="camadaImportacao">
+              <v-btn :disabled="botaoSalvarGeometriasSelecionadasDesativado()" @click="salvarGeometrias">Salvar Geometrias Selecionadas</v-btn>
             </v-flex>
 
           </v-container>
@@ -453,6 +458,21 @@ export default {
             // this.carregarItens()
     },
 
+    botaoSalvarGeometriasSelecionadasDesativado() {
+      if(!isArray(this.camadaImportacao.children)) {
+        return true
+      }
+      if(this.camadaImportacao.children.length <= 0) {
+        return true
+      }
+      for(var f= 0; f < this.camadaImportacao.children.length; f++) {
+          var feature = this.camadaImportacao.children[f]
+          if(feature.selected) {
+            return false
+          }
+      }
+      return true
+    }
 
   },
 
