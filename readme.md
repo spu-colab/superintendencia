@@ -5,3 +5,6 @@
 ## Resolução de Problemas 
 
 Está encontrando algum problema na utilização/manutenção desse projeto? Visite a página de Wiki [https://github.com/spu-colab/judiciais/wiki].
+
+
+Testando geração automática de release
