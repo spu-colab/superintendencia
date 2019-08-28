@@ -273,9 +273,12 @@ export default {
         .then(
           response => {
               response.body.forEach(element => {
+                // console.log(element)
+                element.conteudoPopup = this.montarConteudoPopupDaReferencia(element)
                 let feature = {
                   id: element.id,
                   name: element.titulo,
+                  popupContent: element.conteudoPopup,
                   selected: true,
                   type: 'polygon', // element.poligonais.type,
                   coords: element.poligonais.coordinates,
@@ -351,7 +354,7 @@ export default {
       // console.log('criarLeafletObject')
       // console.log(feature)
       if(feature.type == 'polygon') {
-        return L.polygon(feature.coords, options).bindPopup(feature.name)
+        return L.polygon(feature.coords, options).bindPopup(feature.popupContent)
       } else {
         console.log('feature.type "'+ feature.type + '" não suportado')
       }
@@ -395,7 +398,8 @@ export default {
             layer.conteudoPopup = this.montarConteudoPopupDaGeometria(layer.feature.properties)
             let feature = {
               id: this.camada_id,
-              name: layer.conteudoPopup,
+              name: this.camada_id,
+              popupContent: layer.conteudoPopup,
               type: 'polygon', // element.poligonais.type,
               selected: true,
               coords: layer.feature.geometry.coordinates,
@@ -416,6 +420,13 @@ export default {
         // console.log(variable)
         conteudo += variable + ': ' + properties[variable] + '<br>'
       }
+      return conteudo
+    },
+
+    montarConteudoPopupDaReferencia(referencia) {
+      var conteudo = referencia.rotulo;
+      conteudo += '<h4>' + referencia.titulo + '</h4>'
+      conteudo += '<small><i>' + referencia.subtitulo + '</i></small>'
       return conteudo
     },
 

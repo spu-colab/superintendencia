@@ -34,12 +34,14 @@ class GeoController extends Controller
 
         
         foreach ($referencias as $r => $referencia) {
-             $tituloReferencia = DB::table($camada->tabelaReferencia)
-                ->select($camada->colunaTituloReferencia)
+             $metaDadosReferencia = DB::table($camada->tabelaReferencia)
+                ->select($camada->colunaTituloReferencia, $camada->colunaSubTituloReferencia)
                 ->where($camada->colunaIdReferencia, '=', $referencia->idReferenciado)
                 ->first();
 
-            $referencias[$r]['titulo'] = $tituloReferencia->{$camada->colunaTituloReferencia};
+            $referencias[$r]['rotulo'] = $camada->rotulo;
+            $referencias[$r]['titulo'] = $metaDadosReferencia->{$camada->colunaTituloReferencia};
+            $referencias[$r]['subtitulo'] = $metaDadosReferencia->{$camada->colunaSubTituloReferencia};
         }
         
 
