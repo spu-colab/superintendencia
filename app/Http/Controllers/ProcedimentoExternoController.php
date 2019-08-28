@@ -50,7 +50,9 @@ class ProcedimentoExternoController extends Controller
         $procedimentoExterno->procedimento = $request->procedimentoExterno['procedimento'];
         $procedimentoExterno->chave = $request->procedimentoExterno['chave'];
         $procedimentoExterno->resumo = $request->procedimentoExterno['resumo'];
-        $procedimentoExterno->descricao = $request->procedimentoExterno['descricao'];
+        if(@$request->procedimentoExterno['descricao']){
+            $procedimentoExterno->descricao = $request->procedimentoExterno['descricao'];
+        }
         
         $this->authorize('create', $procedimentoExterno);
 

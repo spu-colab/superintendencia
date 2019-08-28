@@ -135,7 +135,7 @@ export default {
   data: function () {
     return {
       map: null,
-      tileLayer: null,
+      baseMaps: {},
       camadas: [],
       camadaImportacao: null,
       files: []
@@ -172,14 +172,44 @@ export default {
       });
       */
      
-     this.tileLayer = L.tileLayer(
-       'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
-         maxZoom: 18,
-          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
-          useCache: true,
-          zIndex: 0
-        })
-     this.tileLayer.addTo(this.map)
+    let tileLayerMapa = L.tileLayer(
+      'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
+        useCache: true,
+        zIndex: 0
+    })
+
+    let tileLayerSatelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    });
+
+    let googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+      maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+    });
+
+    let googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{
+      maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+    });
+
+    let googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',{
+      maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+    });    
+    
+    var baseMaps = {
+      "OpenStreetMap": tileLayerMapa,
+      "ArcGis Online": tileLayerSatelite,
+      "Google Ruas": googleStreets,
+      "Google Híbrido": googleHybrid,
+      "Google Satélite": googleSat,
+    }
+    tileLayerMapa.addTo(this.map)
+    L.control.layers(baseMaps).addTo(this.map)
+    
+
     },
 
     inicializarCamadas() {
@@ -459,6 +489,11 @@ export default {
     },
 
     botaoSalvarGeometriasSelecionadasDesativado() {
+
+      if(this.idCamada == null || this.idCamada == 0 || this.camadas.length == 0) {
+        return true
+      }
+      
       if(!isArray(this.camadaImportacao.children)) {
         return true
       }
