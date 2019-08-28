@@ -37,15 +37,15 @@
                   <v-list-tile
                     v-for="elementoCamada in camada.children"
                     :key="elementoCamada.id"
-                    @click="selecionouElementoCamada(elementoCamada)"
                   >
                     <v-list-tile-action>
-                      <v-icon v-if="elementoCamada.selected">check_box</v-icon>
-                      <v-icon v-else>check_box_outline_blank</v-icon>
+                      <v-checkbox dense
+                        v-model="elementoCamada.selected" @change="selecionouElementoCamada(elementoCamada)"
+                      ></v-checkbox>
                     </v-list-tile-action>
 
                     <v-list-tile-content>
-                      <v-list-tile-title>{{ elementoCamada.name }}</v-list-tile-title>
+                      <v-list-tile-title @click="clicouElementoCamada(elementoCamada)" style="cursor: pointer;">{{ elementoCamada.name }}</v-list-tile-title>
                     </v-list-tile-content>                
                     
                   </v-list-tile>
@@ -316,9 +316,22 @@ export default {
     selecionouElementoCamada(itemDaArvore) {
       // console.log('selecionouElementoCamada')
       // console.log(itemDaArvore)
-      itemDaArvore.selected = !itemDaArvore.selected
+      // itemDaArvore.selected = !itemDaArvore.selected
       if (itemDaArvore.selected) {
         itemDaArvore.leafletObject.addTo(this.map)
+        this.map.fitBounds(itemDaArvore.leafletObject.getBounds())
+      } else {
+        itemDaArvore.leafletObject.removeFrom(this.map)
+      }
+    },
+
+    clicouElementoCamada(itemDaArvore) {
+      // console.log('clicouElementoCamada')
+      // console.log(itemDaArvore)
+      // itemDaArvore.selected = !itemDaArvore.selected
+      if (itemDaArvore.selected) {
+        itemDaArvore.leafletObject.addTo(this.map)
+        this.map.flyToBounds(itemDaArvore.leafletObject.getBounds())
       } else {
         itemDaArvore.leafletObject.removeFrom(this.map)
       }
