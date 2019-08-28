@@ -45,7 +45,7 @@
                     </v-list-tile-action>
 
                     <v-list-tile-content>
-                      <v-list-tile-title @click="clicouElementoCamada(elementoCamada)" style="cursor: pointer;">{{ elementoCamada.name }}</v-list-tile-title>
+                      <v-list-tile-title @click="selecionouElementoCamada(elementoCamada)" style="cursor: pointer;">{{ elementoCamada.name }}</v-list-tile-title>
                     </v-list-tile-content>                
                     
                   </v-list-tile>
@@ -212,6 +212,13 @@ export default {
 
     },
 
+    reinicializarMapa() {
+      this.map.remove()
+      this.initMap()
+      this.inicializarCamadas()
+      this.carregarCamada();
+    },
+
     inicializarCamadas() {
       this.camadas = []
       this.inicializarCamadaImportacao();
@@ -273,7 +280,11 @@ export default {
                   type: 'polygon', // element.poligonais.type,
                   coords: element.poligonais.coordinates,
                 }
-                feature.leafletObject = this.criarLeafletObject(feature)
+                let options = { color: 'blue' }
+                if(element.idReferenciado == this.idReferenciado) {
+                  options.color = 'green'
+                }
+                feature.leafletObject = this.criarLeafletObject(feature, options)
                 camada.children.push(feature)
                 // this.atualizarItemDaArvoreNoMapa(feature)
               })
@@ -315,18 +326,6 @@ export default {
 
     selecionouElementoCamada(itemDaArvore) {
       // console.log('selecionouElementoCamada')
-      // console.log(itemDaArvore)
-      // itemDaArvore.selected = !itemDaArvore.selected
-      if (itemDaArvore.selected) {
-        itemDaArvore.leafletObject.addTo(this.map)
-        this.map.fitBounds(itemDaArvore.leafletObject.getBounds())
-      } else {
-        itemDaArvore.leafletObject.removeFrom(this.map)
-      }
-    },
-
-    clicouElementoCamada(itemDaArvore) {
-      // console.log('clicouElementoCamada')
       // console.log(itemDaArvore)
       // itemDaArvore.selected = !itemDaArvore.selected
       if (itemDaArvore.selected) {
@@ -441,15 +440,15 @@ export default {
         // this.camadaImportacao.children.forEach(function(feature, f) {
         for(var f= 0; f < this.camadaImportacao.children.length; f++) {
           var feature = this.camadaImportacao.children[f]
-          console.log('Importar geometrias do elemento ' + f + '? ' + feature.selected)
+          // console.log('Importar geometrias do elemento ' + f + '? ' + feature.selected)
           if(feature.selected) {
-            console.log(feature)
+            // console.log(feature)
             //feature.coords.forEach(function(geometria, g) {
             for(var g= 0; g < feature.coords.length; g++) {
               var geometria = feature.coords[g]              
               geometriasASalvar.push(geometria)
-              console.log('Geometria ' + g + ':')
-              console.log(geometria)
+              // console.log('Geometria ' + g + ':')
+              // console.log(geometria)
             }
           }
         }
@@ -490,8 +489,7 @@ export default {
                 response => {
                     console.log(response)
                     this.$store.commit('sistema/mensagem', 'Geometrias salvas com sucesso!')
-                    // TODO o que fazer depois?
-                    // this.$router.push('/procedimento')
+                    this.reinicializarMapa()
                 },
                 error => {
                     console.log(error.body)
