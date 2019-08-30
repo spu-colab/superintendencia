@@ -88,6 +88,10 @@ Route::get('demanda/relatorio/abertas-natureza', 'DemandaController@relatorioAbe
 Route::get('backup', function () {
     ini_set('max_execution_time', 900);
     $exitCode = Artisan::call('backup:run');
+
+    if($exitCode == 0) {
+        $exitCode = Artisan::call('backup:clean');
+    }
     return $exitCode;
 });
 
