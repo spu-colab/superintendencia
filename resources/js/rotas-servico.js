@@ -32,7 +32,7 @@ export default {
         relatorio: {
           entradaSaidaDiaria: this.base() + '/demanda/relatorio/entrada-saida-diaria',
           abertasPorNaturezaOrgao: this.base() + '/demanda/relatorio/abertas-natureza',
-          abertasPorSituacao: this.base() + '/demanda/relatorio/abertas-situacao',
+          abertasPorSituacao: this.base() + '/demanda/relatorio/estatistica-periodo',
           abertasPorDistribuicao: this.base() + '/demanda/relatorio/abertas-distribuicao',
           abertasPorDemandante: this.base() + '/demanda/relatorio/abertas-demandante',
           abertasPorDivisaoOrganograma: this.base() + '/demanda/relatorio/acompanhamento',

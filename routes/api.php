@@ -36,7 +36,6 @@ Route::middleware('jwt.auth')->group(function () {
     
     Route::get('demanda/usuario/{user}', 'DemandaController@listarDistribuidasParaUsuario');
     Route::get('demanda/divisao-organograma/{divisaoOrganograma}', 'DemandaController@listarDistribuidasParaDivisaoOrganograma');
-    Route::get('demanda/relatorio/acompanhamento', 'DemandaController@gerarPDFAcompanhamento');
     
     Route::resource('demanda', 'DemandaController');
     Route::resource('autorDemanda', 'AutorDemandaController');
@@ -77,10 +76,35 @@ Route::get('geo/camada/{id}', 'GeoController@obterCamada');
 
 //RELATÓRIOS
 Route::get('demanda/relatorio/entrada-saida-diaria', 'DemandaController@relatorioEntradaSaidaDiaria');
-Route::get('demanda/relatorio/abertas-situacao', 'DemandaController@relatorioAbertasPorSituacao');
+Route::get('demanda/relatorio/acompanhamento', 'DemandaController@gerarPDFAcompanhamento');
+
 Route::get('demanda/relatorio/abertas-distribuicao', 'DemandaController@relatorioAbertasPorDistribuicao');
+Route::get('demanda/relatorio/abertas-distribuicao/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorDistribuicao')
+    ->where([
+        'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+        'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+        ]);
+
 Route::get('demanda/relatorio/abertas-demandante', 'DemandaController@relatorioAbertasPorDemandante');
+Route::get('demanda/relatorio/abertas-demandante/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorDemandante')
+->where([
+    'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+    'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+    ]);
+    
+    Route::get('demanda/relatorio/estatistica-periodo', 'DemandaController@relatorioEstatisticaPeriodo');
+    Route::get('demanda/relatorio/estatistica-periodo/{dataDe}/{dataAte}', 'DemandaController@relatorioEstatisticaPeriodo')
+    ->where([
+        'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+        'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+    ]);
+
 Route::get('demanda/relatorio/abertas-natureza', 'DemandaController@relatorioAbertasPorNaturezaOrgao');
+Route::get('demanda/relatorio/abertas-natureza/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorNaturezaOrgao')
+    ->where([
+        'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+        'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+    ]);
 
 //BACKUP
 // Route::get('backup', 'BackupController@run');

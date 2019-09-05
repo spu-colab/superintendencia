@@ -5,7 +5,7 @@
       <v-flex d-flex col xs12>
         <v-card tile class="mx-autor">
           <v-card-title v-if="titulo">
-            <div class="titulo">{{ titulo }}</div>
+            <div class="titulo"><v-icon :color="iconColorTitulo">{{ iconTitulo }}</v-icon>{{ titulo }}</div>
           </v-card-title>
           <v-layout>
             <v-flex shrink>
@@ -20,13 +20,21 @@
             </v-flex>
             <v-flex>
               <v-container fill-height fluid grid-list>
+
                 <v-layout align-start justify-center row wrap>
-                  <p class="text-lg-center text-color-grey">
-                    <span class="numero">
-                      <slot></slot>
-                    </span>
-                  </p>
+                  <v-flex d-flex col xs12 row>
+                    <v-progress-circular indeterminate v-if="carregando" color="grey"></v-progress-circular>
+                    <p v-else class="text-lg-center text-color-grey">
+                      <span class="numero">
+                        <slot></slot>
+                      </span>
+                    </p>
+                  </v-flex>
+                  <v-flex v-if="!carregando" d-flex col xs12 row>
+                    <slot name="detalhe"></slot>
+                  </v-flex>
                 </v-layout>
+
               </v-container>
             </v-flex>
           </v-layout>
@@ -39,6 +47,10 @@
 <script>
 export default {
   props: {
+    carregando: {
+      type: Boolean,
+      default: false
+    },
     titulo: {
       type: String,
       default: null
@@ -46,6 +58,14 @@ export default {
     icon: {
       type: String,
       default: null
+    },
+    iconTitulo: {
+      type: String,
+      default: null
+    },
+    iconColorTitulo: {
+      type: String,
+      default: "yellow"
     },
     color: {
       type: String,

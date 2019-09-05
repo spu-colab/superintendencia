@@ -24,7 +24,10 @@
                     </v-card-text>
                     <v-card-actions>
                         <v-layout row justify-end>
-                            <v-btn color="info" @click="submit" :disabled="!valid">Enviar</v-btn>
+                            <v-btn color="info" @click="submit" :disabled="!valid || carregando">
+                                <v-progress-circular indeterminate v-if="carregando" color="grey" size="20" width="3"></v-progress-circular>
+                                Enviar
+                            </v-btn>
                         </v-layout>
                     </v-card-actions>
                 </v-card>
@@ -37,6 +40,7 @@
 import rotas from './../rotas-servico.js'
 export default {
     data: () => ({
+        carregando: false,
         valid: false,
         password: '',
         showPassword: false,
@@ -51,19 +55,21 @@ export default {
         }
     }),
     methods: {
-        submit () {
+        async submit () {
             let formData = new FormData()
             formData.append('cpf', this.email)
             formData.append('password', this.password)
 
             // formData.append('csrf_token', $('meta[name="csrf-token"]').attr('content'));
 
-            this.$http
+            this.carregando = true
+            return this.$http
                 .post(rotas.rotas().autenticacao.login, formData)
                 .then(
                     response => {
                         this.$store.commit('auth/setToken', response.data.token)
                         this.$router.push({ path: '/' })
+                        this.carregando = false
                         // window.location = rotas.rotas().autenticacao.login
                     },
                     error => {
@@ -73,6 +79,7 @@ export default {
                         } else {
                             this.$store.commit('sistema/alerta', 'Erro ao tentar efetuar login')
                         }
+                        this.carregando = false
                     }
                 )
         }

@@ -1,11 +1,211 @@
 <template>
   <v-container fill-height fluid grid-list>
-    <!-- primeira linha -->
+    
+    <!-- layout geral -->
     <v-layout align-start justify-start row wrap>
+
+      <!-- primeira coluna -->
+      <v-flex d-flex col xs12 md9 justify-start>
+        <v-layout align-start justify-start row wrap>
+
+          <!-- parametros -->
+          <v-flex d-flex col xs12 justify-start>
+            <v-layout align-start row wrap>
+              <!-- Data De -->
+              <v-flex col xs12 md4 xl2>
+                <v-menu ref="menuDataDe"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  v-model="menuDataDe"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  max-width="290px"
+                  min-width="290px">
+
+                  <v-text-field  tabindex="5" 
+                      mask="##/##/####" return-masked-value
+                      slot="activator"
+                      v-model="dataDeFormatada"
+                      label="Demandas recebidas de:"
+                      hint="DD/MM/AAAA"
+                      persistent-hint
+                      prepend-icon="event" 
+                      @blur="dataDe = parseDate(dataDeFormatada)"
+                      />
+                  <v-date-picker v-model="dataDe" no-title @input="menuDataDe = false" locale="pt-br" />
+                </v-menu>
+              </v-flex>
+
+              <!-- Data Até -->
+              <v-flex col xs12 md4 xl2>
+                <v-menu ref="menuDataAte"
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  v-model="menuDataAte"
+                  lazy
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  max-width="290px"
+                  min-width="290px">
+
+                  <v-text-field  tabindex="5" 
+                    mask="##/##/####" return-masked-value
+                    slot="activator"
+                    v-model="dataAteFormatada"
+                    label="até:"
+                    hint="DD/MM/AAAA"
+                    persistent-hint
+                    prepend-icon="event" 
+                    @blur="dataAte = parseDate(dataAteFormatada)"
+                    />
+                  <v-date-picker v-model="dataAte" no-title @input="menuDataAte = false" locale="pt-br" />
+                </v-menu>
+              </v-flex>
+
+              <v-flex col xs12 md4 xl2>
+                <v-btn @click="aplicarParametros" :disabled="!computedAplicarParametrosValido">
+                  <v-icon>done</v-icon>
+                  Aplicar
+                </v-btn>
+                <div v-if="this.mensagemParametros.length > 0" class="red--text">{{ mensagemParametros }}</div>                
+              </v-flex>
+
+              <v-flex col xs12>
+                <v-divider></v-divider>
+              </v-flex>
+
+              <v-flex col xs12>
+                {{ mensagemParametrosAplicados }}
+              </v-flex>
+
+            </v-layout>
+          </v-flex>
+          <!-- fim de parâmetros -->
+
+          <!-- estatíticas -->
+          <v-flex d-flex col xs12 md5>
+            <card-numero-destaque
+              :carregando="!carregouDemandasAbertasPorSituacao"
+              icon="show_chart"
+              color="primary"
+              titulo="Recebidas do período"
+              icon-titulo="move_to_inbox"
+              icon-color-titulo="primary"
+            >
+              {{ demandasAbertasPorSituacao.recebidas }}
+              <template slot="detalhe">
+                <v-layout align-start justify-center row wrap>
+                  <v-flex d-flex xs12 row justify-center>
+                    <v-divider></v-divider>
+                  </v-flex>
+                  <v-flex d-flex col xs6 justify-start>
+                    <h6>
+                      <v-icon color="green">done</v-icon>
+                      Resolvidas: <strong>{{ demandasAbertasPorSituacao.resolvidas }}</strong>
+                    </h6>
+                  </v-flex>
+                  <v-flex d-flex col xs6 justify-start>
+                    <h6>
+                      <v-icon color="green">play_circle_filled</v-icon>
+                      Em análise: <strong>{{ demandasAbertasPorSituacao.em_analise }}</strong>
+                    </h6>
+                  </v-flex>
+                  <v-flex d-flex col xs6 justify-start>
+                    <h6>
+                      <v-icon color="orange">alarm</v-icon>
+                      Atrasadas: <strong>{{ demandasAbertasPorSituacao.atrasadas }}</strong>
+                    </h6>
+                  </v-flex>
+                  <v-flex d-flex col xs6 justify-start>
+                    <h6>
+                      <v-icon color="red">gavel</v-icon>
+                      Sentenças: <strong>{{ demandasAbertasPorSituacao.sentencas_judiciais }}</strong>
+                    </h6>
+                  </v-flex>
+                </v-layout>
+              </template>
+            </card-numero-destaque>
+          </v-flex>
+          <!-- fim de estatíticas -->
+
+          <!-- natureza das demandas -->
+          <v-flex d-flex col xs12 md7>
+            <card-grafico titulo="Natureza das Demandas" :carregando="!carregouDemandasPorNaturezaOrgao">
+              <grafico-pizza
+                :chartdata="demandasNaturezaOrgao"
+                :options="opcoesRelatorioNaturezaOrgao"
+                style="height:200px; position: 'relative';"
+              />
+            </card-grafico>
+          </v-flex>  
+          <!-- fim de natureza das demandas -->
+
+          <v-flex d-flex row xs12>
+            &nbsp;
+          </v-flex>
+
+          <!-- origem das demandas -->
+          <v-flex d-flex col xs12 md6>
+            <card-grafico titulo="Origem das Demandas" :carregando="!carregouDemandasPorDemandante">
+              <grafico-barra-horizontal
+                :chartdata="demandasPorDemandante"
+                :options="opcoesRelatorioDemandasPorDemandante"
+              />
+            </card-grafico>
+          </v-flex>
+          <!-- fim de origem das demandas -->
+
+          <!-- distribuição das demandas -->
+          <v-flex d-flex col xs12 md6>
+            <card-grafico titulo="Distribuição" :carregando="!carregouDemandasAbertasPorDistribuicao">
+              <grafico-barra-horizontal
+                :chartdata="demandasAbertasPorDistribuicao"
+                :options="opcoesRelatorioDemandasAbertasPorDistribuicao"
+              />
+            </card-grafico>
+          </v-flex>
+          <!-- distribuição das demandas -->
+
+        </v-layout>
+      </v-flex>
+      <!-- fim da primeira coluna -->
+
+
+      <!-- segunda coluna -->
+      <v-flex d-flex col xs12 md3 justify-start>
+        <!-- Relatórios -->
+        <v-flex d-flex col xs12>
+          <v-card>
+              <v-card-title>
+                  <h3>Relatórios</h3>
+              </v-card-title>
+              <v-card-text>
+                  <p class="text-md-center">
+                      <v-btn @click="gerarRelatorioDemandasPorNucleo" :disabled="carregandoRelatorioDemandasPorNucleo">
+                        <v-progress-circular indeterminate v-if="carregandoRelatorioDemandasPorNucleo" color="grey" size="20" width="3"></v-progress-circular>
+                        Demandas por núcleo
+                      </v-btn>
+                  </p>
+              </v-card-text>
+          </v-card>
+        </v-flex>
+        <!-- Fim de Relatórios -->
+
+      </v-flex>      
+      <!-- fim de segunda coluna -->
+
+      <v-flex d-flex row xs12>
+        <v-divider inset></v-divider>
+      </v-flex>
+
+      <!-- Entrada x Saída -->
       <v-flex d-flex col xs12>
-        <card-grafico titulo="Entrada x Saída Diária">
+        <card-grafico titulo="Entrada x Saída Diária (últimos 30 dias)"
+            :carregando="!carregouDemandasEntradaSaidaDiaria">
           <grafico-barra
-            v-if="carregouDemandasEntradaSaidaDiaria"
             :chartdata="demandasEntradaSaidaDiaria"
             :options="opcoesRelatorioEntradaSaidaDiaria"
             style="height:200px; position: 'relative';"
@@ -13,134 +213,6 @@
         </card-grafico>
       </v-flex>
 
-      <!-- segunda linha -->
-      <v-flex d-flex col xs12 md4>
-        <card-numero-destaque
-          v-if="carregouDemandasAbertasPorSituacao"
-          titulo="Em Análise"
-          icon="play_arrow"
-          color="green"
-        >{{ demandasAbertasPorSituacao.em_analise }}</card-numero-destaque>
-      </v-flex>
-
-      <v-flex d-flex col xs12 md4>
-        <card-numero-destaque
-          v-if="carregouDemandasAbertasPorSituacao"
-          titulo="Atrasadas"
-          icon="alarm"
-          color="orange"
-        >{{ demandasAbertasPorSituacao.atrasadas }}</card-numero-destaque>
-      </v-flex>
-
-      <v-flex d-flex col xs12 md4>
-        <card-numero-destaque
-          v-if="carregouDemandasAbertasPorSituacao"
-          titulo="Sentenças Judiciais"
-          icon="gavel"
-          color="red"
-        >{{ demandasAbertasPorSituacao.sentencas_judiciais }}</card-numero-destaque>
-      </v-flex>
-
-      <!-- terceira linha -->
-      <v-flex d-flex col xs12 md4>
-        <card-grafico titulo="Natureza das Demandas">
-          <grafico-pizza
-            v-if="carregouDemandasPorNaturezaOrgao"
-            :chartdata="demandasNaturezaOrgao"
-            :options="opcoesRelatorioNaturezaOrgao"
-            style="height:200px; position: 'relative';"
-          />
-        </card-grafico>
-      </v-flex>
-
-      <v-flex d-flex col xs12 md4>
-        <!--
-        <v-card>
-            <v-card-title>
-                <h3>Relatórios</h3>
-            </v-card-title>
-            <v-card-text>
-                <p class="text-md-center">
-                    <v-btn @click="gerarRelatorioDemandasPorNucleo">Demandas por núcleo</v-btn>
-                </p>
-            </v-card-text>
-        </v-card>
-        -->
-        <card-grafico titulo="Origem das Demandas">
-          <!--
-          <v-layout row>
-              <v-flex d-flex xs6>
-                  <v-menu ref="menuDataDeDemandante"
-                      :close-on-content-click="false"
-                      v-model="menuDataDeDemandante"
-                      :nudge-right="40"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width>
-
-                      <v-text-field  tabindex="7" 
-                          slot="activator"
-                          v-model="computedDataDeDemandasPorDemandante"
-                          label="De"
-                          persistent-hint
-                          prepend-icon="event"
-                          />
-                      <v-date-picker v-model="dataDeDemandasPorDemandante" no-title @input="menuDataDeDemandante = false" locale="pt-br" />
-                  </v-menu>
-              </v-flex>
-              <v-flex d-flex xs6>
-                  <v-menu ref="menuDataAteDemandante"
-                      :close-on-content-click="false"
-                      v-model="menuDataAteDemandante"
-                      :nudge-right="40"
-                      lazy
-                      transition="scale-transition"
-                      offset-y
-                      full-width>
-
-                      <v-text-field  tabindex="7" 
-                          slot="activator"
-                          v-model="computedDataAteDemandasPorDemandante"
-                          label="Até"
-                          persistent-hint
-                          />
-                      <v-date-picker v-model="dataAteDemandasPorDemandante" no-title @input="menuDataAteDemandante = false" locale="pt-br" />
-                  </v-menu>
-              </v-flex>
-          </v-layout>
-          -->
-          <grafico-barra-horizontal
-            v-if="carregouDemandasPorDemandante"
-            :chartdata="demandasPorDemandante"
-            :options="opcoesRelatorioDemandasPorDemandante"
-          />
-        </card-grafico>
-      </v-flex>
-      
-      <!--
-      <v-flex d-flex col xs12 md6>
-        <card-grafico titulo="Situação das Demandas com Resposta Pendente">
-          <grafico-pizza
-            v-if="carregouDemandasAbertasPorSituacao"
-            :chartdata="demandasAbertasPorSituacao"
-            :options="opcoesRelatorioDemandasAbertasPorSituacao"
-            style="height:200px; position: 'relative';"
-          />
-        </card-grafico>
-      </v-flex>      
-      -->
-
-      <!-- quarta linha -->
-      <v-flex d-flex col xs12 md4>
-        <card-grafico titulo="Distribuição">
-          <grafico-barra-horizontal
-            v-if="carregouDemandasAbertasPorDistribuicao"
-            :chartdata="demandasAbertasPorDistribuicao"
-            :options="opcoesRelatorioDemandasAbertasPorDistribuicao"
-          />
-        </card-grafico>
-      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -162,8 +234,20 @@ export default {
     GraficoBarraHorizontal,
     GraficoPizza
   },
-  data: () => {
+  data: (vm) => {
     return {
+      // parametros
+      mensagemParametrosAplicados: '',
+      mensagemParametros: '',
+      menuDataDe: false,
+      dataDe: null,
+      dataDeFormatada: null,
+      menuDataAte: false,
+      dataAte: null,
+      dataAteFormatada: null,
+
+      carregandoRelatorioDemandasPorNucleo: false,
+
       carregouDemandasEntradaSaidaDiaria: false,
       demandasEntradaSaidaDiaria: null,
       opcoesRelatorioEntradaSaidaDiaria: {
@@ -180,7 +264,8 @@ export default {
         responsive: true,
         maintainAspectRatio: false,
         legend: {
-          display: true
+          display: true,
+          position: "left"
         }
       },
 
@@ -228,10 +313,39 @@ export default {
         },
         responsive: true,
         maintainAspectRatio: false
-      }
+      },
+
+
     };
   },
   methods: {
+
+    async aplicarParametros() {
+      this.mensagemParametrosAplicados = ''
+      if(this.dataDe != null && this.dataAte != null) {
+        let periodo = 'de ' + this.dataDeFormatada + ' a ' + this.dataAteFormatada
+        this.mensagemParametrosAplicados = 'Estatísticas para o período: ' + periodo
+      }
+      return this.carregarRelatorios();
+    },
+
+    formatDate(date) {
+      // console.log('formatDate')
+      if (!date) return null;
+      const [year, month, day] = date.split('-')
+      let ret = `${day}/${month}/${year}`
+      // console.log(ret)
+      return ret
+    },
+
+    parseDate (date) {
+      // console.log('parseDate')
+      if (!date) return null
+      const [day, month, year] = date.split('/')
+      let ret = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+      // console.log(ret)
+      return ret
+    },
 
     calculatePoint(colorRangeInfo, i, intervalSize) {
       var { colorStart, colorEnd, useEndAsStart } = colorRangeInfo;
@@ -255,7 +369,7 @@ export default {
       return colorArray;
     },
 
-    carregarDemandasEntradaSaidaDiaria() {
+    async carregarDemandasEntradaSaidaDiaria() {
       this.carregouDemandasEntradaSaidaDiaria = false;
       this.demandasEntradaSaidaDiaria = {
         labels: [],
@@ -272,7 +386,7 @@ export default {
           }
         ]
       };
-      this.$http
+      return this.$http
         .get(rotas.rotas().demanda.relatorio.entradaSaidaDiaria)
         .then(res => {
           // console.log(res.data)
@@ -301,20 +415,22 @@ export default {
         });
     },
 
-    carregarDemandasNaturezaOrgao() {
+    async carregarDemandasNaturezaOrgao() {
       this.carregouDemandasPorNaturezaOrgao = false;
       this.demandasNaturezaOrgao = {
         labels: [],
         datasets: [
           {
             data: []
-            // backgroundColor: ["#FF0000", "#FF2222", "#FF4444", "#FF6666", "#FF8888", "#FFAAAA"]
           }
         ]
       };
-      this.$http
-        .get(rotas.rotas().demanda.relatorio.abertasPorNaturezaOrgao)
-        .then(res => {
+
+      let url = rotas.rotas().demanda.relatorio.abertasPorNaturezaOrgao
+      if(this.dataDe != null && this.dataAte != null) {
+        url = url + '/' + this.dataDe + '/' + this.dataAte
+      }
+      return this.$http.get(url).then(res => {
           res.data.forEach(element => {
             this.demandasNaturezaOrgao.labels.push(element.natureza);
             this.demandasNaturezaOrgao.datasets[0].data.push(
@@ -343,7 +459,7 @@ export default {
         });
     },
 
-    carregarDemandasPorDemandante() {
+    async carregarDemandasPorDemandante() {
       this.carregouDemandasPorDemandante = false;
       this.demandasPorDemandante = {
         labels: [],
@@ -380,9 +496,12 @@ export default {
           }
         ]
       };
-      this.$http
-        .get(rotas.rotas().demanda.relatorio.abertasPorDemandante)
-        .then(res => {
+
+      let url = rotas.rotas().demanda.relatorio.abertasPorDemandante
+      if(this.dataDe != null && this.dataAte != null) {
+        url = url + '/' + this.dataDe + '/' + this.dataAte
+      }
+      return this.$http.get(url).then(res => {
           let outros = {
             nova: 0,
             em_analise: 0,
@@ -436,7 +555,7 @@ export default {
         });
     },
 
-    carregarDemandasAbertasPorDistribuicao() {
+    async carregarDemandasAbertasPorDistribuicao() {
       this.carregouDemandasAbertasPorDistribuicao = false;
       this.demandasAbertasPorDistribuicao = {
         labels: [],
@@ -448,9 +567,11 @@ export default {
           }
         ]
       };
-      this.$http
-        .get(rotas.rotas().demanda.relatorio.abertasPorDistribuicao)
-        .then(res => {
+      let url = rotas.rotas().demanda.relatorio.abertasPorDistribuicao
+      if(this.dataDe != null && this.dataAte != null) {
+        url = url + '/' + this.dataDe + '/' + this.dataAte
+      }
+      return this.$http.get(url).then(res => {
           res.data.forEach(element => {
             this.demandasAbertasPorDistribuicao.labels.push(
               element.colaborador
@@ -483,7 +604,7 @@ export default {
           }
         ]
       };
-      this.$http
+      return this.$http
         .get(rotas.rotas().demanda.relatorio.abertasPorSituacao)
         .then(res => {
           res.data.forEach(element => {
@@ -508,12 +629,15 @@ export default {
         });
     },
 
-    carregarDemandasAbertasPorSituacao() {
+    async carregarDemandasAbertasPorSituacao() {
       this.carregouDemandasAbertasPorSituacao = false;
       this.demandasAbertasPorSituacao = {};
-      this.$http
-        .get(rotas.rotas().demanda.relatorio.abertasPorSituacao)
-        .then(res => {
+
+      let url = rotas.rotas().demanda.relatorio.abertasPorSituacao
+      if(this.dataDe != null && this.dataAte != null) {
+        url = url + '/' + this.dataDe + '/' + this.dataAte
+      }
+      return this.$http.get(url).then(res => {
           res.data.forEach(element => {
             this.demandasAbertasPorSituacao = element;
           });
@@ -524,9 +648,10 @@ export default {
         });
     },
 
-    gerarRelatorioDemandasPorNucleo() {
+    async gerarRelatorioDemandasPorNucleo() {
+      this.carregandoRelatorioDemandasPorNucleo = true;
       let url = rotas.rotas().demanda.relatorio.abertasPorDivisaoOrganograma;
-      this.$http.get(url, { responseType: "arraybuffer" }).then(
+      return this.$http.get(url, { responseType: "arraybuffer" }).then(
         response => {
           console.log(response.data);
           let blob = new Blob([response.data], {
@@ -534,23 +659,39 @@ export default {
           });
           const data = window.URL.createObjectURL(blob);
           window.open(data, "_blank");
+          this.carregandoRelatorioDemandasPorNucleo = false;
         },
         error => {
           console.log(error.body);
           this.$store.commit("sistema/alerta", error.body.message);
+          this.carregandoRelatorioDemandasPorNucleo = false;
         }
       );
     },
 
-    formatDate(date) {
-      if (!date) return null;
-      return date;
-      /*
-
-            const [year, month, day] = date.split('/')
-            return `${day}/${month}/${year}`
-            */
+    async carregarRelatorios() {
+      this.carregarDemandasEntradaSaidaDiaria();
+      this.carregarDemandasAbertasPorSituacao();
+      this.carregarDemandasNaturezaOrgao();
+      this.carregarDemandasPorDemandante();
+      this.carregarDemandasAbertasPorDistribuicao();
     }
+
+    
+  },
+
+  watch: {
+
+    dataDe(val) {
+      console.log(this.dataDe)
+      this.dataDeFormatada = this.formatDate(this.dataDe)
+    },
+
+    dataAte(val) {
+      console.log(this.dataAte)
+      this.dataAteFormatada = this.formatDate(this.dataAte)
+    },
+
   },
 
   computed: {
@@ -559,15 +700,30 @@ export default {
     },
     computedDataAteDemandasPorDemandante() {
       return this.formatDate(this.dataAteDemandasPorDemandante);
+    },
+    computedAplicarParametrosValido() {
+      this.mensagemParametros = ''
+      // validando o período
+      if(this.dataDe == null && this.dataAte == null) {
+        return true
+      }
+      if(this.dataDe != null && this.dataAte != null) {
+        let dateDe = new Date(this.dataDe);
+        let dateAte = new Date(this.dataAte);
+        if(dateAte.getTime() > dateDe.getTime()) {
+          return true
+        } else {
+          this.mensagemParametros = 'Período informado é inválido.'
+          return false
+        }
+      }
+      this.mensagemParametros = 'Parâmetros inválidos.'
+      return false;
     }
   },
 
   async mounted() {
-    this.carregarDemandasEntradaSaidaDiaria();
-    this.carregarDemandasAbertasPorSituacao();
-    this.carregarDemandasNaturezaOrgao();
-    this.carregarDemandasPorDemandante();
-    this.carregarDemandasAbertasPorDistribuicao();
+    return this.carregarRelatorios();
   }
 };
 </script>

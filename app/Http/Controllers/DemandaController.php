@@ -394,41 +394,70 @@ class DemandaController extends Controller
             ')));
     }
     */
-    public function relatorioAbertasPorNaturezaOrgao() 
+
+    private function stringDataDocumentoDeAte($campo, $dataDe = null, $dataAte = null) {
+        $sql = " ";
+        if($dataDe != null && $dataAte != null) {
+            $sql .= " AND $campo BETWEEN '$dataDe' AND '$dataAte' ";
+        } else {
+            if($dataDe != null) {
+                $sql .= " AND $campo >= '$dataDe' ";
+            } elseif($dataAte != null) {
+                $sql .= " AND $campo <= '$dataAte' ";
+            }
+        }
+        return $sql;
+    }
+
+    public function relatorioAbertasPorNaturezaOrgao($dataDe = null, $dataAte = null) 
     {
-        return response()->json(DB::select( DB::raw("
+        $sql = "
             SELECT 
-                nao.id, 
-                nao.natureza, 
-                count(d.id) as quantidade
+            nao.id, 
+            nao.natureza, 
+            count(d.id) as quantidade
             FROM 
-                demanda d 
-                JOIN autordemanda ad ON d.idAutorDemanda = ad.id 
-                JOIN orgao o ON ad.idOrgao = o.id 
-                JOIN naturezaorgao nao ON o.idNaturezaOrgao = nao.id 
+            demanda d 
+            JOIN autordemanda ad ON d.idAutorDemanda = ad.id 
+            JOIN orgao o ON ad.idOrgao = o.id 
+            JOIN naturezaorgao nao ON o.idNaturezaOrgao = nao.id 
             WHERE
-                d.idsituacaodemanda NOT IN (3,4) 
+            true "; //d.idsituacaodemanda NOT IN (3,4) ";
+        
+            $sql .= $this->stringDataDocumentoDeAte('d.dataDocumento', $dataDe, $dataAte);
+
+        $sql .= " 
             GROUP BY 1, 2 
             ORDER BY 3 desc
-        ")));
+        ";
+        // return $sql;
+        return response()->json(DB::select( DB::raw($sql)));
     }
 
-    public function relatorioAbertasPorSituacao()
+    public function relatorioEstatisticaPeriodo($dataDe = null, $dataAte = null)
     {
-        return response()->json(DB::select( DB::raw("
-            SELECT
-                (SELECT count(id) FROM demanda WHERE idsituacaodemanda NOT IN (3,4)) as em_analise,
-                (SELECT count(id) FROM demanda WHERE idsituacaodemanda NOT IN (3,4) 
-                    AND DATE_FORMAT(dataPrazo, '%Y-%m-%d') < DATE_FORMAT(NOW(), '%Y-%m-%d')
-                    AND dataResposta IS NULL) as atrasadas,
-                (SELECT count(id) FROM demanda WHERE idsituacaodemanda NOT IN (3,4) 
-                    AND sentencajudicial = true) as sentencas_judiciais
-            ")));
+        $sqlDeAte = $this->stringDataDocumentoDeAte('dataDocumento', $dataDe, $dataAte);
+        $sqlResolvidaDeAte = $this->stringDataDocumentoDeAte('d.updated_at', $dataDe, $dataAte);
+        $sql = "
+        SELECT
+            (SELECT count(id) FROM demanda WHERE true $sqlDeAte ) as recebidas,
+            (SELECT count(d.id) FROM demanda d JOIN situacaodemanda sd ON d.idsituacaodemanda = sd.id WHERE sd.situacao = 'Resolvida' $sqlResolvidaDeAte ) as resolvidas,
+            (SELECT count(id) FROM demanda WHERE idsituacaodemanda NOT IN (3,4) $sqlDeAte ) as em_analise,
+            (SELECT count(id) FROM demanda WHERE idsituacaodemanda NOT IN (3,4) 
+                AND DATE_FORMAT(dataPrazo, '%Y-%m-%d') < DATE_FORMAT(NOW(), '%Y-%m-%d')
+                AND dataResposta IS NULL $sqlDeAte ) as atrasadas,
+            (SELECT count(id) FROM demanda WHERE idsituacaodemanda NOT IN (3,4) 
+                AND sentencajudicial = true $sqlDeAte ) as sentencas_judiciais
+        ";
+        return response()->json(DB::select( DB::raw($sql)));
     }
 
-    public function relatorioAbertasPorDistribuicao()
+    public function relatorioAbertasPorDistribuicao($dataDe = null, $dataAte = null)
     {
         $div = "\\\\";
+
+        $sqlDeAte = $this->stringDataDocumentoDeAte('d.dataDocumento', $dataDe, $dataAte);
+
         return response()->json(DB::select( DB::raw
             ('
                 SELECT 
@@ -443,9 +472,11 @@ class DemandaController extends Controller
                     JOIN situacaodemanda sd ON sd.id = d.idSituacaoDemanda
                     LEFT JOIN users u ON u.id = dd.assignable_id AND dd.assignable_type = "App'.$div.'User"
                     LEFT JOIN divisaoorganograma do ON do.id = dd.assignable_id AND dd.assignable_type = "App'.$div.'DivisaoOrganograma"
-                WHERE
-                    sd.situacao = "Em análise" AND 
-                    dd.dataAtendimento is null
+                WHERE 
+                    true 
+                    -- sd.situacao = "Em análise" AND 
+                    -- dd.dataAtendimento is null 
+                    '.$sqlDeAte.'
                 GROUP BY
                     1 
                 ORDER BY 2 desc, 1'
@@ -453,31 +484,32 @@ class DemandaController extends Controller
         ));
     }
 
-    public function relatorioAbertasPorDemandante()
+    public function relatorioAbertasPorDemandante($dataDe = null, $dataAte = null)
     {
-        return response()->json(DB::select( DB::raw
-            ('
-            SELECT 
-                -- ad.nome as demandante,
-                o.sigla as orgao,
-                count(d.id) as total,
-                cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Nova") then 1 else 0 end) as unsigned) as nova,
-                cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Em análise") then 1 else 0 end) as unsigned) as em_analise,
-                cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Pronta") then 1 else 0 end) as unsigned) as pronta,
-                cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Aguardando assinatura") then 1 else 0 end) as unsigned) as aguardando_assinatura,
-                cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Aguardando AR") then 1 else 0 end) as unsigned) as aguardando_ar,
-                cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Resolvida") then 1 else 0 end) as unsigned) as resolvida
-            FROM 
-                demanda d
-                JOIN autordemanda ad ON d.idAutorDemanda = ad.id
-                JOIN orgao o ON ad.idOrgao = o.id
-            WHERE 
-                d.idSituacaoDemanda IN (SELECT id FROM situacaodemanda WHERE situacao IN ("Nova", "Em análise", "Pronta", "Aguardando assinatura", "Aguardando AR", "Resolvida"))
-                -- AND d.created_at BETWEEN \'2019-05-01\' AND \'2019-06-01\' 
-            GROUP BY 1
-            ORDER BY 2 desc, 1 asc;'
-            )
-        ));
+        $sqlDeAte = $this->stringDataDocumentoDeAte('d.dataDocumento', $dataDe, $dataAte);
+
+        $sql = '
+        SELECT 
+            -- ad.nome as demandante,
+            o.sigla as orgao,
+            count(d.id) as total,
+            cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Nova") then 1 else 0 end) as unsigned) as nova,
+            cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Em análise") then 1 else 0 end) as unsigned) as em_analise,
+            cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Pronta") then 1 else 0 end) as unsigned) as pronta,
+            cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Aguardando assinatura") then 1 else 0 end) as unsigned) as aguardando_assinatura,
+            cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Aguardando AR") then 1 else 0 end) as unsigned) as aguardando_ar,
+            cast(sum(case idSituacaoDemanda when (SELECT id FROM situacaodemanda WHERE situacao = "Resolvida") then 1 else 0 end) as unsigned) as resolvida
+        FROM 
+            demanda d
+            JOIN autordemanda ad ON d.idAutorDemanda = ad.id
+            JOIN orgao o ON ad.idOrgao = o.id
+        WHERE 
+            d.idSituacaoDemanda IN (SELECT id FROM situacaodemanda WHERE situacao IN ("Nova", "Em análise", "Pronta", "Aguardando assinatura", "Aguardando AR", "Resolvida"))
+            ' . $sqlDeAte . '
+        GROUP BY 1
+        ORDER BY 2 desc, 1 asc;';
+
+        return response()->json(DB::select( DB::raw($sql)));
     }
 
     public function listarPorProcedimentoExterno($idProcedimentoExterno)
