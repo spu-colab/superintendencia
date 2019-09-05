@@ -107,8 +107,8 @@ Route::get('demanda/relatorio/abertas-natureza/{dataDe}/{dataAte}', 'DemandaCont
     ]);
 
 //BACKUP
-// Route::get('backup', 'BackupController@run');
-
+/*
+Route::get('backup', 'BackupController@run');
 Route::get('backup', function () {
     ini_set('max_execution_time', 900);
     $exitCode = Artisan::call('backup:run');
@@ -118,4 +118,5 @@ Route::get('backup', function () {
     }
     return $exitCode;
 });
+*/
 

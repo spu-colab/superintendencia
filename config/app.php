@@ -177,7 +177,7 @@ return [
 
         Tymon\JWTAuth\Providers\JWTAuthServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
-        Spatie\Backup\BackupServiceProvider::class
+        // Spatie\Backup\BackupServiceProvider::class
     ],
 
     /*
