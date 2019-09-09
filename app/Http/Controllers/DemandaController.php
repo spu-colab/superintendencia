@@ -473,9 +473,8 @@ class DemandaController extends Controller
                     LEFT JOIN users u ON u.id = dd.assignable_id AND dd.assignable_type = "App'.$div.'User"
                     LEFT JOIN divisaoorganograma do ON do.id = dd.assignable_id AND dd.assignable_type = "App'.$div.'DivisaoOrganograma"
                 WHERE 
-                    true 
-                    -- sd.situacao = "Em análise" AND 
-                    -- dd.dataAtendimento is null 
+                    sd.situacao = "Em análise" 
+                    AND dd.dataAtendimento is null 
                     '.$sqlDeAte.'
                 GROUP BY
                     1 
