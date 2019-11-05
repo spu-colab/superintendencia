@@ -30,7 +30,6 @@ class ProcedimentoExternoPolicy
      */
     public function create(User $user)
     {
-        return true;
         $usuario = User::with(['permissoes'])->find($user->id);
         return $usuario->permissoes()
             ->where('permissao', 'DEMANDA_PROCEDIMENTO_CADASTRAR')->first();
