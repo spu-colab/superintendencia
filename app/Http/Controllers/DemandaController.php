@@ -139,23 +139,39 @@ class DemandaController extends Controller
         $validatedData = $request->validated();
 
         $demanda = Demanda::findOrFail($id);
-        
-        $demanda->idAutorDemanda = $request->demanda['idAutorDemanda'];
-        $demanda->idProcedimentoExterno = $request->demanda['idProcedimentoExterno'];
-        $demanda->idSituacaoDemanda = $request->demanda['idSituacaoDemanda'];
-        $demanda->idTipoDocumento = $request->demanda['idTipoDocumento'];
-        $demanda->documentoExterno = $request->demanda['documentoExterno'];
-        $demanda->demanda = $request->demanda['demanda'];
+
+        // $this->authorize('update', $demanda);
+        $user = Auth::user();
+        $usuario = User::with(['permissoes'])->find($user->id);
+        $usuarioPodeCadastrar = $usuario->permissoes()
+            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')->first();
+
+        $usuarioPodeAlterarResumoGerencial = $usuarioPodeCadastrar;
+        if(!$usuarioPodeAlterarResumoGerencial) {
+            $usuarioPodeAlterarResumoGerencial = $usuario->permissoes()
+                ->where('permissao', 'DEMANDA_DEMANDA_ALTERAR_RESUMO_GERENCIAL')->first();
+        }
+
+        if(!$usuarioPodeCadastrar && !$usuarioPodeAlterarResumoGerencial) {
+            return response()->json(['error' => 'Transação não autorizada.'], 403);
+        }
+
+        if($usuarioPodeCadastrar) {
+            $demanda->idAutorDemanda = $request->demanda['idAutorDemanda'];
+            $demanda->idProcedimentoExterno = $request->demanda['idProcedimentoExterno'];
+            $demanda->idSituacaoDemanda = $request->demanda['idSituacaoDemanda'];
+            $demanda->idTipoDocumento = $request->demanda['idTipoDocumento'];
+            $demanda->documentoExterno = $request->demanda['documentoExterno'];
+            $demanda->demanda = $request->demanda['demanda'];
+            $demanda->dataDocumento = @$request->demanda['dataDocumento'];
+            $demanda->nupSEI = $request->demanda['nupSEI'];
+            $demanda->seiMP = $request->demanda['seiMP'];
+            $demanda->dataPrazo = @$request->demanda['dataPrazo'];
+            $demanda->sentencajudicial = $request->demanda['sentencajudicial'];
+        }
         $demanda->resumoSituacao = $request->demanda['resumoSituacao'];
-        $demanda->dataDocumento = @$request->demanda['dataDocumento'];
-        $demanda->nupSEI = $request->demanda['nupSEI'];
-        $demanda->seiMP = $request->demanda['seiMP'];
-        $demanda->dataPrazo = @$request->demanda['dataPrazo'];
-        $demanda->sentencajudicial = $request->demanda['sentencajudicial'];
 
         $demanda->idUsuarioAlteracao = Auth::id();
-
-        $this->authorize('update', $demanda);
         $demanda->update();
         return response()->json($demanda);
     }
@@ -189,18 +205,49 @@ class DemandaController extends Controller
         $validatedData = $request->validated();
 
         $demanda = Demanda::findOrFail($request->distribuicao['idDemanda']);
-        $this->authorize('update', $demanda);
+        
+        // $this->authorize('update', $demanda);
+        $user = Auth::user();
+        $usuario = User::with(['permissoes'])->find($user->id);
 
+        $usuarioPodeCadastrar = $usuario->permissoes()
+            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')->first();
+
+        $usuarioPodeAtenderDistribuicao = $usuarioPodeCadastrar;
+        if(!$usuarioPodeAtenderDistribuicao) {
+            $usuarioPodeAtenderDistribuicao = $usuario->permissoes()
+                ->where('permissao', 'DEMANDA_DEMANDA_ATENDER_DISTRIBUICAO')->first();
+        }
+        if(!$usuarioPodeCadastrar && !$usuarioPodeAtenderDistribuicao) {
+            return response()->json(['error' => 'Transação não autorizada.'], 403);
+        }
+        $usuarioSoPodeAtender = !$usuarioPodeCadastrar && $usuarioPodeAtenderDistribuicao;
+        
         if(!is_null($id)) {
-            $distribuicao = DistribuicaoDemanda::findOrFail($id);
+            $distribuicao = DistribuicaoDemanda::findOrFail($id);            
         } else {
             $distribuicao = new DistribuicaoDemanda;
         }
         
-        $distribuicao->comentarioDistribuicao = $request->distribuicao['comentarioDistribuicao'];
+        $distribuidaParaOProprioUsuario = $distribuicao->assignable_type == 'App\User' 
+            && $distribuicao->assignable_id == $user->id;
+
+        $distribuidaParaDivisaoUsuario = $distribuicao->assignable_type == 'App\DivisaoOrganograma';
+        if($distribuidaParaDivisaoUsuario) {
+            $distribuidaParaDivisaoUsuario = $usuario->divisoesOrganograma()
+                ->where('divisaoorganograma.id', $distribuicao->assignable_id)->first();
+        }       
+
         $distribuicao->comentarioAtendimento = $request->distribuicao['comentarioAtendimento'];
+        if($usuarioPodeCadastrar) {
+            $distribuicao->comentarioDistribuicao = $request->distribuicao['comentarioDistribuicao'];
+        }
 
         if(is_null($distribuicao->id)) {
+            // se trata de criação
+            if(!$usuarioPodeCadastrar) {
+                return response()->json(['error' => 'Transação não autorizada.'], 403);
+            }
             $distribuicao->idDemanda = $request->distribuicao['idDemanda'];
             $distribuicao->idUsuarioDe = $request->distribuicao['idUsuarioDe'];
             $distribuicao->assignable_id = $request->distribuicao['assignable_id'];
@@ -208,6 +255,10 @@ class DemandaController extends Controller
             $distribuicao->dataDistribuicao = new \DateTime();
             $distribuicao->save();
         } else {
+            // se trata de edição
+            if($usuarioSoPodeAtender && !$distribuidaParaOProprioUsuario && !$distribuidaParaDivisaoUsuario) {
+                return response()->json(['error' => 'Transação não autorizada.'], 403);
+            }
             if($request->marcarComoAtendida) {
                 $distribuicao->dataAtendimento = new \DateTime();
             }

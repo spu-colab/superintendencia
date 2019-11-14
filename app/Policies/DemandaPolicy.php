@@ -46,7 +46,9 @@ class DemandaPolicy
     {
         $usuario = User::with(['permissoes'])->find($user->id);
         return $usuario->permissoes()
-            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')->first();
+            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')
+            ->orWhere('permissao', 'DEMANDA_DEMANDA_ALTERAR_RESUMO_GERENCIAL')
+            ->first();
     }
 
     /**

@@ -692,7 +692,7 @@ export default {
                     },
                     error => {
                         console.log(error.body)
-                        this.$store.commit('sistema/alerta', error.body.message)
+                        this.$store.commit('sistema/alerta', error.body.error)
                     }
                 )
         },
@@ -730,12 +730,12 @@ export default {
                 .then(
                     response => {
                         console.log(response)
-                        this.$store.commit('sistema/mensagem', 'Distribuição da demanda cadastrada com sucesso!')
+                        this.$store.commit('sistema/mensagem', this.distribuicao.id == null ? 'Distribuição da demanda cadastrada com sucesso!' : 'Distribuição da demanda atualizada com sucesso!')
                         this.selecionarParaEdicao(this.entidadeAtual)
                     },
                     error => {
                         console.log(error.body)
-                        this.$store.commit('sistema/alerta', error.body.message)
+                        this.$store.commit('sistema/alerta', error.body.error)
                     }
                 )
            this.exibirDialogoDistribuicao = false
