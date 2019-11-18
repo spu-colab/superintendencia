@@ -275,7 +275,7 @@ class DemandaController extends Controller
             ]
         );
         $demanda = Demanda::findOrFail($request->demanda['id']);
-        $this->authorize('cancel', $demanda);
+        $this->authorize('cancelar', $demanda);
 
         if ($demanda->idSituacaoDemanda == SituacaoDemanda::RESOLVIDA) {
             abort(403, 'Usuário não possui permissão para executar esta operação.');
@@ -295,11 +295,10 @@ class DemandaController extends Controller
             ]
         );
         $demanda = Demanda::findOrFail($request->demanda['id']);
-        $this->authorize('update', $demanda);
-        
+        $this->authorize('aguardarAssinatura', $demanda);
 
         if ($demanda->idSituacaoDemanda != SituacaoDemanda::PRONTA) {
-            abort(403, 'Unauthorized action.');
+            abort(403, 'Operação não permitida para esta demanda.');
         }
 
         $demanda->idSituacaoDemanda = SituacaoDemanda::AGUARDANDO_ASSINATURA;
@@ -316,7 +315,7 @@ class DemandaController extends Controller
             ]
         );
         $demanda = Demanda::findOrFail($request->demanda['id']);
-        $this->authorize('update', $demanda);
+        $this->authorize('aguardarAR', $demanda);
 
         if ($demanda->idSituacaoDemanda != SituacaoDemanda::AGUARDANDO_ASSINATURA) {
             abort(403, 'Unauthorized action.');
@@ -337,7 +336,7 @@ class DemandaController extends Controller
             ]
         );
         $demanda = Demanda::findOrFail($request->demanda['id']);
-        $this->authorize('update', $demanda);
+        $this->authorize('resolver', $demanda);
 
         if ($demanda->idSituacaoDemanda != SituacaoDemanda::AGUARDANDO_AR) {
             abort(403, 'Unauthorized action.');
