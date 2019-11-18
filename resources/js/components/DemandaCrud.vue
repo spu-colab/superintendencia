@@ -692,7 +692,7 @@ export default {
                     },
                     error => {
                         console.log(error.body)
-                        this.$store.commit('sistema/alerta', error.body.error)
+                        this.$store.commit('sistema/alerta', error.body.message)
                     }
                 )
         },

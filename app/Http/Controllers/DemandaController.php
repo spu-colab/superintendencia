@@ -275,10 +275,10 @@ class DemandaController extends Controller
             ]
         );
         $demanda = Demanda::findOrFail($request->demanda['id']);
-        $this->authorize('update', $demanda);
+        $this->authorize('cancel', $demanda);
 
         if ($demanda->idSituacaoDemanda == SituacaoDemanda::RESOLVIDA) {
-            abort(403, 'Unauthorized action.');
+            abort(403, 'Usuário não possui permissão para executar esta operação.');
         }
 
         $demanda->idSituacaoDemanda = SituacaoDemanda::CANCELADA;

@@ -51,6 +51,15 @@ class DemandaPolicy
             ->first();
     }
 
+    public function cancel(User $user, Demanda $demanda) {
+        $usuario = User::with(['permissoes'])->find($user->id);
+        return $usuario->permissoes()
+            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')
+            ->first();
+    }
+
+
+
     /**
      * Determine whether the user can delete the demanda.
      *
