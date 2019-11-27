@@ -1,0 +1,44 @@
+PlanejamentoEstrategico
+- id
+- titulo
+- dataInicio
+- dataFim
+
+Meta
+- id
+- idPlanejamentoEstrategico
+- titulo
+
+UnidadeMedida
+- id
+- titulo
+
+Indicador
+- id
+- idUnidadeMedida
+- titulo
+
+MetaEspecifica
+- id
+- idMeta
+- idIndicador
+- titulo
+
+MetaEspecificaUnidade
+- id
+- idMetaEspecifica
+- idDivisaoOrganograma
+- idUsuarioPontoFocal
+
+PeriodoAvaliacao
+- id
+- titulo
+- dataInicio
+- dataFim
+
+Avaliacao
+- id
+- idPeriodoAvaliacao
+- idMetaEspecificaUnidade
+- valorPlan
+
