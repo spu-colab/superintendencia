@@ -1,0 +1,14 @@
+{
+    "name": "Governanca",
+    "alias": "governanca",
+    "description": "",
+    "keywords": [],
+    "active": 1,
+    "order": 0,
+    "providers": [
+        "Modules\\Governanca\\Providers\\GovernancaServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
