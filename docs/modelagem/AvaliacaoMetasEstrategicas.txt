@@ -1,3 +1,4 @@
+Arquivo modificado no branch metas que rastreia origin/metas
 PlanejamentoEstrategico
 - id
 - titulo
