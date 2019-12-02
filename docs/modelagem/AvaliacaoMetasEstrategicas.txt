@@ -32,6 +32,7 @@ MetaEspecificaUnidade
 
 PeriodoAvaliacao
 - id
+- idPlanejamentoEstrategico
 - titulo
 - dataInicio
 - dataFim
@@ -40,5 +41,6 @@ Avaliacao
 - id
 - idPeriodoAvaliacao
 - idMetaEspecificaUnidade
-- valorPlan
+- valorPlanejado
+- valorRealizado
 
