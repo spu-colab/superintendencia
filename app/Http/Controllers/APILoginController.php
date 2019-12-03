@@ -26,7 +26,7 @@ class APILoginController extends Controller
 
         $usuarioLDAP = $this->valida_ldap($credentials['cpf'], $credentials['password']);
         if(!$usuarioLDAP) {
-            return response()->json(['error' => 'invalid_credentials'], 401);
+            return response()->json(['error' => 'invalid_credentials_ldap'], 401);
         }
 
         $user = User::where('cpf', $credentials['cpf'])->first();
