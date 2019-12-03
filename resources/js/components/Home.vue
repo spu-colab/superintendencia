@@ -1,46 +1,62 @@
 <template>
-     <v-container fill-height fluid grid-list>
-        <v-layout align-start justify-start row wrap>
-            <v-flex d-flex col xs12 md6>
-                <v-card>
-                    <v-card-title primary title>
-                        <div>
-                            <h3>Base de Conhecimento</h3>
-                            <div>
-                                Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e ter acesso ao conhecimento produzido na Superintendência.
-                            </div>
-                        </div>
-                    </v-card-title>
-                    <v-card-actions>
-                        <v-layout justify-end row fill-height wrap>
-                            <v-btn primary>
-                                <a href="http://10.209.232.158/wordpress">Acessar</a>
-                            </v-btn>
-                        </v-layout>
-                    </v-card-actions>
-                </v-card>
+    <v-container fluid fill-height>
+        <v-layout column>
+            <v-flex xs12>
+
+                <v-layout align-start justify-space-between row>
+
+                    <v-flex col xs12 md6>
+                        <v-card>
+                            <v-card-title primary title>
+                                <div>
+                                    <h3>Base de Conhecimento</h3>
+                                    <div>
+                                        Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e ter acesso ao conhecimento produzido na Superintendência.
+                                    </div>
+                                </div>
+                            </v-card-title>
+                            <v-card-actions>
+                                <v-layout justify-end row fill-height wrap>
+                                    <v-btn primary>
+                                        <a href="http://10.209.232.158/wordpress">Acessar</a>
+                                    </v-btn>
+                                </v-layout>
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+
+                    <v-flex col xs12 md6>
+                        <v-card>
+                            <v-card-title primary title>
+                                <div>
+                                    <h3>Demandas Jurídicas e de Controle</h3>
+                                    <div>
+                                        Módulo de gestão das demandas jurídicas e de controle
+                                    </div>
+                                </div>
+                            </v-card-title>
+                            <v-card-actions>
+                                <v-layout justify-end row fill-height wrap>
+                                    <v-btn primary>
+                                        <a href="/#/nujuc">Acessar</a>
+                                    </v-btn>
+                                </v-layout>
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+
+                </v-layout>
             </v-flex>
-            <v-flex d-flex col xs12 md6>
-                <v-card>
-                    <v-card-title primary title>
-                        <div>
-                            <h3>Demandas Judicias e Controle</h3>
-                            <div>
-                                Módulo de gestão das demandas judiciais, ministeriais e de controle
-                            </div>
-                        </div>
-                    </v-card-title>
-                    <v-card-actions>
-                        <v-layout justify-end row fill-height wrap>
-                            <v-btn primary>
-                                <a href="/#/nujuc">Acessar</a>
-                            </v-btn>
-                        </v-layout>
-                    </v-card-actions>
-                </v-card>
+
+            <v-flex xs12>
+                <v-layout align-start justify-space-between row>
+                    <card-indicadores-estrategicos/>
+                </v-layout>
             </v-flex>
         </v-layout>
+        
     </v-container>
+
 </template>
 
 <script>
@@ -49,6 +65,7 @@ import CardGrafico from './relatorios/CardGrafico'
 import GraficoBarra from './relatorios/GraficoBarra'
 import GraficoBarraHorizontal from './relatorios/GraficoBarraHorizontal'
 import GraficoPizza from './relatorios/GraficoPizza'
+import CardIndicadoresEstrategicos from './CardIndicadoresEstrategicos'
 
 export default {
     components: {

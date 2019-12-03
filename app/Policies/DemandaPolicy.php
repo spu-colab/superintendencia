@@ -51,6 +51,34 @@ class DemandaPolicy
             ->first();
     }
 
+    public function cancelar(User $user, Demanda $demanda) {
+        $usuario = User::with(['permissoes'])->find($user->id);
+        return $usuario->permissoes()
+            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')
+            ->first();
+    }
+
+    public function aguardarAssinatura(User $user, Demanda $demanda) {
+        $usuario = User::with(['permissoes'])->find($user->id);
+        return $usuario->permissoes()
+            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')
+            ->first();
+    }
+
+    public function aguardarAR(User $user, Demanda $demanda) {
+        $usuario = User::with(['permissoes'])->find($user->id);
+        return $usuario->permissoes()
+            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')
+            ->first();
+    }
+    
+    public function resolver(User $user, Demanda $demanda) {
+        $usuario = User::with(['permissoes'])->find($user->id);
+        return $usuario->permissoes()
+            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')
+            ->first();
+    }
+
     /**
      * Determine whether the user can delete the demanda.
      *
