@@ -65,7 +65,7 @@ import CardGrafico from './relatorios/CardGrafico'
 import GraficoBarra from './relatorios/GraficoBarra'
 import GraficoBarraHorizontal from './relatorios/GraficoBarraHorizontal'
 import GraficoPizza from './relatorios/GraficoPizza'
-import CardIndicadoresEstrategicos from './CardIndicadoresEstrategicos'
+import CardIndicadoresEstrategicos from './governanca/CardIndicadoresEstrategicos'
 
 export default {
     components: {

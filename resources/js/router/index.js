@@ -7,6 +7,7 @@ import DemandaCrud from './../components/DemandaCrud'
 import AutorDemandaCrud from './../components/AutorDemandaCrud'
 import OrgaoCrud from './../components/OrgaoCrud'
 import ProcedimentoExternoCrud from './../components/ProcedimentoExternoCrud'
+import Governanca from './../components/governanca/Governanca'
 import Conteudo from './../components/Conteudo'
 import GeoReferenciamento from './../components/GeoReferenciamento'
 import FileUpload from './../components/FileUpload'
@@ -158,6 +159,23 @@ let router = new Router({
           },
           {
             text: 'Órgãos'
+          },
+        ]
+      }
+    },
+    {
+      path: '/governanca',
+      name: 'Governança',
+      component: Governanca,
+      meta: {
+        guest: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Governança'
           },
         ]
       }

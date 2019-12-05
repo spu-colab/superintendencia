@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('jwt.auth')->group(function () {
-    Route::get('/governanca', function (Request $request) {
-        return $request->user();
-    });
+    
+    // Route::resource('/governanca/meta-especifica-unidade', 'MetaEspecificaUnidadeController');
+    
 });

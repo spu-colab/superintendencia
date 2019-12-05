@@ -128,6 +128,12 @@ export default {
         icon: 'local_library',
         url: 'http://10.209.232.158/wordpress'
       },
+      { 
+        text: 'Governança',
+        icon: 'near_me', 
+        route: '/governanca',
+        model: true
+      },
       {
         text: 'SPU-Admin',
         icon: 'desktop_windows',
@@ -139,13 +145,6 @@ export default {
         route: '/nujuc',
         model: true,
         children: [
-          /*
-          {
-            text: 'Painel de Controle',
-            icon: 'dashboard', 
-            route: '/nujuc'
-          },
-          */
           {
             text: 'Demandas',
             icon: 'assignment', 
@@ -169,23 +168,6 @@ export default {
         ]
       },
     ],
-    breadcrumb: [
-        {
-          text: 'Dashboard',
-          disabled: false,
-          href: 'breadcrumbs_dashboard',
-        },
-        {
-          text: 'Link 1',
-          disabled: false,
-          href: 'breadcrumbs_link_1',
-        },
-        {
-          text: 'Link 2',
-          disabled: true,
-          href: 'breadcrumbs_link_2',
-        },
-      ],
   }),
   props: {
     source: String

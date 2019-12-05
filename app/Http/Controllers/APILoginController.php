@@ -31,15 +31,14 @@ class APILoginController extends Controller
 
         $user = User::where('cpf', $credentials['cpf'])->first();
         if(@$user->id) {
-            $user->cpf      = $usuarioLDAP['cpf'];
             $user->telefone = $usuarioLDAP['telefone'];
             $user->password = Hash::make($credentials['password']);
             $user->update();
         } else {
             $user = new User();
+            $user->cpf      = $usuarioLDAP['cpf'];
             $user->name     = $usuarioLDAP['name'];
             $user->email    = $usuarioLDAP['mail'];
-            $user->cpf      = $usuarioLDAP['cpf'];
             $user->telefone = $usuarioLDAP['telefone'];
             $user->password = Hash::make($credentials['password']);
             $user->save();
