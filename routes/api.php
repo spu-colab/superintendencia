@@ -48,6 +48,7 @@ Route::middleware('jwt.auth')->group(function () {
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
     Route::resource('poloProcedimentoExterno', 'PoloProcedimentoExternoController');
+
     
     Route::middleware('jwt.refresh')->post('demanda', 'DemandaController@store');
     Route::middleware('jwt.refresh')->put('demanda/{demanda}', 'DemandaController@update');
@@ -61,11 +62,24 @@ Route::middleware('jwt.auth')->group(function () {
         return "OK";
     });
     
+
     Route::post('geo/referencia', 'GeoController@salvarReferencia');
+
+    /*
+    Route::get('atendimento/assunto/listar', 'AtendimentoController@listarAssuntos');
+    Route::get('atendimento/listar/{data}', 'AtendimentoController@listarAtendimentos')
+        ->where([
+            'data' => '[0-9]{4}-[0-9]{2}-[0-9]{2}'
+        ]);
+    Route::get('atendimento/naoconcluido/listar', 'AtendimentoController@listarAtendimentoNaoConcluido')    ;    
+    Route::post('atendimento/comentar/{id}', 'AtendimentoController@inserirComentario');
+    Route::resource('atendimento', 'AtendimentoController');
+    */
 }
 );
 
-
+ 
+Route::resource('usuario', 'UsuarioController');
 // Route::get('arquivo', 'ArquivoController@index');
 // Route::get('arquivo/criar', 'ArquivoController@create');
 // Route::post('arquivo', 'ArquivoController@uploadFile');
