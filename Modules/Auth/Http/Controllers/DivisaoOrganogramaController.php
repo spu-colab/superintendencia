@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Modules\Auth\Http\Controllers;
 
-use App\DivisaoOrganograma;
+
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Controller;
 
 class DivisaoOrganogramaController extends Controller
 {
@@ -15,7 +17,7 @@ class DivisaoOrganogramaController extends Controller
      */
     public function index()
     {
-        return DivisaoOrganograma::all();
+        return DivisaoOrganograma::with('divisaoOrganogramaPai:id,nome,sigla')->orderBy('idDivisaoOrganogramaPai', 'asc')->get();
     }
 
     /**
@@ -45,9 +47,10 @@ class DivisaoOrganogramaController extends Controller
      * @param  \App\DivisaoOrganograma  $divisaoOrganograma
      * @return \Illuminate\Http\Response
      */
-    public function show(DivisaoOrganograma $divisaoOrganograma)
+    public function show($id)
     {
-        //
+        $result = DivisaoOrganograma::findOrFail($id);
+        return response()->json($result);
     }
 
     /**
@@ -68,7 +71,7 @@ class DivisaoOrganogramaController extends Controller
      * @param  \App\DivisaoOrganograma  $divisaoOrganograma
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, DivisaoOrganograma $divisaoOrganograma)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -79,7 +82,7 @@ class DivisaoOrganogramaController extends Controller
      * @param  \App\DivisaoOrganograma  $divisaoOrganograma
      * @return \Illuminate\Http\Response
      */
-    public function destroy(DivisaoOrganograma $divisaoOrganograma)
+    public function destroy($id)
     {
         //
     }

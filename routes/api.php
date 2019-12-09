@@ -44,7 +44,7 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('natureza-orgao', 'OrgaoController@listarNaturezas');
     Route::resource('tipoDocumento', 'TipoDocumentoController');
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
-    Route::resource('divisaoOrganograma', 'DivisaoOrganogramaController');
+//    Route::resource('divisaoOrganograma', 'DivisaoOrganogramaController');
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
     Route::resource('poloProcedimentoExterno', 'PoloProcedimentoExternoController');
@@ -79,7 +79,9 @@ Route::middleware('jwt.auth')->group(function () {
 );
 
  
-Route::resource('usuario', 'UsuarioController');
+//Route::resource('usuario', 'UsuarioController');
+
+
 // Route::get('arquivo', 'ArquivoController@index');
 // Route::get('arquivo/criar', 'ArquivoController@create');
 // Route::post('arquivo', 'ArquivoController@uploadFile');
