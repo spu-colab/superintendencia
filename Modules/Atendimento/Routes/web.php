@@ -10,6 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::prefix('atendimento')->group(function() {
-    Route::get('/', 'AtendimentoController@index');
-});
+// Route::prefix('atendimento')->group(function() {
+    // Route::get('/', 'AtendimentoController@index');
+// });

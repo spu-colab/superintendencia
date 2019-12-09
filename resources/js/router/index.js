@@ -7,6 +7,7 @@ import DemandaCrud from './../components/DemandaCrud'
 import AutorDemandaCrud from './../components/AutorDemandaCrud'
 import OrgaoCrud from './../components/OrgaoCrud'
 import ProcedimentoExternoCrud from './../components/ProcedimentoExternoCrud'
+import Atendimento from './../components/atendimento/Atendimento'
 import Governanca from './../components/governanca/Governanca'
 import Conteudo from './../components/Conteudo'
 import GeoReferenciamento from './../components/GeoReferenciamento'
@@ -159,6 +160,23 @@ let router = new Router({
           },
           {
             text: 'Órgãos'
+          },
+        ]
+      }
+    },
+    {
+      path: '/atendimento',
+      name: 'Atendimento',
+      component: Atendimento,
+      meta: {
+        guest: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Atendimento'
           },
         ]
       }

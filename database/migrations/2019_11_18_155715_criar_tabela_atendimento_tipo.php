@@ -13,22 +13,66 @@ class CriarTabelaAtendimentoTipo extends Migration
      */
     public function up()
     {
-        Schema::create('atendimentoTipo', function (Blueprint $table) {
+
+        // Atendimento Tipo
+        Schema::create('atend_tipo', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('tipo');
             $table->timestamps();
         });
-        DB::table('atendimentoTipo')->insert(
+        DB::table('atend_tipo')->insert(
             [
-                [
-                    'tipo' => 'Presencial'
-                ],
-                [
-                    'tipo' => 'Telefônico'
-                ],
-                
+                ['tipo' => 'Presencial'],
+                ['tipo' => 'Telefônico'],                
             ]
         );
+
+        // Atendimento Atendimento
+        Schema::create('atend_atendimento', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedInteger('idusuario');
+            $table->unsignedBigInteger('idtipo');
+            $table->timestamp('dataHoraInicio');
+            $table->timestamp('dataHoraFim')->nullable();
+            $table->timestamps();
+            
+            $table->foreign('idusuario')->references('id')->on('users');
+            $table->foreign('idtipo')->references('id')->on('atend_tipo');
+        });
+
+        // Atendimento Comentário
+        Schema::create('atend_comentario', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('idatendimento');
+            $table->unsignedInteger('idusuario');
+            $table->text('comentario');
+            $table->timestamp('dataHora')->nullable();
+            $table->timestamps();
+            
+            $table->foreign('idusuario')->references('id')->on('users');
+            $table->foreign('idatendimento')->references('id')->on('atend_atendimento');
+
+            //
+        });
+
+        // Atendimento Assunto
+        Schema::create('atend_assunto', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->text('assunto');
+            $table->timestamps();
+        });
+
+        // Atendimento AtendimentoAssunto
+        Schema::create('atend_atendimento_atend_assunto', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('idatendimento');
+            $table->unsignedBigInteger('idassunto');
+            $table->timestamps();
+
+            $table->foreign('idatendimento')->references('id')->on('atend_atendimento');
+            $table->foreign('idassunto')->references('id')->on('atend_assunto');
+
+        });
     }
 
     /**
@@ -38,6 +82,10 @@ class CriarTabelaAtendimentoTipo extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('atendimentoTipo');
+        Schema::dropIfExists('atend_atendimento_atend_assunto');
+        Schema::dropIfExists('atend_assunto');
+        Schema::dropIfExists('atend_comentario');
+        Schema::dropIfExists('atend_atendimento');
+        Schema::dropIfExists('atend_tipo');
     }
 }

@@ -65,18 +65,7 @@ Route::middleware('jwt.auth')->group(function () {
 
     Route::post('geo/referencia', 'GeoController@salvarReferencia');
 
-    /*
-    Route::get('atendimento/assunto/listar', 'AtendimentoController@listarAssuntos');
-    Route::get('atendimento/listar/{data}', 'AtendimentoController@listarAtendimentos')
-        ->where([
-            'data' => '[0-9]{4}-[0-9]{2}-[0-9]{2}'
-        ]);
-    Route::get('atendimento/naoconcluido/listar', 'AtendimentoController@listarAtendimentoNaoConcluido')    ;    
-    Route::post('atendimento/comentar/{id}', 'AtendimentoController@inserirComentario');
-    Route::resource('atendimento', 'AtendimentoController');
-    */
-}
-);
+});
 
  
 Route::resource('usuario', 'UsuarioController');

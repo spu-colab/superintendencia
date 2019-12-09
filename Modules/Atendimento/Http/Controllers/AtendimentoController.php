@@ -3,9 +3,10 @@
 namespace Modules\Atendimento\Http\Controllers;
 
 use Modules\Atendimento\Entities\Atendimento;
-use Modules\Atendimento\Entities\AtendimentoAssunto;
-use Modules\Atendimento\Entities\Atendimento_AtendimentoAssunto;
-use Modules\Atendimento\Entities\AtendimentoComentario;
+use Modules\Atendimento\Entities\Assunto;
+use Modules\Atendimento\Entities\Atendimento_Assunto;
+use Modules\Atendimento\Entities\Comentario;
+use Modules\Atendimento\Http\Requests\AtendimentoRequest;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,7 +24,27 @@ class AtendimentoController extends Controller
     {
         $result = Atendimento::with(['tipo','usuario','assuntos','comentarios'])->get();
         return response()->json($result);
+    }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(AtendimentoRequest $request)
+    {
+        return 'Hello';
+        /*
+        $this->validated();
+
+        $atendimento = new Atendimento;
+        $atendimento->idUsuario = Auth::id();        
+        $atendimento->idTipo = $request->idTipo ;
+        date_default_timezone_set('America/Sao_Paulo');
+        $atendimento->dataHoraInicio = date("Y-m-d H:i:s");
+        return response()->json($atendimento->save());
+        */
     }
 
     public function listarAssuntos()
@@ -54,34 +75,7 @@ class AtendimentoController extends Controller
         ->where('idUsuario','=', Auth::id())->first();
         return response()->json($result);
     }
-    
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $atendimento = new Atendimento;
-        $atendimento->idUsuario =Auth::id();
-        
-        $atendimento->idTipo = $request->idTipo ;
-        date_default_timezone_set('America/Sao_Paulo');
-        $atendimento->dataHoraInicio = date("Y-m-d H:i:s");  
-        return response()->json($atendimento->save());
-        
-    }
 
     /**
      * Display the specified resource.
@@ -94,17 +88,6 @@ class AtendimentoController extends Controller
         $result = Atendimento::with(['tipo','usuario:id,name','assuntos','comentarios'])->find($id);
         return response()->json($result);
 
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -177,14 +160,5 @@ class AtendimentoController extends Controller
         return response()->json($result);        
 
     }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+
 }

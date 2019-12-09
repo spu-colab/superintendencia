@@ -14,13 +14,16 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('jwt.auth')->group(function () {     
-    Route::get('atendimento/assunto/listar', 'AtendimentoController@listarAssuntos');
-    Route::get('atendimento/listar/{data}', 'AtendimentoController@listarAtendimentos')
-        ->where([
-            'data' => '[0-9]{4}-[0-9]{2}-[0-9]{2}'
-        ]);
-    Route::get('atendimento/listar-nao-concluido', 'AtendimentoController@listarAtendimentoNaoConcluido')    ;    
-    Route::post('atendimento/comentar/{id}', 'AtendimentoController@inserirComentario');
+
     Route::resource('atendimento', 'AtendimentoController');
+    
+    // Route::get('atendimento/assunto', 'AtendimentoController@listarAssuntos');
+    // Route::get('atendimento/listar/{data}', 'AtendimentoController@listarAtendimentos')
+    //->where([
+        //'data' => '[0-9]{4}-[0-9]{2}-[0-9]{2}'
+        //]);
+    // Route::get('atendimento/nao-concluidos/', 'AtendimentoController@listarAtendimentoNaoConcluido')    ;    
+    // Route::post('atendimento/comentar/{id}', 'AtendimentoController@inserirComentario');
+
 });
     

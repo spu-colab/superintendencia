@@ -129,6 +129,12 @@ export default {
         url: 'http://10.209.232.158/wordpress'
       },
       { 
+        text: 'Atendimento',
+        icon: 'how_to_reg', 
+        route: '/atendimento',
+        model: true
+      },
+      { 
         text: 'Governança',
         icon: 'near_me', 
         route: '/governanca',
