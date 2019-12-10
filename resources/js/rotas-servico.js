@@ -4,6 +4,13 @@ export default {
   },
   rotas () {
     return {
+      atendimento: {
+        listar: this.base() + '/atendimento',
+        editar: this.base() + '/atendimento/',
+        assunto: {
+          listar: this.base() + '/atendimento/assunto',
+        }
+      },
       autenticacao: {
         login: this.base() + '/user/login', //jwt.auth
         // login: this.base() + '/login', //auth

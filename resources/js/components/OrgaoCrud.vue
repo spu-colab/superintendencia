@@ -153,12 +153,13 @@ export default {
                         }
                         this.registros.push(element)
                         })
+                        this.carregando = false;
                     },
                     error => {
                         console.log(error)
+                        this.carregando = false;
                     }
                 )
-            this.carregando = false;
         },
 
         carregarOrgaos () {

@@ -48,6 +48,23 @@ let router = new Router({
       }
     },
     {
+      path: '/atendimento',
+      name: 'Atendimento',
+      component: Atendimento,
+      meta: {
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Atendimento'
+          },
+        ]
+      }
+    },
+    {
       path: '/conteudo/:id',
       name: 'Conteudo',
       component: Conteudo,
@@ -164,23 +181,7 @@ let router = new Router({
         ]
       }
     },
-    {
-      path: '/atendimento',
-      name: 'Atendimento',
-      component: Atendimento,
-      meta: {
-        guest: true,
-        breadcrumb: [
-          {
-            text: 'Início',
-            href: '/#/'
-          },
-          {
-            text: 'Atendimento'
-          },
-        ]
-      }
-    },
+    
     {
       path: '/governanca',
       name: 'Governança',

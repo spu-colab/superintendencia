@@ -33,23 +33,22 @@ class AtendimentoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(AtendimentoRequest $request)
-    {
-        return 'Hello';
-        /*
-        $this->validated();
-
+    {        
         $atendimento = new Atendimento;
         $atendimento->idUsuario = Auth::id();        
-        $atendimento->idTipo = $request->idTipo ;
+        $atendimento->idtipo = $request->idtipo ;
         date_default_timezone_set('America/Sao_Paulo');
         $atendimento->dataHoraInicio = date("Y-m-d H:i:s");
-        return response()->json($atendimento->save());
-        */
+        if($atendimento->save()) {
+            return response()->json($atendimento);
+        } else {
+            \abort(500, "Erro ao criar atendimento");
+        }
     }
 
     public function listarAssuntos()
     {
-        $result = AtendimentoAssunto::orderBy('assunto')->get();
+        $result = Assunto::orderBy('assunto')->get();
         return response()->json($result);     
     }
 
@@ -113,18 +112,16 @@ class AtendimentoController extends Controller
             $atendimentoComentario->save();        
         }
 
-        Atendimento_AtendimentoAssunto::where('idAtendimento', $id)->delete();
-
-        if(@$request->idAssunto) {
+        Atendimento_Assunto::where('idatendimento', $id)->delete();
+        if(@$request->idsAssunto) {
             $dataSet = [];
-            foreach ($request->idAssunto as $idAssunto) {
+            foreach ($request->idsAssunto as $idAssunto) {
                  $dataSet[] = [
                     'idAtendimento'  => $id,
-                    'idAtendimentoAssunto' => $idAssunto,
-                    'created_at' => $dataAtual
+                    'idAssunto' => $idAssunto,
                 ];
             }
-            Atendimento_AtendimentoAssunto::insert($dataSet);
+            Atendimento_Assunto::insert($dataSet);
         }                
 
         $atendimento->dataHoraFim  = $dataAtual;  

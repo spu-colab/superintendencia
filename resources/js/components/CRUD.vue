@@ -31,7 +31,7 @@
             <v-spacer></v-spacer>
             <v-btn color="primary" dark class="mb-2" @click="cadastrarNovo">
               <v-icon>add</v-icon>
-              CADASTRAR {{ nomeEntidade }}</v-btn>
+              {{ verboAdicionarEntidade}} {{ nomeEntidade }}</v-btn>
             <v-container>
                 <v-layout row wrap>  
                 </v-layout>
@@ -182,7 +182,7 @@
         <v-form v-model="valid">
           <v-card>
             <v-card-title>
-              <v-toolbar-title>{{ (entidade.id == null ? 'Cadastrar ' : 'Editar ') + nomeEntidade }}</v-toolbar-title>
+              <v-toolbar-title>{{ (entidade.id == null ? verboAdicionarEntidade : verboAlterarEntidade) + ' ' + nomeEntidade }}</v-toolbar-title>
               <v-divider
                 class="mx-2"
                 inset
@@ -233,6 +233,14 @@ export default {
   props: {
       nomeEntidade: String, 
       nomeEntidadePlural: String,
+      verboAdicionarEntidade: {
+        type: String,
+        default: 'Cadastrar'
+      },
+      verboAlterarEntidade: {
+        type: String,
+        default: 'Editar'
+      },
       headers: Array,
       items: Array,
       exibirPaginacao: {

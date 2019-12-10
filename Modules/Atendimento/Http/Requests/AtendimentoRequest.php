@@ -14,7 +14,7 @@ class AtendimentoRequest extends FormRequest
     public function rules()
     {
         return [
-            'atendimento.idtipo' => 'required'
+            'idtipo' => 'required'
         ];
     }
 
