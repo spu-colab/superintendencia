@@ -22,8 +22,18 @@ class CriarTabelaAtendimentoTipo extends Migration
         });
         DB::table('atend_tipo')->insert(
             [
-                ['tipo' => 'Presencial'],
-                ['tipo' => 'Telefônico'],                
+                [
+                    'id' => 1,
+                    'tipo' => 'Presencial'
+                ],
+                [
+                    'id' => 2,
+                    'tipo' => 'Telefônico'
+                ],                
+                [
+                    'id' => 3,
+                    'tipo' => 'E-mail'
+                ],
             ]
         );
 
@@ -32,8 +42,11 @@ class CriarTabelaAtendimentoTipo extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('idusuario');
             $table->unsignedBigInteger('idtipo');
-            $table->timestamp('dataHoraInicio');
-            $table->timestamp('dataHoraFim')->nullable();
+            $table->text('atendido', 150);
+            $table->text('cpf', 11)->nullable();
+            $table->text('email', 150)->nullable();
+            $table->dateTime('dataHoraInicio');
+            $table->dateTime('dataHoraFim')->nullable();
             $table->timestamps();
             
             $table->foreign('idusuario')->references('id')->on('users');
@@ -46,7 +59,7 @@ class CriarTabelaAtendimentoTipo extends Migration
             $table->unsignedBigInteger('idatendimento');
             $table->unsignedInteger('idusuario');
             $table->text('comentario');
-            $table->timestamp('dataHora')->nullable();
+            $table->dateTime('dataHora')->nullable();
             $table->timestamps();
             
             $table->foreign('idusuario')->references('id')->on('users');
@@ -61,6 +74,26 @@ class CriarTabelaAtendimentoTipo extends Migration
             $table->text('assunto');
             $table->timestamps();
         });
+        DB::table('atend_assunto')->insert(
+            [
+                ['assunto' => 'Geral'],
+                ['assunto' => 'Demarcação'],
+                ['assunto' => 'Averbação de Transferência'],
+                ['assunto' => 'Revisão'],
+                ['assunto' => 'Aforamento'],
+                ['assunto' => 'TAUS - Termo de Autorização de Uso Sustentável'],
+                ['assunto' => 'Isenção de Pagamento das Taxas de Ocupação ou Foro'],
+                ['assunto' => 'Unificação/ Desmembramento/ Fracionamento'],
+                ['assunto' => 'Inscrição de Ocupação'],
+                ['assunto' => 'Permissão de Uso'],
+                ['assunto' => 'Reclamação'],
+                ['assunto' => 'DARF'],
+                ['assunto' => 'Certidão de Provimento'],
+                ['assunto' => 'Certidão Negativa de Débito'],
+                ['assunto' => 'Cessão de Espaço Aquático'],
+                ['assunto' => 'Cópias']
+            ]
+        );
 
         // Atendimento AtendimentoAssunto
         Schema::create('atend_atendimento_atend_assunto', function (Blueprint $table) {

@@ -27,7 +27,7 @@ class AtendimentoController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Cria um atendimento recém iniciado
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -36,7 +36,8 @@ class AtendimentoController extends Controller
     {        
         $atendimento = new Atendimento;
         $atendimento->idUsuario = Auth::id();        
-        $atendimento->idtipo = $request->idtipo ;
+        $atendimento->idtipo = $request->idtipo;
+        $atendimento->atendido = $request->atendido;
         date_default_timezone_set('America/Sao_Paulo');
         $atendimento->dataHoraInicio = date("Y-m-d H:i:s");
         if($atendimento->save()) {
@@ -63,7 +64,7 @@ class AtendimentoController extends Controller
             ->whereBetween('dataHoraInicio',[$dtinic,$dtfim])->get());
     }
 
-
+    /*
     public function listarAtendimentoNaoConcluido()
     {
         $dtinic =  date('Y-m-d');
@@ -74,6 +75,7 @@ class AtendimentoController extends Controller
         ->where('idUsuario','=', Auth::id())->first();
         return response()->json($result);
     }
+    */
 
 
     /**
@@ -90,54 +92,54 @@ class AtendimentoController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Atualiza um atendimento.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(AtendimentoRequest $request, $id)
     {
         $atendimento = Atendimento::findOrFail($id);
+        $atendimentoSalvo = $this->salvar($atendimento, $request);
+        return response()->json($atendimentoSalvo);
+    }
+
+    public function concluir(AtendimentoRequest $request, $id) {
+        $atendimento = Atendimento::findOrFail($id);
+        $atendimentoSalvo = $this->salvar($atendimento, $request, true);
+        return response()->json($atendimentoSalvo);
+    }
+    
+    public function salvar(Atendimento $atendimento, AtendimentoRequest $request, $concluirAtendimento = false) {
+        $atendimento->atendido = $request->atendido;
+        $atendimento->cpf = $request->cpf;
+        $atendimento->email = $request->email;
         
-        date_default_timezone_set('America/Sao_Paulo');
-        $dataAtual  = date("Y-m-d H:i:s");  
-
-        if(@$request->comentario) {
-            $atendimentoComentario = new atendimentoComentario;
-            $atendimentoComentario->comentario = $request->comentario;
-            $atendimentoComentario->idAtendimento = $id;
-            $atendimentoComentario->dataHora = $dataAtual;
-            $atendimentoComentario->idUsuario = Auth::id();
-            $atendimentoComentario->save();        
-        }
-
-        Atendimento_Assunto::where('idatendimento', $id)->delete();
-        if(@$request->idsAssunto) {
+        Atendimento_Assunto::where('idatendimento', $atendimento->id)->delete();
+        $idsAssunto = @$request->idsAssunto;
+        if($idsAssunto) {
             $dataSet = [];
-            foreach ($request->idsAssunto as $idAssunto) {
-                 $dataSet[] = [
-                    'idAtendimento'  => $id,
+            foreach ($idsAssunto as $idAssunto) {
+                $dataSet[] = [
+                    'idAtendimento'  => $atendimento->id,
                     'idAssunto' => $idAssunto,
                 ];
             }
             Atendimento_Assunto::insert($dataSet);
-        }                
-
-        $atendimento->dataHoraFim  = $dataAtual;  
-
-    /**
-    * Não está em uso.   Calcula o tempo de atendimento.
-    
-    *   $datainic = getdate(strtotime($atendimento->dataHoraInicio));      
-    *    $datafim  = getdate(strtotime($atendimento->dataHoraFim));
-    *    $horarioVerao = date('I', strtotime($atendimento->dataHoraFim))*3600;
-    *    $segundos = $datafim[0] - $datainic[0] ;
-    *    $tempoAtend = date("H:i:s", $segundos + $horarioVerao);
-    */       
-        $result = $atendimento->update();
-        return response()->json($result);
+        }
+        
+        if($concluirAtendimento) {
+            $dataAtual  = date("Y-m-d H:i:s");  
+            $atendimento->dataHoraFim  = $dataAtual;  
+        }
+        if($atendimento->update()) {
+            return $atendimento;
+        } else {
+            \abort(500, "Erro ao salvar atendimento");
+        }
     }
+
     public function inserirComentario(Request $request, $id)
     {               
         $result = false;

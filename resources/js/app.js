@@ -16,8 +16,8 @@ import store from './store'
 
 import Vuetify from 'vuetify'
 window.Vue.use(Vuetify)
-import 'vuetify/dist/vuetify.min.css'
 import 'material-icons'
+import 'vuetify/dist/vuetify.min.css'
 
 import CKEditor from '@ckeditor/ckeditor5-vue';
 window.Vue.use( CKEditor );

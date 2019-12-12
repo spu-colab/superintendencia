@@ -21,6 +21,7 @@ Route::middleware('jwt.auth')->group(function () {
         ->where(
             ['data' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']
         );
+    Route::put('atendimento/concluir/{id}', 'AtendimentoController@concluir');
     
     // Route::get('atendimento/nao-concluidos/', 'AtendimentoController@listarAtendimentoNaoConcluido')    ;    
     // Route::post('atendimento/comentar/{id}', 'AtendimentoController@inserirComentario');

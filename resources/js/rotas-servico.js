@@ -6,6 +6,7 @@ export default {
     return {
       atendimento: {
         listar: this.base() + '/atendimento',
+        criar: this.base() + '/atendimento',
         editar: this.base() + '/atendimento/',
         assunto: {
           listar: this.base() + '/atendimento/assunto',
