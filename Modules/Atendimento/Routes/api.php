@@ -22,9 +22,9 @@ Route::middleware('jwt.auth')->group(function () {
             ['data' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']
         );
     Route::put('atendimento/concluir/{id}', 'AtendimentoController@concluir');
+    Route::post('atendimento/comentario', 'AtendimentoController@inserirComentario');
     
     // Route::get('atendimento/nao-concluidos/', 'AtendimentoController@listarAtendimentoNaoConcluido')    ;    
-    // Route::post('atendimento/comentar/{id}', 'AtendimentoController@inserirComentario');
 
 });
     

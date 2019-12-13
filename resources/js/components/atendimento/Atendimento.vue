@@ -11,7 +11,8 @@
                             @clicou-cancelar="cancelar"
                             @clicou-novo="novo"
                             :exibirPrimeiraTela="exibindoGrid"
-                            @modou-tela="mudouTela">
+                            @modou-tela="mudouTela"
+                            @validou-formulario="validouFormulario">
 
                             <template slot="beforeAdd">
                                 <!-- Data Documento -->
@@ -78,6 +79,7 @@
                             <template slot="detalhe">
                                 <div v-if="entidadeAtual">                                    
                                     <v-container>
+                                        <!-- Dados do Atendimento -->
                                         <v-layout row wrap>
                                             <v-flex xs12 md6>
                                                 <v-text-field label="Atendente" v-model="computedNomeDoAtendente" disabled/>
@@ -92,19 +94,23 @@
                                                 <v-text-field label="Fim" v-model="entidadeAtual.fim" disabled/>
                                             </v-flex>
                                         </v-layout>
+                                        
+                                        <!-- Dados do Atendido -->
                                         <v-layout row wrap>
                                             <v-flex xs12 md6>
                                                 <v-text-field label="Atendido" v-model="entidadeAtual.atendido" 
-                                                    :rules="[validacoes().obrigatorio, validacoes().min3]" required/>
+                                                    :rules="[validacoes().obrigatorio, validacoes().min3]" required :disabled="atendimentoConcluido()" />
                                             </v-flex>
                                             <v-flex xs12 md3>
-                                                <v-text-field label="CPF" v-model="entidadeAtual.cpf" />
+                                                <v-text-field label="CPF" v-model="entidadeAtual.cpf" :disabled="atendimentoConcluido()" />
                                             </v-flex>
                                             <v-flex xs12 md3>
                                                 <v-text-field label="E-mail" v-model="entidadeAtual.email" 
-                                                    :rules="[validacoes().email]"/>
+                                                    :rules="[validacoes().email]" :disabled="atendimentoConcluido()" />
                                             </v-flex>
                                         </v-layout>
+
+                                        <!-- Assuntos -->
                                         <v-layout wrap>
                                             <v-flex xs12>
                                                 
@@ -112,18 +118,36 @@
                                                     <v-container>
                                                         <v-layout wrap>
                                                             <v-flex xs12 md4 lg3 align-start justify-start v-for="assunto in entidadeAtual.assuntos" v-bind:key="assunto.id">
-                                                                <v-checkbox :label="assunto.assunto" align-start v-model="assunto.checked"></v-checkbox>
+                                                                <v-checkbox :label="assunto.assunto" align-start v-model="assunto.checked" :disabled="atendimentoConcluido()" ></v-checkbox>
                                                             </v-flex>
                                                         </v-layout>
                                                     </v-container>
                                             </v-flex>
                                         </v-layout>
+
+                                        <!-- Comentários -->
+                                        <v-layout row wrap>
+                                            <v-flex xs12>
+                                                <v-textarea box 
+                                                    label="Comentário:"
+                                                    placeholder="Registre aqui informações que julgar relevantes ao atendimento prestado."
+                                                    v-model="novoComentario" 
+                                                    :rules="[validarComentario]" :error-messages="comentarioValidoMsgs">
+                                                </v-textarea>
+                                            </v-flex>
+                                        </v-layout>
+                                        <v-layout row wrap justify-end>
+                                            <v-btn color="primary lighten-2" @click="inserirComentario" :disabled="!comentarioValido">
+                                                <v-icon>add</v-icon> Inserir Comentário
+                                            </v-btn>
+                                        </v-layout>
+                                        <comentarios :comentarios="entidadeAtual.comentarios"></comentarios>
                                     </v-container>
                                 </div>
                             </template>
                             
                             <template slot="beforeSaveButton">
-                                <v-btn color="success" @click="concluir">
+                                <v-btn color="success" @click="concluir" :disabled="!valid || atendimentoConcluido()">
                                     <v-icon>check</v-icon> Concluir Atendimento</v-btn>
                             </template>
                         </crud>
@@ -135,6 +159,7 @@
 
 <script>
 import Crud from './../CRUD'
+import Comentarios from './../Comentarios'
 import rotas from './../../rotas-servico.js'
 import Utils from './../../Utils'
 import { isArray } from 'util';
@@ -186,7 +211,11 @@ export default {
             menuDataAtendimentos: false,
             dataAtendimentos: vm.parseDate(new Date().toLocaleDateString()),
             dataAtendimentosFormatada: vm.formatDate(new Date().toISOString().substr(0, 10)),
-            exibindoGrid: true
+            exibindoGrid: true,
+            valid: true,
+            comentarioValido: true,
+            comentarioValidoMsgs: null,
+            novoComentario: null
         }
     },
     methods: {
@@ -220,7 +249,7 @@ export default {
             this.$http.get(url)
                 .then(
                     response => {
-                        // console.log(response)
+                        console.log(response.body)
                         this.entidadeAtual = response.body
                         this.formatarAtendimento(this.entidadeAtual)                     
                         this.preencherAssuntos(this.entidadeAtual)
@@ -257,8 +286,12 @@ export default {
             let formData = new FormData()
             formData.append('idtipo', this.entidadeAtual.tipo.id)
             formData.append('atendido', this.entidadeAtual.atendido)
-            formData.append('cpf', this.entidadeAtual.cpf)
-            formData.append('email', this.entidadeAtual.email)
+            if(this.entidadeAtual.cpf != null) {
+                formData.append('cpf', this.entidadeAtual.cpf)
+            }
+            if(this.entidadeAtual.email != null) {
+                formData.append('email', this.entidadeAtual.email)
+            }
             this.assuntos.forEach(assunto => {
                 if(assunto.checked) {
                     formData.append('idsAssunto[]', assunto.id)
@@ -319,7 +352,7 @@ export default {
             }
 
             if(element.atendido != null) {
-                console.log(element.atendido)
+                // console.log(element.atendido)
                 element.atendido = element.atendido.replace('Não informado', '')
             }
         },
@@ -344,6 +377,27 @@ export default {
             atendimento.assuntos.sort(function (a, b) {
                 return a.assunto.localeCompare(b.assunto)
             })         
+        },
+
+        inserirComentario() {
+            let formData = new FormData()
+            formData.append('idAtendimento', this.entidadeAtual.id)
+            formData.append('comentario', this.novoComentario)
+
+            let url = rotas.rotas().atendimento.comentario.criar
+            this.$http.post(url, formData)
+                .then(
+                    response => {
+                        console.log(response)
+                        this.$store.commit('sistema/mensagem', 'Comentário registrado com sucesso!')
+                        this.selecionarParaEdicao(this.entidadeAtual)
+                        this.novoComentario = ''
+                    },
+                    error => {
+                        console.log(error.body)
+                        this.$store.commit('sistema/alerta', error.body.message)
+                    }
+                )
         },
 
         sleep(ms) {
@@ -385,6 +439,19 @@ export default {
             this.exibindoGrid = novoValor
         },
 
+        validouFormulario(val) {
+            this.valid = val
+        },
+
+        validarComentario() {
+            this.comentarioValidoMsgs = null
+            this.comentarioValido = (this.novoComentario != null && this.novoComentario.length >= 5)
+            if(!this.comentarioValido) {
+                this.comentarioValidoMsgs = 'Comentário inválido'
+            }
+            return this.comentarioValido            
+        },
+
         parseDate(dataFormatada) {
             return Utils.parseDate(dataFormatada)
         },
@@ -392,8 +459,13 @@ export default {
         formatDate(data) {
             return Utils.formatDate(data)
         },
+
         validacoes() {
             return Utils.validacao
+        }, 
+
+        atendimentoConcluido() {
+            return this.entidadeAtual != null && this.entidadeAtual.dataHoraFim != null
         }
     },
     watch: {
@@ -420,7 +492,8 @@ export default {
             }
 
             return 'Em atendimento'
-        }
+        },
+
     },
     mounted() {
         this.carregarAssuntos();

@@ -7,6 +7,7 @@ use Modules\Atendimento\Entities\Assunto;
 use Modules\Atendimento\Entities\Atendimento_Assunto;
 use Modules\Atendimento\Entities\Comentario;
 use Modules\Atendimento\Http\Requests\AtendimentoRequest;
+use Modules\Atendimento\Http\Requests\ComentarioRequest;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +23,7 @@ class AtendimentoController extends Controller
      */
     public function index()
     {
-        $result = Atendimento::with(['tipo','usuario','assuntos','comentarios'])->get();
+        $result = Atendimento::with(['tipo','usuario','assuntos','comentarios.usuario'])->get();
         return response()->json($result);
     }
 
@@ -40,6 +41,17 @@ class AtendimentoController extends Controller
         $atendimento->atendido = $request->atendido;
         date_default_timezone_set('America/Sao_Paulo');
         $atendimento->dataHoraInicio = date("Y-m-d H:i:s");
+
+        if($atendimento->isPresencial()) {
+            $this->authorize('criarPresencial', $atendimento);
+        }
+        if($atendimento->isTelefonico()) {
+            $this->authorize('criarTelefonico', $atendimento);
+        }
+        if($atendimento->isEmail()) {
+            $this->authorize('criarEmail', $atendimento);
+        }
+
         if($atendimento->save()) {
             return response()->json($atendimento);
         } else {
@@ -60,7 +72,7 @@ class AtendimentoController extends Controller
 
         return response()
             ->json(Atendimento::with
-                (['tipo','usuario:id,name','assuntos','comentarios'])
+                (['tipo','usuario:id,name','assuntos','comentarios.usuario'])
             ->whereBetween('dataHoraInicio',[$dtinic,$dtfim])->get());
     }
 
@@ -86,7 +98,7 @@ class AtendimentoController extends Controller
      */
     public function show($id)
     {
-        $result = Atendimento::with(['tipo','usuario:id,name','assuntos','comentarios'])->find($id);
+        $result = Atendimento::with(['tipo','usuario:id,name','assuntos','comentarios.usuario'])->find($id);
         return response()->json($result);
 
     }
@@ -131,8 +143,9 @@ class AtendimentoController extends Controller
         
         if($concluirAtendimento) {
             $dataAtual  = date("Y-m-d H:i:s");  
-            $atendimento->dataHoraFim  = $dataAtual;  
+            $atendimento->dataHoraFim  = $dataAtual;
         }
+        $this->authorize('update', $atendimento);
         if($atendimento->update()) {
             return $atendimento;
         } else {
@@ -140,24 +153,21 @@ class AtendimentoController extends Controller
         }
     }
 
-    public function inserirComentario(Request $request, $id)
+    public function inserirComentario(ComentarioRequest $request)
     {               
-        $result = false;
+        $comentario = new Comentario;
+        $comentario->idAtendimento = $request->idAtendimento;
+        $comentario->comentario = $request->comentario;
+        $comentario->idUsuario =  Auth::id();
+        // $comentario->dataHora = date("Y-m-d H:i:s");
 
-        date_default_timezone_set('America/Sao_Paulo');
-        $dataAtual  = date("Y-m-d H:i:s");  
+        $this->authorize('create', $comentario);
 
-        if(@$request->atendimento['comentario']) {
-            $atendimentoComentario = new atendimentoComentario;
-            $atendimentoComentario->comentario = $request->atendimento['comentario'];
-            $atendimentoComentario->idAtendimento =$id;
-            $atendimentoComentario->idUsuario =  Auth::id();
-            $atendimentoComentario->dataHora = $dataAtual ;
-            $result  = $atendimentoComentario->save();
+        if($comentario->save()) {
+            return response()->json($comentario);
+        } else {
+            \abort(500, "Erro ao inserir comentário");
         }
-
-        return response()->json($result);        
-
     }
 
 }

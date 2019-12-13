@@ -2,7 +2,8 @@
 
 namespace Modules\Atendimento\Providers;
 
-use Illuminate\Support\ServiceProvider;
+// use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Database\Eloquent\Factory;
 
 class AtendimentoServiceProvider extends ServiceProvider
@@ -13,6 +14,16 @@ class AtendimentoServiceProvider extends ServiceProvider
      * @var bool
      */
     protected $defer = false;
+
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array
+     */
+    protected $policies = [
+        'Modules\Atendimento\Entities\Atendimento' => 'Modules\Atendimento\Policies\AtendimentoPolicy',
+        'Modules\Atendimento\Entities\Comentario' => 'Modules\Atendimento\Policies\ComentarioPolicy',
+    ];
 
     /**
      * Boot the application events.
@@ -26,6 +37,8 @@ class AtendimentoServiceProvider extends ServiceProvider
         $this->registerViews();
         $this->registerFactories();
         $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+
+        $this->registerPolicies();
     }
 
     /**

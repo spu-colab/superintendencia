@@ -19,10 +19,18 @@ export default {
         // console.log(retorno)
         return retorno
     },
+
+    formatarDataHora(dataHora) {
+        if(dataHora == null)
+            return null
+        return new Date(dataHora).toLocaleString()
+    },
+
     validacao: {
         obrigatorio: v => !!v || 'Preenchimento obrigatório.',
         min15: v => !!v && v.length >= 15 || 'No mínimo 15 caracteres' ,
         min8: v => !!v && v.length >= 8 || 'No mínimo 8 caracteres' ,
+        min5: v => !!v && v.length >= 5 || 'No mínimo 5 caracteres',
         min3: v => !!v && v.length >= 3 || 'No mínimo 3 caracteres',
         min2: v => !!v && v.length >= 2 || 'No mínimo 2 caracteres',
         email: v => {

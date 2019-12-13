@@ -350,6 +350,10 @@ export default {
       this.exibirGrid = val
     },
 
+    valid: function(val) {
+      this.$emit("validou-formulario", val);
+    },
+
     exibirGrid: function(val) {
       // console.log('CRUD emitiu mudou-tela com val = ' + val)
       this.$emit("modou-tela", val);

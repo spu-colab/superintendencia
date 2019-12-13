@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Comentario extends Model
 {
     protected  $table="atend_comentario";
-    protected $visible = ['id','idUsuario','comentario','dataHora'];
     public $timestamps = false;
+
+    public function usuario()
+    {
+        return $this->belongsTo('App\User','idusuario');
+    }
 }

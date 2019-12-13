@@ -10,6 +10,9 @@ export default {
         editar: this.base() + '/atendimento/',
         assunto: {
           listar: this.base() + '/atendimento/assunto',
+        },
+        comentario: {
+          criar: this.base() + '/atendimento/comentario',
         }
       },
       autenticacao: {

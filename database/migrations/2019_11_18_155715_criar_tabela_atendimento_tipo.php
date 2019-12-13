@@ -59,8 +59,7 @@ class CriarTabelaAtendimentoTipo extends Migration
             $table->unsignedBigInteger('idatendimento');
             $table->unsignedInteger('idusuario');
             $table->text('comentario');
-            $table->dateTime('dataHora')->nullable();
-            $table->timestamps();
+            $table->timestamp('dataHora');
             
             $table->foreign('idusuario')->references('id')->on('users');
             $table->foreign('idatendimento')->references('id')->on('atend_atendimento');
@@ -106,6 +105,29 @@ class CriarTabelaAtendimentoTipo extends Migration
             $table->foreign('idassunto')->references('id')->on('atend_assunto');
 
         });
+
+        DB::table('permissao')->insert(
+            [
+                [
+                    'permissao' => 'ATENDIMENTO_ATENDIMENTO_CRIAR_PRESENCIAL',
+                    'descricao' => 'Permite iniciar/salvar/concluir um atendimento presencial'
+                ],
+                [
+                    'permissao' => 'ATENDIMENTO_ATENDIMENTO_CRIAR_TELEFONICO',
+                    'descricao' => 'Permite iniciar/salvar/concluir um atendimento telefônico'
+                ],
+                [
+                    'permissao' => 'ATENDIMENTO_ATENDIMENTO_CRIAR_EMAIL',
+                    'descricao' => 'Permite iniciar/salvar/concluir um atendimento por e-mail'
+                ],
+                [
+                    'permissao' => 'ATENDIMENTO_COMENTARIO_CRIAR',
+                    'descricao' => 'Permite criar um comentário em um atendimento'
+                ],
+                
+            ]
+        );
+
     }
 
     /**
