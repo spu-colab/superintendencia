@@ -215,7 +215,8 @@ export default {
             valid: true,
             comentarioValido: true,
             comentarioValidoMsgs: null,
-            novoComentario: null
+            novoComentario: null,
+            tempoAtendimento: null
         }
     },
     methods: {
@@ -331,12 +332,14 @@ export default {
         },
         
         formatarAtendimento(element) {
+            element.dataHoraInicio = Utils.obterDateCorretoServidor(element.dataHoraInicio)
             let dataHoraInicio = new Date(element.dataHoraInicio)
             element.data = dataHoraInicio.toLocaleDateString()
             element.inicio = dataHoraInicio.toLocaleTimeString()
 
             element.fim = '--'
             if(element.dataHoraFim) {
+                element.dataHoraFim = Utils.obterDateCorretoServidor(element.dataHoraFim)
                 let dataHoraFim = new Date(element.dataHoraFim)
                 element.fim = dataHoraFim.toLocaleTimeString()
             }
@@ -466,6 +469,12 @@ export default {
 
         atendimentoConcluido() {
             return this.entidadeAtual != null && this.entidadeAtual.dataHoraFim != null
+        },
+
+        atualizarTempoAtendimento() {
+            let agora = new Date()
+            let inicio = new Date(this.entidadeAtual.dataHoraInicio)
+            this.tempoAtendimento = Utils.tempoDecorridoEntre(inicio, agora)
         }
     },
     watch: {
@@ -491,13 +500,14 @@ export default {
                 return 'Atendimento encerrado'
             }
 
-            return 'Em atendimento'
+            return 'Em atendimento ' + this.tempoAtendimento
         },
 
     },
     mounted() {
         this.carregarAssuntos();
         this.carregarItens();
+        setInterval(this.atualizarTempoAtendimento, 1000)
     }    
 }
 </script>

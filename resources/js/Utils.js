@@ -39,5 +39,38 @@ export default {
             }
             return /.+@.+\..+/.test(v) || 'E-mail precisa ser válido'
         }
-    }
+    },
+
+    obterDateCorretoServidor(date) {
+        let _date = new Date(date)
+        _date.setHours(_date.getHours() - 1)
+        return _date
+    },
+
+    tempoDecorridoEntre(date2, date1) {
+        let totalSegundos = Math.floor(Math.abs(date2 - date1) / 1000);
+
+        
+        
+        let dias = Math.floor(totalSegundos / 86400);
+        let sobraSegundos = totalSegundos - (dias * 86400);
+
+        let horas = Math.floor(sobraSegundos / 3600);
+        sobraSegundos -= horas * 3600;
+        horas = ('' + horas).padStart(2, '0')
+        
+        let minutos = Math.floor(sobraSegundos / 60);
+        sobraSegundos -= minutos * 60;
+        minutos = ('' + minutos).padStart(2, '0')
+        
+        let segundos = ('' + sobraSegundos).padStart(2, '0')
+
+        let resultado = ''
+        if(dias > 0) {
+            resultado = dias + ' dia' + (dias > 1 ? 's' : '') + ' + '
+        }
+        resultado = resultado + horas + ':' + minutos + ':' + segundos
+        return resultado
+    },
+    
 }
