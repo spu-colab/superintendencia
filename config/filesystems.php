@@ -77,6 +77,10 @@ return [
             // 'ssl' => true,
             // 'timeout' => 30,
         ],
+        'usb' => [
+            'driver' => 'local',
+            'root' => env('FILESYSTEM_PATH_USB_BACKUP'),
+        ],
 
     ],
 
