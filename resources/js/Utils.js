@@ -26,7 +26,7 @@ export default {
         return new Date(dataHora).toLocaleString()
     },
 
-    validacao: {
+    validacoes: {
         obrigatorio: v => !!v || 'Preenchimento obrigatório.',
         min15: v => !!v && v.length >= 15 || 'No mínimo 15 caracteres' ,
         min8: v => !!v && v.length >= 8 || 'No mínimo 8 caracteres' ,

@@ -132,7 +132,7 @@
                                                     label="Comentário:"
                                                     placeholder="Registre aqui informações que julgar relevantes ao atendimento prestado."
                                                     v-model="novoComentario" 
-                                                    :rules="[validarComentario]" :error-messages="comentarioValidoMsgs">
+                                                    :error-messages="comentarioValidoMsgs">
                                                 </v-textarea>
                                             </v-flex>
                                         </v-layout>
@@ -147,7 +147,7 @@
                             </template>
                             
                             <template slot="beforeSaveButton">
-                                <v-btn color="success" @click="concluir" :disabled="!valid || atendimentoConcluido()">
+                                <v-btn color="success" @click="concluir" :disabled="!formularioValido() || atendimentoConcluido()">
                                     <v-icon>check</v-icon> Concluir Atendimento</v-btn>
                             </template>
                         </crud>
@@ -162,7 +162,7 @@ import Crud from './../CRUD'
 import Comentarios from './../Comentarios'
 import rotas from './../../rotas-servico.js'
 import Utils from './../../Utils'
-import { isArray } from 'util';
+import { isArray, isString, isBoolean } from 'util';
 export default {
     components: {
         'crud': Crud
@@ -212,10 +212,11 @@ export default {
             dataAtendimentos: vm.parseDate(new Date().toLocaleDateString()),
             dataAtendimentosFormatada: vm.formatDate(new Date().toISOString().substr(0, 10)),
             exibindoGrid: true,
-            valid: true,
-            comentarioValido: true,
-            comentarioValidoMsgs: null,
+
             novoComentario: null,
+            comentarioValido: false,
+            comentarioValidoMsgs: null,
+
             tempoAtendimento: null
         }
     },
@@ -228,7 +229,7 @@ export default {
             this.$http.get(url)
                 .then(
                     response => {
-                        console.log(response.body);
+                        // console.log(response.body);
                         response.body.forEach(element => {
                         // console.log(element)
                         this.formatarAtendimento(element)                     
@@ -250,7 +251,7 @@ export default {
             this.$http.get(url)
                 .then(
                     response => {
-                        console.log(response.body)
+                        // console.log(response.body)
                         this.entidadeAtual = response.body
                         this.formatarAtendimento(this.entidadeAtual)                     
                         this.preencherAssuntos(this.entidadeAtual)
@@ -308,7 +309,7 @@ export default {
             this.$http.post(url, formData)
                 .then(
                     response => {
-                        console.log(response)
+                        // console.log(response)
                         if(concluir) {
                             this.$store.commit('sistema/mensagem', 'Atendimento Concluído')
                         } else {
@@ -391,7 +392,7 @@ export default {
             this.$http.post(url, formData)
                 .then(
                     response => {
-                        console.log(response)
+                        // console.log(response)
                         this.$store.commit('sistema/mensagem', 'Comentário registrado com sucesso!')
                         this.selecionarParaEdicao(this.entidadeAtual)
                         this.novoComentario = ''
@@ -446,13 +447,27 @@ export default {
             this.valid = val
         },
 
+        formularioValido() {
+            if(this.valid)
+                return this.valid
+            return false
+        },
+
         validarComentario() {
-            this.comentarioValidoMsgs = null
-            this.comentarioValido = (this.novoComentario != null && this.novoComentario.length >= 5)
-            if(!this.comentarioValido) {
-                this.comentarioValidoMsgs = 'Comentário inválido'
+            this.comentarioValidoMsgs = this.validacoes().obrigatorio(this.novoComentario)
+            if(isString(this.comentarioValidoMsgs)) {
+                this.comentarioValido = false
+                return
             }
-            return this.comentarioValido            
+
+            this.comentarioValidoMsgs = this.validacoes().min5(this.novoComentario)
+            if(isString(this.comentarioValidoMsgs)) {
+                this.comentarioValido = false
+                return
+            }
+
+            this.comentarioValidoMsgs = null
+            this.comentarioValido = true
         },
 
         parseDate(dataFormatada) {
@@ -464,7 +479,7 @@ export default {
         },
 
         validacoes() {
-            return Utils.validacao
+            return Utils.validacoes
         }, 
 
         atendimentoConcluido() {
@@ -472,9 +487,11 @@ export default {
         },
 
         atualizarTempoAtendimento() {
-            let agora = new Date()
-            let inicio = new Date(this.entidadeAtual.dataHoraInicio)
-            this.tempoAtendimento = Utils.tempoDecorridoEntre(inicio, agora)
+            if(this.entidadeAtual) {
+                let agora = new Date()
+                let inicio = new Date(this.entidadeAtual.dataHoraInicio)
+                this.tempoAtendimento = Utils.tempoDecorridoEntre(inicio, agora)
+            }
         }
     },
     watch: {
@@ -482,6 +499,10 @@ export default {
             this.dataAtendimentosFormatada = this.formatDate(this.dataAtendimentos)
             this.carregarItens()
         },
+
+        novoComentario(val) {
+            this.validarComentario()
+        }
     },
     computed: {
         computedNomeDoAtendente() {
