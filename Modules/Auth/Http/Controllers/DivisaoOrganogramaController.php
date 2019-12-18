@@ -1,7 +1,7 @@
 <?php
 
 namespace Modules\Auth\Http\Controllers;
-
+use Modules\Auth\Entities\DivisaoOrganograma;
 
 
 use Illuminate\Http\Request;

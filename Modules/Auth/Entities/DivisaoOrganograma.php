@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Auth\Http\Controllers;
+namespace Modules\Auth\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Modules\Auth\Entities\DivisaoOrganogramaPai;

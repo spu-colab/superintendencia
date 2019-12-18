@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use App\User;
 use App\UsuarioPermissao;
 use Adldap\Laravel\Facades\Adldap;
+use Modules\Auth\Entities\DivisaoOrganograma;
 
 class AuthController extends Controller
 {
@@ -77,18 +78,14 @@ class AuthController extends Controller
     public function show($id)
     {
         $search = Adldap::search()->where('description', '=', $id)->get();
-        
-        if($search[0]['displayname'][0]){
-            $usuario['name']        = $search[0]['displayname'][0];
-            $usuario['mail']        = $search[0]['mail'][0];
-            $usuario['cpf']         = $search[0]['description'][0];
-            $usuario['telefone']    = $search[0]['telephonenumber'][0];
-            return response()->json($usuario);
+        if (!@$search[0]['displayname'][0]){
+            return response()->json("CPF: ".$id." Não Localizado");
         }
-        //
-
-        //$result = User::with(['permissoes','divisoesOrganograma'])->find($id);
-        return response()->json("CPF não Encontrado");
+        $usuario['name']        = $search[0]['displayname'][0];
+        $usuario['mail']        = $search[0]['mail'][0];
+        $usuario['cpf']         = $search[0]['description'][0];
+        $usuario['telefone']    = $search[0]['telephonenumber'][0];
+        return response()->json($usuario);
     }
 
     /**
