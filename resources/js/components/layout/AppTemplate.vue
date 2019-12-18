@@ -135,6 +135,12 @@ export default {
         model: true
       },
       { 
+        text: 'Geovisualizador',
+        icon: 'map', 
+        route: '/geo',
+        model: true
+      },
+      { 
         text: 'Governança',
         icon: 'near_me', 
         route: '/governanca',

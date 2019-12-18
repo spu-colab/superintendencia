@@ -10,7 +10,7 @@ import ProcedimentoExternoCrud from './../components/ProcedimentoExternoCrud'
 import Atendimento from './../components/atendimento/Atendimento'
 import Governanca from './../components/governanca/Governanca'
 import Conteudo from './../components/Conteudo'
-import GeoReferenciamento from './../components/GeoReferenciamento'
+import GeoVisualizador from './../components/geo/GeoVisualizador'
 import FileUpload from './../components/FileUpload'
 import store from './../store'
 
@@ -223,7 +223,7 @@ let router = new Router({
     {
       path: '/geo',
       name: 'Geo',
-      component: GeoReferenciamento,
+      component: GeoVisualizador,
       meta: {
         guest: true,
         breadcrumb: [
@@ -232,7 +232,7 @@ let router = new Router({
             href: '/#/'
           },
           {
-            text: 'Geo Visualizador (teste)',
+            text: 'Geo Visualizador',
           }
         ]
       }
