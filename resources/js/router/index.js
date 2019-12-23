@@ -221,6 +221,27 @@ let router = new Router({
       }
     },
     {
+      path: '/procedimento/:id',
+      name: 'ProcedimentoExternoEditor',
+      component: ProcedimentoExternoCrud,
+      meta: {
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Demandas Judiciais',
+            href: '/#/nujuc'
+          },
+          {
+            text: 'Procedimentos Externos'
+          },
+        ]
+      }
+    },
+    {
       path: '/geo',
       name: 'Geo',
       component: GeoVisualizador,

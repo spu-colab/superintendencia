@@ -187,9 +187,22 @@ export default {
     },
     methods: {
         selecionarParaEdicao(item) {
+            // console.log('Item selecionado: ' + item.id)
+            this.$http.get(rotas.rotas().procedimentoExterno.buscar + item.id)
+                .then(
+                    response => {
+                        // console.log('consultando procedimento :' + item.id)
+                        // console.log(response)
+                        response.body.forEach(element => {
+                            element.tipoProcedimentoExterno = element.tipo_procedimento_externo.tipoprocedimento
+                            this.entidadeAtual = element
+                        })
+                    },
+                    error => {
+                        console.log(error)
+                    }
+                )
             this.carregarTabelasApoio()
-            this.entidadeAtual = item
-            console.log('Item selecionado: ' + item.id)
         },
         salvar() {
             let formData = new FormData()
@@ -331,6 +344,9 @@ export default {
     },
     mounted() {
         this.carregarItens()
+        if(this.$route.params.id) {
+            this.selecionarParaEdicao({ id: this.$route.params.id})
+        }
     }
 }
 </script>

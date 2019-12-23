@@ -15,7 +15,15 @@ class AdicionarColunaCorATabelaCamada extends Migration
     {
         Schema::table('geo_camada', function (Blueprint $table) {
             $table->text('cor')->nullable()->default('blue');
+            $table->text('rotaFrontEnd')->nullable()->default('/nome-recurso/[id]');            
         });
+
+        DB::table('geo_camada')
+            ->where('tabelaReferencia', 'procedimentoexterno')
+                ->update([
+                    'cor' => 'red',
+                    'rotaFrontEnd' => '/procedimento/[id]'
+                ]);
 
     }
 
@@ -28,6 +36,7 @@ class AdicionarColunaCorATabelaCamada extends Migration
     {
         Schema::table('geo_camada', function (Blueprint $table) {
             $table->dropColumn('cor');
+            $table->dropColumn('rotaFrontEnd');
         });
     }
 }
