@@ -253,7 +253,7 @@ let router = new Router({
             href: '/#/'
           },
           {
-            text: 'Geo Visualizador',
+            text: 'Geovisualizador',
           }
         ]
       }

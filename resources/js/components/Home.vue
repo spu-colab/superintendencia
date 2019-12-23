@@ -5,8 +5,12 @@
 
                 <v-layout align-start justify-space-between row>
 
-                    <v-flex col xs12 md6>
+                    <v-flex col xs12 md4>
                         <v-card>
+                            <v-img
+                                src="/images/baseconhecimento.jpg"
+                                aspect-ratio="2.75"
+                            ></v-img>
                             <v-card-title primary title>
                                 <div>
                                     <h3>Base de Conhecimento</h3>
@@ -25,8 +29,36 @@
                         </v-card>
                     </v-flex>
 
-                    <v-flex col xs12 md6>
+                    <v-flex col xs12 md4>
                         <v-card>
+                            <v-img
+                                src="/images/geo.jpg"
+                                aspect-ratio="2.75"
+                            ></v-img>
+                            <v-card-title primary title>
+                                <div>
+                                    <h3>Geovisualizador</h3>
+                                    <div>
+                                        Conheça nosso painel de geovisualização das demandas juridicas.
+                                    </div>
+                                </div>
+                            </v-card-title>
+                            <v-card-actions>
+                                <v-layout justify-end row fill-height wrap>
+                                    <v-btn primary>
+                                        <a href="/#/geo">Acessar</a>
+                                    </v-btn>
+                                </v-layout>
+                            </v-card-actions>
+                        </v-card>
+                    </v-flex>
+
+                    <v-flex col xs12 md4>
+                        <v-card>
+                            <v-img
+                                src="/images/juridicas.jpg"
+                                aspect-ratio="2.75"
+                            ></v-img>
                             <v-card-title primary title>
                                 <div>
                                     <h3>Demandas Jurídicas e de Controle</h3>
