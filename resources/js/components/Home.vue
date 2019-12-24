@@ -5,81 +5,70 @@
 
                 <v-layout align-start justify-space-between row>
 
+                    <!-- Base de Conhecimento -->
                     <v-flex col xs12 md4>
-                        <v-card>
-                            <v-img
-                                src="/images/baseconhecimento.jpg"
-                                aspect-ratio="2.75"
-                            ></v-img>
-                            <v-card-title primary title>
-                                <div>
-                                    <h3>Base de Conhecimento</h3>
+                        <a href="http://10.209.232.158/wordpress" target="_blank">
+                            <v-card>
+                                <v-img
+                                    src="/images/baseconhecimento.jpg"
+                                    aspect-ratio="2.75"
+                                ></v-img>
+                                <v-card-title primary title>
                                     <div>
-                                        Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e ter acesso ao conhecimento produzido na Superintendência.
+                                        <h3>Base de Conhecimento</h3>
+                                        <div>
+                                            Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e ter acesso ao conhecimento produzido na Superintendência.
+                                        </div>
                                     </div>
-                                </div>
-                            </v-card-title>
-                            <v-card-actions>
-                                <v-layout justify-end row fill-height wrap>
-                                    <v-btn primary>
-                                        <a href="http://10.209.232.158/wordpress">Acessar</a>
-                                    </v-btn>
-                                </v-layout>
-                            </v-card-actions>
-                        </v-card>
+                                </v-card-title>
+                            </v-card>
+                        </a>
                     </v-flex>
 
+                    <!-- Geovisualização -->
                     <v-flex col xs12 md4>
-                        <v-card>
-                            <v-img
-                                src="/images/geo.jpg"
-                                aspect-ratio="2.75"
-                            ></v-img>
-                            <v-card-title primary title>
-                                <div>
-                                    <h3>Geovisualizador</h3>
+                        <router-link to="/geo">
+                            <v-card>
+                                <v-img
+                                    src="/images/geo.jpg"
+                                    aspect-ratio="2.75"
+                                ></v-img>
+                                <v-card-title primary title>
                                     <div>
-                                        Conheça nosso painel de geovisualização das demandas juridicas.
+                                        <h3>Geovisualizador</h3>
+                                        <div>
+                                            Conheça nosso painel de geovisualização das demandas juridicas.
+                                        </div>
                                     </div>
-                                </div>
-                            </v-card-title>
-                            <v-card-actions>
-                                <v-layout justify-end row fill-height wrap>
-                                    <v-btn primary>
-                                        <a href="/#/geo">Acessar</a>
-                                    </v-btn>
-                                </v-layout>
-                            </v-card-actions>
-                        </v-card>
+                                </v-card-title>
+                            </v-card>
+                        </router-link>
                     </v-flex>
 
+                    <!-- Demandas Jurídicas e de Controle -->
                     <v-flex col xs12 md4>
-                        <v-card>
-                            <v-img
-                                src="/images/juridicas.jpg"
-                                aspect-ratio="2.75"
-                            ></v-img>
-                            <v-card-title primary title>
-                                <div>
-                                    <h3>Demandas Jurídicas e de Controle</h3>
+                        <router-link to="/nujuc">
+                            <v-card>
+                                <v-img
+                                    src="/images/juridicas.jpg"
+                                    aspect-ratio="2.75"
+                                ></v-img>
+                                <v-card-title primary title>
                                     <div>
-                                        Módulo de gestão das demandas jurídicas e de controle
+                                        <h3>Demandas Jurídicas e de Controle</h3>
+                                        <div>
+                                            Módulo de gestão das demandas jurídicas e de controle
+                                        </div>
                                     </div>
-                                </div>
-                            </v-card-title>
-                            <v-card-actions>
-                                <v-layout justify-end row fill-height wrap>
-                                    <v-btn primary>
-                                        <a href="/#/nujuc">Acessar</a>
-                                    </v-btn>
-                                </v-layout>
-                            </v-card-actions>
-                        </v-card>
+                                </v-card-title>
+                            </v-card>
+                        </router-link>
                     </v-flex>
 
                 </v-layout>
             </v-flex>
 
+            <!-- Metas SPU-SC -->
             <v-flex xs12>
                 <v-layout align-start justify-space-between row>
                     <card-indicadores-estrategicos/>

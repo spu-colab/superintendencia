@@ -97,12 +97,12 @@ export default {
                 {
                     mes: 'OUT',
                     previsto: 16.66,
-                    realizado: null
+                    realizado: 25
                 },
                 {
                     mes: 'NOV',
                     previsto: 16.66,
-                    realizado: null
+                    realizado: 25
                 },
                 {
                     mes: 'DEZ',
@@ -139,7 +139,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 300,
-                    realizado: null
+                    realizado: 421
                 },
                 {
                     mes: 'DEZ',
@@ -176,7 +176,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 5,
-                    realizado: null
+                    realizado: 4
                 },
                 {
                     mes: 'DEZ',
@@ -213,7 +213,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 1,
-                    realizado: null
+                    realizado: 2
                 },
                 {
                     mes: 'DEZ',
@@ -250,7 +250,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 5,
-                    realizado: null
+                    realizado: 0
                 },
                 {
                     mes: 'DEZ',
@@ -287,7 +287,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 0,
-                    realizado: null
+                    realizado: 0
                 },
                 {
                     mes: 'DEZ',
@@ -324,7 +324,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 150,
-                    realizado: null
+                    realizado: 233
                 },
                 {
                     mes: 'DEZ',
@@ -335,7 +335,7 @@ export default {
         },
         {
             identificacao: '10',
-            metaEspecifica: '32: Diminuir: Número de imóveis  destinados mediante contratos de aforamento ou inscrição de ocupação',
+            metaEspecifica: '32: Aumentar: Número de imóveis  destinados mediante contratos de aforamento ou inscrição de ocupação',
             percentual: false,
             valoresMensais: [
                 {
@@ -361,7 +361,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 4,
-                    realizado: null
+                    realizado: 4
                 },
                 {
                     mes: 'DEZ',
@@ -377,8 +377,8 @@ export default {
             valoresMensais: [
                 {
                     mes: 'JUL',
-                    previsto: 0.01,
-                    realizado: 0.01
+                    previsto: 0,
+                    realizado: 0
                 },
                 {
                     mes: 'AGO',
@@ -398,7 +398,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 0,
-                    realizado: null
+                    realizado: 0
                 },
                 {
                     mes: 'DEZ',
@@ -435,7 +435,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 5,
-                    realizado: null
+                    realizado: 8
                 },
                 {
                     mes: 'DEZ',
@@ -472,7 +472,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 80,
-                    realizado: null
+                    realizado: 98
                 },
                 {
                     mes: 'DEZ',
@@ -488,8 +488,8 @@ export default {
             valoresMensais: [
                 {
                     mes: 'JUL',
-                    previsto: 0.01,
-                    realizado: 0.01
+                    previsto: 0,
+                    realizado: 0
                 },
                 {
                     mes: 'AGO',
@@ -509,7 +509,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 0,
-                    realizado: null
+                    realizado: 0
                 },
                 {
                     mes: 'DEZ',
@@ -546,7 +546,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 500,
-                    realizado: null
+                    realizado: 788
                 },
                 {
                     mes: 'DEZ',
@@ -583,7 +583,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 1,
-                    realizado: null
+                    realizado: 0
                 },
                 {
                     mes: 'DEZ',
@@ -620,7 +620,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 100,
-                    realizado: null
+                    realizado: 29
                 },
                 {
                     mes: 'DEZ',
@@ -657,7 +657,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 20,
-                    realizado: null
+                    realizado: 0
                 },
                 {
                     mes: 'DEZ',
@@ -673,8 +673,8 @@ export default {
             valoresMensais: [
                 {
                     mes: 'JUL',
-                    previsto: 0.01,
-                    realizado: 0.01
+                    previsto: 0,
+                    realizado: 0
                 },
                 {
                     mes: 'AGO',
@@ -694,7 +694,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 1,
-                    realizado: null
+                    realizado: 0
                 },
                 {
                     mes: 'DEZ',
@@ -731,7 +731,7 @@ export default {
                 {
                     mes: 'NOV',
                     previsto: 1,
-                    realizado: null
+                    realizado: 0
                 },
                 {
                     mes: 'DEZ',
