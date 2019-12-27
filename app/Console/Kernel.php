@@ -28,13 +28,15 @@ class Kernel extends ConsoleKernel
 
         #/*
         $schedule->command('backup:run')
-            ->everyThirtyMinutes()
+            ->hourly()
+            ->between('7:00', '21:00')
             ->sendOutputTo($logFile);
         #*/
 
         #/*
         $schedule->command('backup:clean')
-            ->everyThirtyMinutes()
+            ->hourlyAt(10)
+            ->between('7:00', '21:00')
             ->sendOutputTo($logFile);
         #*/
 
