@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        'App\Console\Commands\GerarBackupSistemas'
     ];
 
     /**
@@ -24,8 +24,26 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('backup:run')->everyThirtyMinutes();
-        $schedule->command('backup:clean')->everyThirtyMinutes();
+        $logFile = base_path('backup_log.txt');
+
+        #/*
+        $schedule->command('backup:run')
+            ->everyThirtyMinutes()
+            ->sendOutputTo($logFile);
+        #*/
+
+        #/*
+        $schedule->command('backup:clean')
+            ->everyThirtyMinutes()
+            ->sendOutputTo($logFile);
+        #*/
+
+        #/*
+        $schedule->command('spu:backup')
+            ->twiceDaily(13, 21)
+            ->runInBackground()
+            ->sendOutputTo($logFile);
+        #*/
     }
 
     /**

@@ -79,7 +79,7 @@ return [
         ],
         'usb' => [
             'driver' => 'local',
-            'root' => env('FILESYSTEM_PATH_USB_BACKUP'),
+            'root' => env('BACKUP_PATH'),
         ],
 
     ],

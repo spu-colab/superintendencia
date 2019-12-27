@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 class GerarBackupSistemas extends Command
 {
@@ -18,7 +19,7 @@ class GerarBackupSistemas extends Command
      *
      * @var string
      */
-    protected $description = 'Gera um arquivo de backup contendo os dumps das bases de dados e o fonte da base de conhecimento (wordpress)';
+    protected $description = 'Gera arquivos de backup conforme configuração contida em /config/spu.php';
 
     /**
      * Create a new command instance.
@@ -37,25 +38,26 @@ class GerarBackupSistemas extends Command
      */
     public function handle()
     {
-        $diretorioBackup = env('BACKUP_PATH_WORDPRESS');
-        $arquivosGerados = [];
-
-        echo "Efetuando backup dos arquivos..." . PHP_EOL;
-
-        // wordpress
-        $arquivoGerado = $this->comprimirDiretorio(
-            \realpath(base_path() . '/../htdocs/wordpress'),
-            'wordpress', 
-            $diretorioBackup);
-        array_push($arquivosGerados, $arquivoGerado);
-
-        // $arquivoGerado = TODO dump da base
-        // array_push($arquivosGerados, $arquivoGerado);
-
-        $this->limparAntigos($diretorioBackup, $arquivosGerados);
+        $spu_conf = include(base_path('config/spu.php'));
+        $this->config = $spu_conf['backup'];
+        $this->efetuarBackup();
     }
 
-    private function comprimirDiretorio($diretorioOrigem, $nomeArquivoComprido, $diretorioDestino) {
+    private function efetuarBackup() {
+
+        $this->ajustarConfiguracao();
+
+        foreach ($this->config['origem']['arquivos'] as $nome_backup => $config) {
+            $this->info("Efetuando backup dos arquivos de '$nome_backup'...");
+            $arquivoGerado = $this->comprimirDiretorio(
+                $nome_backup, 
+                $config,
+                \realpath($this->config['destino']));
+            $this->limparAntigos($this->config['destino'], $arquivoGerado);
+        }
+    }
+        
+    private function comprimirDiretorio($nomeArquivoComprido, $config, $diretorioDestino) {
         $nomeArquivoComprido = date('Y-m-d_H_i') . '_' . $nomeArquivoComprido . '.zip';
 
         $zip = new \ZipArchive();
@@ -63,10 +65,14 @@ class GerarBackupSistemas extends Command
             $diretorioDestino . DIRECTORY_SEPARATOR . $nomeArquivoComprido, 
             \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
 
+        $diretorioOrigem = \realpath($config['caminho_origem']);
         $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($diretorioOrigem));
         $totalArquivos = 0;
         foreach($files as $name => $file) {
-            if (!$file->isDir()) {
+            if($this->ignorarArquivo($file, $config)) {
+                continue;
+            }
+            if ($file->isFile()) {
                 $filePath = $file->getRealPath();
                 echo "\r";
                 echo 'Arquivos encontrados ' . $totalArquivos;
@@ -75,28 +81,29 @@ class GerarBackupSistemas extends Command
                 $totalArquivos++;
             }
         }
-        echo PHP_EOL . 'Comprimindo arquivos em ' . $diretorioDestino . DIRECTORY_SEPARATOR . $nomeArquivoComprido . '...';
+        $this->info('Comprimindo arquivos em ' . $diretorioDestino . DIRECTORY_SEPARATOR . $nomeArquivoComprido . '...');
         $zip->close();
-        echo ' concluído.'. PHP_EOL;
+        $this->info(' concluído.');
         return $diretorioDestino . DIRECTORY_SEPARATOR . $nomeArquivoComprido;
     }
 
-    private function limparAntigos($diretorioBackup, $naoExcluirEstesArquivos = [])
+    private function limparAntigos($diretorioBackup, $ultimoArquivoGerado)
     {
-        echo 'Iniciando a limpeza de arquivos antigos de backup em '. $diretorioBackup . PHP_EOL;
-        $files = new \DirectoryIterator($diretorioBackup);
-        foreach($files as $fileInfo) {
-            $file = $fileInfo->getPathname();
+        $this->info('Iniciando a limpeza de arquivos antigos de backup em '. $diretorioBackup . PHP_EOL);
+
+        $explode = explode(DIRECTORY_SEPARATOR, $ultimoArquivoGerado);
+        $sufixoUltimoArquivoGerado = $explode[sizeof($explode)-1];
+        $sufixoUltimoArquivoGerado = substr($sufixoUltimoArquivoGerado, 16);
+
+        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($diretorioBackup));
+        foreach($files as $name => $file) {
             if(is_file($file)) {
-                $diasArquivo = $this->idadeDoArquivoEmDias($file);
-                if($diasArquivo == 0) {
-                    if(!\in_array($file, $naoExcluirEstesArquivos)) {
-                        $this->excluirArquivo($file);
-                    }
-                } else {
-                    if($diasArquivo > 7) {
-                        $this->excluirArquivo($file);
-                    }
+                if(!Str::endsWith($name, $sufixoUltimoArquivoGerado)) {
+                    continue;
+                }
+                $diasArquivo = $this->idadeDoArquivoEmDias($file);            
+                if($diasArquivo > $this->config['idadeMaximaDosArquivosEmDias']) {
+                    $this->excluirArquivo($file);
                 }
             }
         }
@@ -107,11 +114,35 @@ class GerarBackupSistemas extends Command
         $dataArquivo = date('Y-m-d', filemtime($arquivo));
         $dataArquivo = new \DateTime($dataArquivo);
         $idadeArquivo = $dataArquivo->diff($hoje);
-        $diasArquivo = $idadeArquivo->d;
+        return $idadeArquivo->d;
     }
     
     private function excluirArquivo($arquivo) {
-        echo 'Excluindo ' . $arquivo . '...' . PHP_EOL;
+        $this->info('Excluindo ' . $arquivo . '...');
         unlink($arquivo);
+    }
+
+    private function ignorarArquivo($file, $config) {
+        if(!is_array(@$config['ignorar'])) {
+            return false;
+        }
+        foreach ($config['ignorar'] as $diretorioIgnorar) {
+            if(\stripos($file, $diretorioIgnorar) === 0) {
+                return true;
+            }
+        }
+        return false;
+     }
+
+     private function ajustarConfiguracao() {
+        foreach ($this->config['origem']['arquivos'] as $nome_backup => $config) {
+            if(is_array(@$config['ignorar'])) {
+                foreach ($config['ignorar'] as $i => $diretorioIgnorar) {
+                    $diretorioIgnorar = $config['caminho_origem'] . DIRECTORY_SEPARATOR . $diretorioIgnorar;
+                    $diretorioIgnorar = \realpath($diretorioIgnorar);
+                    $this->config['origem']['arquivos'][$nome_backup]['ignorar'][$i] = $diretorioIgnorar;
+                }
+            }
+        }
     }
 }
