@@ -66,9 +66,13 @@ class ProcedimentoExternoController extends Controller
      * @param  \App\ProcedimentoExterno  $procedimentoExterno
      * @return \Illuminate\Http\Response
      */
-    public function show(ProcedimentoExternoRequest $procedimentoExterno)
+    public function show($id)
     {
-        //
+        return ProcedimentoExterno::with(
+            [
+                'tipoProcedimentoExterno'
+            ]
+        )->where('id', $id)->get();
     }
 
     /**

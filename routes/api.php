@@ -19,7 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('user/register', 'APIRegisterController@register');
 Route::post('user/login', 'APILoginController@login');
-Route::middleware('jwt.auth')->get('procedimentoExterno/{search}', 'ProcedimentoExternoController@search');
 
 
 Route::middleware('jwt.auth')->group(function () {
@@ -46,18 +45,23 @@ Route::middleware('jwt.auth')->group(function () {
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
     Route::resource('divisaoOrganograma', 'DivisaoOrganogramaController');
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
+    Route::get('procedimentoExterno/buscar/{search}', 'ProcedimentoExternoController@search');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
     Route::resource('poloProcedimentoExterno', 'PoloProcedimentoExternoController');
 
     
     Route::middleware('jwt.refresh')->post('demanda', 'DemandaController@store');
     Route::middleware('jwt.refresh')->put('demanda/{demanda}', 'DemandaController@update');
+
     Route::middleware('jwt.refresh')->post('procedimentoExterno', 'ProcedimentoExternoController@store');
     Route::middleware('jwt.refresh')->put('procedimentoExterno/{procedimentoExterno}', 'ProcedimentoExternoController@update');
+
     Route::middleware('jwt.refresh')->post('autorDemanda', 'AutorDemandaController@store');
     Route::middleware('jwt.refresh')->put('autorDemanda/{autorDemanda}', 'AutorDemandaController@update');
+
     Route::middleware('jwt.refresh')->post('orgao', 'OrgaoController@store');
     Route::middleware('jwt.refresh')->put('orgao/{orgao}', 'OrgaoController@update');
+
     Route::middleware('jwt.refresh')->get('user/refresh', function () {
         return "OK";
     });
@@ -69,9 +73,11 @@ Route::middleware('jwt.auth')->group(function () {
 
  
 Route::resource('usuario', 'UsuarioController');
+
 // Route::get('arquivo', 'ArquivoController@index');
 // Route::get('arquivo/criar', 'ArquivoController@create');
 // Route::post('arquivo', 'ArquivoController@uploadFile');
+
 Route::get('geo/camada', 'GeoController@listarCamadas');
 Route::get('geo/camada/{camada}/referencia', 'GeoController@listarReferenciasPorCamada');
 Route::get('geo/camada/{id}', 'GeoController@obterCamada');
@@ -108,18 +114,3 @@ Route::get('demanda/relatorio/abertas-natureza/{dataDe}/{dataAte}', 'DemandaCont
         'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
         'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
     ]);
-
-//BACKUP
-/*
-Route::get('backup', 'BackupController@run');
-Route::get('backup', function () {
-    ini_set('max_execution_time', 900);
-    $exitCode = Artisan::call('backup:run');
-
-    if($exitCode == 0) {
-        $exitCode = Artisan::call('backup:clean');
-    }
-    return $exitCode;
-});
-*/
-
