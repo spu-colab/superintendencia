@@ -625,7 +625,7 @@ export default {
                 {
                     mes: 'DEZ',
                     previsto: 100,
-                    realizado: null
+                    realizado: 35
                 },
             ]
         },
