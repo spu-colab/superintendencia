@@ -591,22 +591,23 @@ class DemandaController extends Controller
         return $pdf->download('eSPU-SC_Demanda.pdf');
     }
 
-    public function gerarPDFAcompanhamento(DemandaRepositoryI $respository) {
+    public function gerarPDFAcompanhamento(Request $request, DemandaRepositoryI $respository) {
         $demandas = array();
 
         $divisoesOrganogramas = DivisaoOrganograma::select(['id', 'nome', 'sigla'])->orderBy('nome')->get();
         foreach ($divisoesOrganogramas as $key => $divisaoOrganograma) {
-            $demandas['divisoesOrganogramas'][$key] = $divisaoOrganograma;
-            
-            $demandasIds = $respository->listarIdsDemandasDistribuidasPara($divisaoOrganograma);
-            $demandas['divisoesOrganogramas'][$key]['demandas'] = Demanda::with(
-                [
-                    'autor.cargo', 
-                    'autor.orgao',
-                    'procedimentoExterno.tipoProcedimentoExterno'
-                ]
-            )->whereIn('id', $demandasIds)->get();
-
+            if($request['incluirReprimidas'] == "true" || $divisaoOrganograma->id != DivisaoOrganograma::DEMANDA_REPRIMIDA) {
+                $demandas['divisoesOrganogramas'][$key] = $divisaoOrganograma;
+                
+                $demandasIds = $respository->listarIdsDemandasDistribuidasPara($divisaoOrganograma);
+                $demandas['divisoesOrganogramas'][$key]['demandas'] = Demanda::with(
+                    [
+                        'autor.cargo', 
+                        'autor.orgao',
+                        'procedimentoExterno.tipoProcedimentoExterno'
+                    ]
+                )->whereIn('id', $demandasIds)->get();
+            }
         }
 
         // return $demandas;

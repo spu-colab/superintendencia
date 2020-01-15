@@ -177,21 +177,26 @@
       <!-- segunda coluna -->
       <v-flex d-flex col xs12 md3 justify-start>
         <!-- Relatórios -->
-        <v-flex d-flex col xs12>
-          <v-card>
-              <v-card-title>
-                  <h3>Relatórios</h3>
-              </v-card-title>
-              <v-card-text>
-                  <p class="text-md-center">
-                      <v-btn @click="gerarRelatorioDemandasPorNucleo" :disabled="carregandoRelatorioDemandasPorNucleo">
-                        <v-progress-circular indeterminate v-if="carregandoRelatorioDemandasPorNucleo" color="grey" size="20" width="3"></v-progress-circular>
-                        Demandas por núcleo
-                      </v-btn>
-                  </p>
-              </v-card-text>
-          </v-card>
-        </v-flex>
+        
+          <v-layout col wrap>
+            
+            <v-flex d-flex row xs12>
+              <h3>Relatórios</h3>
+            </v-flex>           
+
+            <v-flex  d-flex row xs12>
+              <v-card>
+                  <v-card-text>
+                    <h4>Demandas por Núcleo</h4>
+                    <v-checkbox v-model="incluirReprimidas" label="Incluir Reprimidas"></v-checkbox>
+                    <v-btn @click="gerarRelatorioDemandasPorNucleo" :disabled="carregandoRelatorioDemandasPorNucleo">
+                      <v-progress-circular indeterminate v-if="carregandoRelatorioDemandasPorNucleo" color="grey" size="20" width="3"></v-progress-circular>
+                      Gerar
+                    </v-btn>
+                  </v-card-text>
+              </v-card>
+            </v-flex>
+          </v-layout>
         <!-- Fim de Relatórios -->
 
       </v-flex>      
@@ -247,6 +252,7 @@ export default {
       dataAteFormatada: null,
 
       carregandoRelatorioDemandasPorNucleo: false,
+      incluirReprimidas: false,
 
       carregouDemandasEntradaSaidaDiaria: false,
       demandasEntradaSaidaDiaria: null,
@@ -649,9 +655,12 @@ export default {
     },
 
     async gerarRelatorioDemandasPorNucleo() {
+      let formData = new FormData()
+      formData.append('incluirReprimidas', this.incluirReprimidas)
+
       this.carregandoRelatorioDemandasPorNucleo = true;
       let url = rotas.rotas().demanda.relatorio.abertasPorDivisaoOrganograma;
-      return this.$http.get(url, { responseType: "arraybuffer" }).then(
+      return this.$http.post(url, formData, { responseType: "arraybuffer" }).then(
         response => {
           console.log(response.data);
           let blob = new Blob([response.data], {

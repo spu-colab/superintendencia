@@ -85,7 +85,7 @@ Route::get('geo/camada/{id}', 'GeoController@obterCamada');
 
 //RELATÓRIOS
 Route::get('demanda/relatorio/entrada-saida-diaria', 'DemandaController@relatorioEntradaSaidaDiaria');
-Route::get('demanda/relatorio/acompanhamento', 'DemandaController@gerarPDFAcompanhamento');
+Route::post('demanda/relatorio/acompanhamento', 'DemandaController@gerarPDFAcompanhamento');
 
 Route::get('demanda/relatorio/abertas-distribuicao', 'DemandaController@relatorioAbertasPorDistribuicao');
 Route::get('demanda/relatorio/abertas-distribuicao/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorDistribuicao')
