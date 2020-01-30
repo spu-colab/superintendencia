@@ -28,22 +28,19 @@ class Kernel extends ConsoleKernel
 
         #/*
         $schedule->command('backup:run')
-            ->hourly()
-            ->between('7:00', '21:00')
+            ->dailyAt('21:00')
             ->sendOutputTo($logFile);
         #*/
 
         #/*
         $schedule->command('backup:clean')
-            ->hourlyAt(10)
-            ->between('7:00', '21:00')
+            ->dailyAt('22:00')
             ->sendOutputTo($logFile);
         #*/
 
         #/*
         $schedule->command('spu:backup')
-            ->twiceDaily(13, 21)
-            ->runInBackground()
+        ->dailyAt('23:00')
             ->sendOutputTo($logFile);
         #*/
     }
