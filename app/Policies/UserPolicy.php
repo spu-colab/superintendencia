@@ -1,6 +1,7 @@
 <?php
 namespace App\Policies;
 use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
+use App\Permissao;
 class UserPolicy
 {    
     use PermissaoDivisaoOrganogramaTrait;
@@ -26,7 +27,7 @@ class UserPolicy
 
     public function store()
     {
-        return $this->verificaUsuarioPermissao(["USUARIO_CADASTRAR"]);
+        return $this->verificaUsuarioPermissao([Permissao::USUARIO_CADASTRAR]);
     }
 
     public function show()
@@ -41,7 +42,7 @@ class UserPolicy
 
     public function update()
     {
-        return $this->verificaUsuarioPermissao(["USUARIO_CADASTRAR"]);
+        return $this->verificaUsuarioPermissao([Permissao::USUARIO_CADASTRAR]);
     }
     
     public function destroy()

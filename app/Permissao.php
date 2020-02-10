@@ -8,6 +8,10 @@ class Permissao extends Model
 {
     protected $table = "permissao";
 
+    public const USUARIO_CADASTRAR = 'USUARIO_CADASTRAR';
+    public const DIVISAO_ORGANOGRAMA_CADASTRAR = 'DIVISAO_ORGANOGRAMA_CADASTRAR';
+    public const PERMISSAO_CADASTRAR = 'PERMISSAO_CADASTRAR';
+
     public function usuarios(){    
 
         return $this->hasManyThrough(
