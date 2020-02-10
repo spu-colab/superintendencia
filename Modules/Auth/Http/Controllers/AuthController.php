@@ -4,28 +4,35 @@ namespace Modules\Auth\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+use Nwidart\Modules\Routing\Controller;
+use Redirect,DB,Config;
 use App\User;
+use App\Permissao;
 use App\UsuarioPermissao;
+use App\DivisaoOrganograma;
+use App\UsuarioDivisaoOrganograma;
+use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
 use Adldap\Laravel\Facades\Adldap;
-use Modules\Auth\Entities\DivisaoOrganograma;
 
 class AuthController extends Controller
-{
+{    
+    use PermissaoDivisaoOrganogramaTrait;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
+    public function listarReduzido(Request $request)
+    {
+        return response()->json(User::orderBy('name', 'asc')->get());
+    }
     public function index(Request $request)
     {
-        $result = User::get();
-        
+        $result = User::with(['permissoes:Permissao.id,permissao,descricao',
+            'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])->get();
         return response()->json($result);
     }
-
-
-
     /**
      * Show the form for creating a new resource.
      *
@@ -44,31 +51,45 @@ class AuthController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $user = new User;
+        date_default_timezone_set('America/Sao_Paulo');
+        $dataAtual  = date("Y-m-d H:i:s");  
 
+        if(@$request->user['cpf']) {
+            $user = new User;
+            $this->authorize('store', $user);
 
+            $user->cpf = $request->user['cpf'];
+    
+            $search = Adldap::search()->where('description', '=', $user->cpf)->get();
+            if (!@$search[0]['displayname'][0]){
+                return response()->json(['message' => "CPF: ".@$request->user['cpf']." Não Localizado"], 404);
+            }
 
-        if(@$request->usuario['name']) {
-            $user->name = $request->usuario['name'];
-        }
-        if(@$request->usuario['cpf']) {
-            $user->cpf = $request->usuario['cpf'];
-        }
-        if(@$request->usuario['email']) {
-            $user->email = $request->usuario['email'];
-        }
-        if(@$request->usuario['telefone']) {
-            $user->telefone = $request->usuario['telefone'];
-        }
-        if(@$request->usuario['password']) {
-            $user->password = $request->usuario['password'];
-        }
-        $user = $user->save();
-        return response()->json($user);
+            $user['password']       = Hash::make($user->cpf);
+            $user['name']           = $search[0]['displayname'][0];
+            $user['email']          = $search[0]['mail'][0];        
+            $user['telefone']       = $search[0]['telephonenumber'][0];
+            try{
+                $user->save();
+            }
+            catch(\Exception $e){
+                return response()->json(['message' => "CPF: ".$user->cpf." Já Existe na Base "], 404);
+            }
 
-    }
-
+        if(@$request->permissoes) {
+            foreach ($request->permissoes as $idPermissao) {
+                $this->incluiUsuarioPermissao($user->id, $idPermissao);
+            }
+        }    
+        if(@$request->divisoes) {
+            foreach ($request->divisoes as $idDivisaoOrganograma) {
+                $this->incluiUsuarioUsuarioDivisaoOrganograma($user->id, $idDivisaoOrganograma);
+            }
+        }                
+            return  $this->edit($user->id);
+        }   
+        return response()->json(['message' => "CPF deve ser informado"], 404);
+    }  
     /**
      * Display the specified resource.
      *
@@ -96,8 +117,8 @@ class AuthController extends Controller
      */
     public function edit($id)
     {
-        //
-        $user = User::findOrFail($id);
+        $user = User::with(['permissoes:Permissao.id,permissao,descricao',
+            'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])->findOrFail($id);
         return response()->json($user);
     }
 
@@ -109,14 +130,9 @@ class AuthController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
-        // recuperar o usuario do banco
-        // fazer as atualizações de valores
-        // $user->update();
-        date_default_timezone_set('America/Sao_Paulo');
-        $dataAtual  = date("Y-m-d H:i:s");  
-        $user = User::findOrFail($id);
-//        $this->authorize('update', $user);
+    {        
+        $user = User::findOrFail($id);       
+        $this->authorize('update', $user);
         if(@$request->name) {
             $user->name = $request->name;
         }
@@ -129,21 +145,20 @@ class AuthController extends Controller
         if(@$request->telefone) {
             $user->telefone = $request->telefone;
         }
-        UsuarioPermissao::where('idUsuario', $id)->delete();
+        $this->removeUsuarioUsuarioPermissao($id);
+        $this->removeUsuarioUsuarioDivisaoOrganograma($id);
 
-        if(@$request->idPermissao) {
-            $dataSet = [];
-            foreach ($request->idPermissao as $idPermissao) {
-                 $dataSet[] = [
-                    'idUsuario'  => $id,
-                    'idPermissao' => $idPermissao,
-                    'created_at' => $dataAtual
-                ];
+        if(@$request->permissoes) {
+            foreach ($request->permissoes as $idPermissao) {
+                $this->incluiUsuarioPermissao($id, $idPermissao);
             }
-            UsuarioPermissao::insert($dataSet);
         }    
-        
-        return response()->json($user->update());
+        if(@$request->divisoes) {
+            foreach ($request->divisoes as $idDivisaoOrganograma) {
+                $this->incluiUsuarioUsuarioDivisaoOrganograma($id, $idDivisaoOrganograma);
+            }
+        }            
+        return response()->json(true);
     }
 
     /**
