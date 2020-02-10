@@ -710,7 +710,7 @@ export default {
             formData.append('distribuicao[idDemanda]', this.entidadeAtual.id)
             formData.append('distribuicao[idUsuarioDe]', this.usuario.id)
             if(this.distribuicao.atribuirPara) {
-                console.log(this.distribuicao.atribuirPara)
+                // console.log(this.distribuicao.atribuirPara)
                 let splitAtribuirPara = this.distribuicao.atribuirPara.split(":")
                 formData.append('distribuicao[assignable_id]', splitAtribuirPara[0])
                 formData.append('distribuicao[assignable_type]', "App\\"+splitAtribuirPara[1])
@@ -729,7 +729,7 @@ export default {
             this.$http.post(url, formData)
                 .then(
                     response => {
-                        console.log(response)
+                        // console.log(response)
                         this.$store.commit('sistema/mensagem', this.distribuicao.id == null ? 'Distribuição da demanda cadastrada com sucesso!' : 'Distribuição da demanda atualizada com sucesso!')
                         this.selecionarParaEdicao(this.entidadeAtual)
                     },

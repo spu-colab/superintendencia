@@ -96,9 +96,9 @@ export default {
     methods: {
 
         initMap () {
-            console.log('initMap()')
+            // console.log('initMap()')
             if(this.map == null) {
-                console.log('Map não inicializado...')
+                // console.log('Map não inicializado...')
                 this.map = L.map('mapGeo', {
                     crs: L.CRS.EPSG3857
                 }).setView([-28.1, -47.5], 7);
@@ -107,7 +107,7 @@ export default {
         },
 
         adicionarTileLayers() {
-            console.log('adicionarTileLayers()')
+            // console.log('adicionarTileLayers()')
             let tileLayerMapa = L.tileLayer(
                 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
                 maxZoom: 18,
@@ -196,7 +196,7 @@ export default {
                         camada.children = []
                         response.body.forEach(element => {
                             element.conteudoPopup = this.montarConteudoPopupDaReferencia(element)
-                            element.rotaFrontEnd = camada.rotaFrontEnd.replace('[id]', element.id)
+                            element.rotaFrontEnd = camada.rotaFrontEnd.replace('[id]', element.idReferenciado)
                             element.id += 1000000 * camada.id
                             let feature = {
                                 id: element.id,
@@ -320,7 +320,7 @@ export default {
         },
 
         clicouAbrirCadastroItemCamada(itemDaArvore) {
-            // console.log(itemDaArvore)
+            console.log(itemDaArvore)
             this.$router.push(itemDaArvore.rotaFrontEnd)
         },
 
