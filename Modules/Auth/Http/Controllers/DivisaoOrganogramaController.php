@@ -1,15 +1,17 @@
 <?php
 
 namespace Modules\Auth\Http\Controllers;
-use Modules\Auth\Entities\DivisaoOrganograma;
-
-
+use App\DivisaoOrganograma;
+use App\UsuarioDivisaoOrganograma;
+use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
-
+use Nwidart\Modules\Routing\Controller;
 class DivisaoOrganogramaController extends Controller
 {
+    use PermissaoDivisaoOrganogramaTrait;
+
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +19,13 @@ class DivisaoOrganogramaController extends Controller
      */
     public function index()
     {
-        return DivisaoOrganograma::with('divisaoOrganogramaPai:id,nome,sigla')->orderBy('idDivisaoOrganogramaPai', 'asc')->get();
+      return DivisaoOrganograma::with('usuarios:idUsuario,name,cpf','divisaoOrganogramaPai:id,nome,sigla')
+        ->orderBy('idDivisaoOrganogramaPai', 'asc')->get();
+    }
+    public function listarPai()
+    {        
+        $result = DivisaoOrganograma::get();
+        return response()->json($result);
     }
 
     /**
@@ -38,7 +46,22 @@ class DivisaoOrganogramaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->nome && $request->sigla && $request->idPai) {
+            $divisao = new DivisaoOrganograma;
+            $this->authorize('store', $divisao);    
+            $divisao->nome = $request->nome;
+            $divisao->sigla = $request->sigla;
+            $divisao->idDivisaoOrganogramaPai = $request->idPai;
+            $result = $divisao->save();
+            if(@$request->usuarios) {
+                foreach ($request->usuarios as $idUsuario) {
+                    $this->incluiUsuarioUsuarioDivisaoOrganograma($idUsuario, $divisao->id);
+                }
+            }   
+
+            return response()->json($result);
+        }
+        return response()->json(['message' => "Erro de Preenchimento"], 404);
     }
 
     /**
@@ -63,7 +86,6 @@ class DivisaoOrganogramaController extends Controller
     {
         //
     }
-
     /**
      * Update the specified resource in storage.
      *
@@ -73,9 +95,26 @@ class DivisaoOrganogramaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if($request->nome && $request->sigla && $request->idPai) {
+            $divisao = DivisaoOrganograma::findOrFail($id);
+            $this->authorize('update', $divisao);    
+            $divisao->nome = $request->nome;
+            $divisao->sigla = $request->sigla;
+            $divisao->idDivisaoOrganogramaPai = 'null';
+            if ($request->idPai){
+                $divisao->idDivisaoOrganogramaPai = $request->idPai;
+            }
+            $result = $divisao->update();
+            $this->removeDivisaoUsuarioDivisaoOrganograma($id);
+            if(@$request->usuarios) {
+                foreach ($request->usuarios as $idUsuario) {
+                    $this->incluiUsuarioUsuarioDivisaoOrganograma($idUsuario, $id);
+                }
+            }   
+            return response()->json($result);
+        }
+        return response()->json(['message' => "Erro de Preenchimento"], 404);
     }
-
     /**
      * Remove the specified resource from storage.
      *

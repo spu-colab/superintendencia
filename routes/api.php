@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -24,6 +23,8 @@ Route::middleware('jwt.auth')->get('procedimentoExterno/{search}', 'Procedimento
 
 Route::middleware('jwt.auth')->group(function () {
     // Route::resource('conteudo', 'ConteudoController');
+
+
     Route::get('demanda/entidadeAtribuivel', 'DemandaController@listarAtribuiveis');
     Route::post('demanda/cancelar', 'DemandaController@cancelar');
     Route::post('demanda/aguardar-assinatura', 'DemandaController@aguardarAssinatura');
@@ -44,7 +45,8 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('natureza-orgao', 'OrgaoController@listarNaturezas');
     Route::resource('tipoDocumento', 'TipoDocumentoController');
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
-//    Route::resource('divisaoOrganograma', 'DivisaoOrganogramaController');
+    Route::resource('usuario/reduzido', 'AuthController@listarReduzido');
+    Route::resource('divisaoOrganograma/listarPai', 'DivisaoOrganogramaController@listarPai');
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
     Route::resource('poloProcedimentoExterno', 'PoloProcedimentoExternoController');

@@ -10,6 +10,9 @@ import ProcedimentoExternoCrud from './../components/ProcedimentoExternoCrud'
 import Governanca from './../components/governanca/Governanca'
 import Conteudo from './../components/Conteudo'
 import GeoReferenciamento from './../components/GeoReferenciamento'
+import Usuario from './../components/permissoes/Usuario'
+import Perfil from './../components/permissoes/Perfil'
+import Organograma from './../components/permissoes/Organograma'
 import FileUpload from './../components/FileUpload'
 import store from './../store'
 
@@ -214,6 +217,62 @@ let router = new Router({
           },
           {
             text: 'Geo Visualizador (teste)',
+          }
+        ]
+      }
+    },
+    {
+      path: '/permissao',
+      name: 'Usuário',
+      component: Usuario,
+      meta: {
+        guest: false,
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Usuário',
+          }
+        ]
+      }
+    },
+
+    {
+      path: '/perfil',
+      name: 'Perfil',
+      component: Perfil,
+      meta: {
+        guest: false,
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Permissão',
+          }
+        ]
+      }
+    },
+
+    {
+      path: '/organograma',
+      name: 'Organograma',
+      component: Organograma,
+      meta: {
+        guest: false,
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Divisões/Organograma',
           }
         ]
       }

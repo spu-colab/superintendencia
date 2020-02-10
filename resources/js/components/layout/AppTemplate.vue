@@ -167,6 +167,29 @@ export default {
           },
         ]
       },
+      { 
+        text: 'Configurações',
+        icon: 'build', 
+        route: '/nujuc',
+        model: true,
+        children: [
+          {
+            text: 'Usuários',
+            icon: 'perm_identity', 
+            route: '/permissao'
+          },
+          {
+            text: 'Permissões',
+            icon: 'recent_actors', 
+            route: '/perfil'
+          },
+          {
+            text: 'Divisões/Organograma',
+            icon: 'location_city', 
+            route: '/organograma'
+          },
+        ]
+      },
     ],
   }),
   props: {

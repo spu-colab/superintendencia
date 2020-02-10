@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\DistribuicaoDemanda;
+use App\DivisaoOrganograma;
 
 class User extends Authenticatable
 {
@@ -30,6 +30,7 @@ class User extends Authenticatable
 
     public function permissoes()
     {
+        
         return $this->hasManyThrough(
             'App\Permissao',
             'App\UsuarioPermissao',
@@ -38,8 +39,8 @@ class User extends Authenticatable
             'id', // Local key on countries table...
             'idPermissao' // 
         );
-    }
-
+        
+    }  
     public function divisoesOrganograma()
     {
         return $this->hasManyThrough(

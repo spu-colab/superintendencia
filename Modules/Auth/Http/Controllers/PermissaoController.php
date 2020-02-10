@@ -4,44 +4,33 @@ namespace Modules\Auth\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+use Nwidart\Modules\Routing\Controller;
 use App\Permissao;
+use App\UsuarioPermissao;
+use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
+
 class PermissaoController extends Controller
 {
+    use PermissaoDivisaoOrganogramaTrait;
+
     /**
      * Display a listing of the resource.
      * @return Response
      */
     public function index()
     {
-        $result = Permissao::orderBy('permissao', 'asc')->get();
+        $result = Permissao::with(['usuarios:idUsuario'])->orderBy('permissao', 'asc')->get();        
         return response()->json($result);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     * @return Response
-     */
     public function create()
     {
-        
+        return response()->json(['message' => "Opção desabilitada"], 404);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Response
-     */
     public function store(Request $request)
     {
-        if($request->permissao && $request->descricao) {
-            $permissao = new Permissao;
-            $permissao->permissao = $request->permissao;
-            $permissao->descricao = $request->descricao;
-            $result = $permissao->save();
-            return response()->json($result);
-        }
-        return response()->json("Erro de Preenchimento");
+        return response()->json(['message' => "Opção desabilitada"], 404);
     }
 
     /**
@@ -66,32 +55,21 @@ class PermissaoController extends Controller
         return response()->json($result);
     }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Response
-     */
     public function update(Request $request, $id)
-    {
-        if($request->permissao && $request->descricao) {
-            $permissao = Permissao::findOrFail($id);
-            $permissao->permissao = $request->permissao;
-            $permissao->descricao = $request->descricao;
-            $result = $permissao->update();
-            return response()->json($result);
+    {        
+        $permissao = Permissao::findOrFail($id);
+        $this->authorize('update', $permissao);
+        $this->removePermissaoUsuarioPermissao($id);     
+        if(@$request->usuarios) {
+            foreach ($request->usuarios as $idUsuario) {
+                $this->incluiUsuarioPermissao($idUsuario, $id);
+            }
         }
-        return response()->json("Erro de Preenchimento");
+        return response()->json(true);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Response
-     */
     public function destroy($id)
     {
-        $permissao = Permissao::findOrFail($id);
-        return response()->json($permissao->delete());
+        return response()->json(['message' => "Opção desabilitada"], 404);
     }
 }

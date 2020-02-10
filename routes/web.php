@@ -46,7 +46,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('cargo', 'CargoController');
     Route::resource('tipoDocumento', 'TipoDocumentoController');
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
-    Route::resource('divisaoOrganograma', 'DivisaoOrganogramaController');
+//    Route::resource('divisaoOrganograma', 'DivisaoOrganogramaController');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
     Route::resource('poloProcedimentoExterno', 'PoloProcedimentoExternoController');
 
