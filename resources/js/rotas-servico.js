@@ -82,8 +82,38 @@ export default {
         listar: this.base() + '/situacaoDemanda'
       },
       divisaoOrganograma: {
-        listar: this.base() + '/divisaoOrganograma'
+        criar: this.base() + '/divisaoOrganograma',
+        editar: this.base() + '/divisaoOrganograma/',
+        listar: this.base() + '/divisaoOrganograma',
+
+        listarPai: this.base() + '/divisaoOrganograma/listarPai'
+
       },
+
+      permissao: {
+        listar: this.base() + '/usuario',
+        criar: this.base() + '/usuario',
+        editar: this.base() + '/usuario/',        
+        permissao: this.base() + '/permissao',
+        divisao: this.base() + '/divisaoOrganograma',
+      },
+
+      perfil: {
+        listar: this.base() + '/permissao',
+        criar: this.base() + '/permissao',
+        editar: this.base() + '/permissao/',        
+//        permissao: this.base() + '/permissao',
+//        divisao: this.base() + '/divisaoOrganograma',
+      },
+      
+      organograma: {
+        listar: this.base() + '/divisaoOrganograma',
+        criar: this.base() + '/divisaoOrganograma',
+        editar: this.base() + '/divisaoOrganograma/',
+        usuario: this.base() + '/usuario/reduzido',
+        listarPai: this.base() + '/divisaoOrganograma/listarPai'
+      },
+
       procedimentoExterno: {
         listar: this.base() + '/procedimentoExterno',
         buscar: this.base() + '/procedimentoExterno/',

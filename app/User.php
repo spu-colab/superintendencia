@@ -4,8 +4,8 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\DistribuicaoDemanda;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\DistribuicaoDemanda;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -31,6 +31,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function permissoes()
     {
+        
         return $this->hasManyThrough(
             'App\Permissao',
             'App\UsuarioPermissao',
@@ -39,8 +40,8 @@ class User extends Authenticatable implements JWTSubject
             'id', // Local key on countries table...
             'idPermissao' // 
         );
-    }
-
+        
+    }  
     public function divisoesOrganograma()
     {
         return $this->hasManyThrough(
