@@ -47,14 +47,16 @@
                                                     <div class="body-1">{{ item.name }}</div>
                                                     <div class="caption text--grey-lighten-5">{{ item.subheader }}</div>
                                                     <v-tooltip bottom>
-                                                        <template slot="activator">
-                                                            <v-icon small @click="clicouZoomItemCamada(item)">zoom_in</v-icon>
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-icon small 
+                                                                @click="clicouZoomItemCamada(item)" v-on="on">zoom_in</v-icon>
                                                         </template>
                                                         Mostrar no Mapa
                                                     </v-tooltip>
                                                     <v-tooltip bottom>
-                                                        <template slot="activator">
-                                                            <v-icon small @click="clicouAbrirCadastroItemCamada(item)">launch</v-icon>
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-icon small 
+                                                                @click="clicouAbrirCadastroItemCamada(item)" v-on="on">launch</v-icon>
                                                         </template>
                                                         Abrir Cadastro
                                                     </v-tooltip>
