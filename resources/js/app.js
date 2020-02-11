@@ -15,9 +15,10 @@ import router from './router'
 import store from './store'
 
 import Vuetify from 'vuetify'
-window.Vue.use(Vuetify)
-import 'material-icons'
 import 'vuetify/dist/vuetify.min.css'
+import 'material-icons'
+import '@mdi/font/css/materialdesignicons.css' 
+window.Vue.use(Vuetify)
 
 import CKEditor from '@ckeditor/ckeditor5-vue';
 window.Vue.use( CKEditor );
@@ -80,7 +81,11 @@ Vue.http.interceptors.push((request) => {
   })
 
 const app = new Vue({
+    icons: {
+      iconfont: 'mdi'
+    },
     el: '#app',
+    vuetify: new Vuetify(),
     router,
     store
 });

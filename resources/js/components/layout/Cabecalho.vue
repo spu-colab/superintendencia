@@ -1,30 +1,27 @@
 <template>
-    <v-toolbar
-      :clipped-left="$vuetify.breakpoint.lgAndUp"
+    <v-app-bar 
+      clipped-left
       color="green darken-2"
       dark
       app
       fixed
     >
-      <v-toolbar-title style="width: 300px" class="ml-0 pl-0">
-        <v-toolbar-side-icon @click.stop="mostraEscondeMenu"></v-toolbar-side-icon>
-        <span class="hidden-sm-and-down">
-          <!-- <img src="@/assets/logo.png" style="padding-top:12pt; padding-right:5pt;"> -->
-          SPU-SC
-        </span>
+      <v-app-bar-nav-icon @click.stop="mostraEscondeMenu" />
+      <v-toolbar-title style="width: 350px" class="ml-0 pl-0">
+        <v-toolbar-title>SPU-SC</v-toolbar-title>
       </v-toolbar-title>
 
       <v-spacer></v-spacer>
 
       <div v-if="usuario">
-          <v-btn v-if="exibirTempoSessao" small round 
+          <v-btn v-if="exibirTempoSessao" small rounded 
             @click="refreshToken" 
             :color="cor_token_valido_ate_fundo" 
-            :outline="!tempoSessaoTerminando" 
+            :outlined="!tempoSessaoTerminando" 
             :text-color="cor_token_valido_ate">
             <small>Sessão expira em {{ token_valido_ate }}</small>
           </v-btn>
-          <v-btn icon :title="usuario.name">
+          <v-btn icon :title="usuario.nome">
             <v-icon>account_box</v-icon>
           </v-btn>
           <v-btn icon title="Sair" @click="sair">
@@ -36,10 +33,7 @@
           <v-icon>launch</v-icon>
         </v-btn>
       </div>
-      
-      
-
-    </v-toolbar>
+    </v-app-bar>
 </template>
 
 <script>

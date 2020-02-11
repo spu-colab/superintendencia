@@ -16,6 +16,7 @@ mix.js('resources/js/app.js', 'public/js')
 
 mix.copyDirectory('public/js', './../htdocs/js');
 mix.copyDirectory('public/css', './../htdocs/css');
+mix.copyDirectory('public/fonts', './../htdocs/fonts');
 
 
 

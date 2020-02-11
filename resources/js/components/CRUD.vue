@@ -38,17 +38,18 @@
             :items="filteredItems"
             :search="search"
             v-model="selected"
-            select-all
+            :sort-by="pagination.sortBy"
+            :descending="pagination.descending" 
+            show-select
             item-key="id"
             :loading="carregando"
-            :pagination.sync="pagination"
-            :hide-actions="!exibirPaginacao"
-            :rows-per-page-items="registrosPorPagina()"
-            rows-per-page-text="Registros por página"
+            :hide-default-header="false"
+            :hide-default-footer="!exibirPaginacao"
+            :footer-props="footerProps"
           >
             <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
-            <template slot="headers" slot-scope="props">
+            <template slot="body.prepend">
               <tr>
                 <th></th>
                 <th
@@ -56,117 +57,106 @@
                   :key="index"
                   :style="estiloDaColuna(header)"
                   role="columnheader"
-                  @click="toggleSort(index)"
                 >
                   <h4 v-if="header.type == 'filter'">
                     <v-layout align-center row fill-height>
                       <v-autocomplete
-                        :label="header.text"
+                        label=""
                         tabindex="2"
                         clearable
-                        :items="computedColumnFilterItems(index, header.valueProperty)"
+                        :items="computedColumnFilterItems(index, header.value)"
                         v-model="columnFilters[index]"
                       ></v-autocomplete>
-                      <v-icon
-                        small
-                        :color="colunaSelecionadaOrdenacao(index) ? 'blue' : 'gray'"
-                      >{{ setaOrdenacaoColuna(index) }}</v-icon>
                     </v-layout>
                   </h4>
-                  <v-card-text v-else>
-                    {{ header.text }}
-                    <v-icon
-                      small
-                      :color="colunaSelecionadaOrdenacao(index) ? 'blue' : 'gray'"
-                    >{{ setaOrdenacaoColuna(index) }}</v-icon>
-                  </v-card-text>
                 </th>
               </tr>
             </template>
 
-            <template slot="items" slot-scope="props">
-              <td>
-                <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
-              </td>
-              <td
-                v-for="header in headers"
-                :key="header.value"
-                :style="estiloDaColuna(header)"
-                @click="clicouItem(props.item)"
-                :class="header.type == 'hidden' ? 'hidden' : ''"
-              >
-                <!-- hidden -->
-                <div v-if="header.type == 'hidden'"></div>
+            <template slot="item" slot-scope="props">
+              <tr>
+                <td>
+                  <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
+                </td>
+                <td v-for="(header, index2) in headers" :key="index2"
+                  :style="estiloDaColuna(header)"
+                  v-on:click="clicouItem(props.item)"
+                  :class="header.type == 'hidden' ? 'hidden' : ''">
 
-                <!-- checkbox -->
-                <div v-else-if="header.type == 'checkbox'">
-                  <v-checkbox disabled v-model="props.item[header.value]" :color="header.color"></v-checkbox>
-                </div>
+                  <!-- hidden -->
+                  <div v-if="header.type == 'hidden'"></div>
 
-                <!-- boolean-icon -->
-                <div v-else-if="header.type == 'boolean-icon'">
-                  <v-icon v-if="props.item[header.value]" :color="header.color">{{ header.icon }}</v-icon>
-                </div>
-
-                <!-- chip -->
-                <div v-else-if="header.type == 'chip'">
-                  <v-chip v-for="chip in props.item[header.value]" :key="chip.id" small>
-                    <small>{{ chip.value }}</small>
-                  </v-chip>
-                </div>
-
-                <!-- date -->
-                <div v-else-if="header.type == 'date'">
-                  <v-badge v-if="props.item[header.icon]" :color="header.color">
-                    <template slot="badge">
-                      <v-tooltip top>
-                        <template slot="activator">
-                          <v-icon dark small>{{ props.item[header.icon] }}</v-icon>
-                        </template>
-                        {{ props.item.iconTooltip }}
-                      </v-tooltip>
-                    </template>
-                    <span>{{ formatDate(props.item[header.value]) }}</span>
-                  </v-badge>
-                  <span v-else>{{ formatDate(props.item[header.value]) }}</span>
-                </div>
-
-                <!-- outros -->
-                <div v-else>
-                  <v-badge v-if="props.item[header.icon]" :color="props.item[header.color]" left>
-                    <template slot="badge">
-                      <v-tooltip top>
-                        <template slot="activator">
-                          <v-icon dark small>{{ props.item[header.icon] }}</v-icon>
-                        </template>
-                        {{ props.item[header.iconTooltip] }}
-                      </v-tooltip>
-                    </template>
-                    {{ props.item[header.value] }}
-                    <div
-                      v-if="props.item[header.subheader]"
-                      class="caption grey--text"
-                    >{{ props.item[header.subheader] }}</div>
-                    <div
-                      v-if="props.item[header.subheader2]"
-                      class="caption grey--text"
-                    >{{ props.item[header.subheader2] }}</div>
-                  </v-badge>
-                  <div v-else>
-                    <span
-                      v-html="props.item[header.value] ? props.item[header.value].replace(/(?:\r\n|\r|\n)/g, '<br>') : ''"
-                    ></span>
-                    <div
-                      v-if="props.item[header.subheader]"
-                      class="caption grey--text"
-                    >{{ props.item[header.subheader] }}</div>
-                    <div
-                      v-if="props.item[header.subheader2]"
-                      class="caption grey--text"
-                    >{{ props.item[header.subheader2] }}</div>
+                  <!-- checkbox -->
+                  <div v-else-if="header.type == 'checkbox'">
+                    <v-checkbox disabled v-model="props.item[header.value]" :color="header.color"></v-checkbox>
                   </div>
-                </div>
-              </td>
+
+                  <!-- boolean-icon -->
+                  <div v-else-if="header.type == 'boolean-icon'">
+                    <v-icon v-if="props.item[header.value]" :color="header.color">{{ header.icon }}</v-icon>
+                  </div>
+
+                  <!-- chip -->
+                  <div v-else-if="header.type == 'chip'">
+                    <v-chip v-for="(chip, chipIndex) in props.item[header.value]" :key="chipIndex" small>
+                      <small>{{ chip.value }}</small>
+                    </v-chip>
+                  </div>
+
+                  <!-- date -->
+                  <div v-else-if="header.type == 'date'">
+                    <v-badge v-if="props.item[header.icon]" :color="header.color">
+                      <template slot="badge">
+                        <v-tooltip top>
+                          <template slot="activator">
+                            <v-icon dark small>{{ props.item[header.icon] }}</v-icon>
+                          </template>
+                          {{ props.item.iconTooltip }}
+                        </v-tooltip>
+                      </template>
+                      <span>{{ formatDate(props.item[header.value]) }}</span>
+                    </v-badge>
+                    <span v-else>{{ formatDate(props.item[header.value]) }}</span>
+                  </div>
+
+                  <!-- outros -->
+                  <div v-else>
+                    <v-badge v-if="props.item[header.icon]" :color="props.item[header.color]" left>
+                      <template slot="badge">
+                        <v-tooltip top>
+                          <template slot="activator">
+                            <v-icon dark small>{{ props.item[header.icon] }}</v-icon>
+                          </template>
+                          {{ props.item[header.iconTooltip] }}
+                        </v-tooltip>
+                      </template>
+                      {{ props.item[header.value] }}
+                      <div
+                        v-if="props.item[header.subheader]"
+                        class="caption grey--text"
+                      >{{ props.item[header.subheader] }}</div>
+                      <div
+                        v-if="props.item[header.subheader2]"
+                        class="caption grey--text"
+                      >{{ props.item[header.subheader2] }}</div>
+                    </v-badge>
+                    <div v-else>
+                      <span
+                        v-html="props.item[header.value] ? props.item[header.value].replace(/(?:\r\n|\r|\n)/g, '<br>') : ''"
+                      ></span>
+                      <div
+                        v-if="props.item[header.subheader]"
+                        class="caption grey--text"
+                      >{{ props.item[header.subheader] }}</div>
+                      <div
+                        v-if="props.item[header.subheader2]"
+                        class="caption grey--text"
+                      >{{ props.item[header.subheader2] }}</div>
+                    </div>
+                  </div>
+
+                </td>
+              </tr>
             </template>
 
             <template slot="footer">
@@ -227,14 +217,22 @@ export default {
   data: () => {
     return {
       exibirGrid: true,
-      pagination: {},
       entidade: { id: null },
       search: "",
       selected: [],
       valid: false,
+
+      footerProps: {
+        itemsPerPageText : "Registros por página",
+        itemsPerPageOptions : [50, 100, 200, { text: "Todos", value: -1 }]
+      },
+
+      pagination: {
+        descending: true
+      },
       filteredItems: [],
       columnFilters: [],
-      columnFilterProperties: []
+      columnFilterProperties: [],
     };
   },
   props: {
@@ -252,8 +250,16 @@ export default {
       type: String,
       default: "Editar"
     },
-    headers: Array,
-    items: Array,
+
+    headers: {
+      type: Array,
+      required: true
+    },
+
+    items: {
+      type: Array,
+      required: true
+    },
     exibirPaginacao: {
       type: Boolean,
       default: true
@@ -292,9 +298,6 @@ export default {
     print() {
       this.$emit("clicou-imprimir", this.selected);
     },
-    registrosPorPagina() {
-      return [50, 100, 200, { text: "Todos", value: -1 }];
-    },
     formatDate(date) {
       if (!date) return null;
 
@@ -309,40 +312,23 @@ export default {
       }
       return estilo;
     },
-    toggleSort(index) {
-      this.pagination.descending = !this.pagination.descending;
-      this.pagination.sortBy = this.headers[index].value;
-    },
-    setaOrdenacaoColuna(index) {
-      // console.log(index)
-      // console.log(this.pagination.sortBy)
-      // console.log(this.headers[index].value)
-      if (this.pagination.sortBy == this.headers[index].value) {
-        return this.pagination.descending ? "arrow_downward" : "arrow_upward";
-      }
-      return "arrow_upward";
-    },
-    colunaSelecionadaOrdenacao(index) {
-      return this.pagination.sortBy == this.headers[index].value;
-    },
-
     computedColumnFilterItems(index, valueProperty) {
+      // console.log(index + ': ' + valueProperty)
       this.columnFilterProperties[index] = valueProperty;
       let filterItems = new Array();
       if (Array.isArray(this.$props.items)) {
-        var i;
-        for (i = 0; i < this.$props.items.length; i++) {
-          let item = this.$props.items[i];
+        // console.log(this.$props.items)
+        this.$props.items.forEach(item => {
           if (!filterItems.includes(item[valueProperty])) {
             filterItems.push(item[valueProperty]);
           }
-        }
+        });
       }
       return filterItems.sort();
     }
   },
   watch: {
-    items: function(val) {
+    items: function() {
       this.columnFilters = this.columnFilters.slice(0);
     },
 
@@ -377,8 +363,6 @@ export default {
       });
     }
   },
-
-  computed: {},
 
   mounted() {
     if (this.$route.params.id) {

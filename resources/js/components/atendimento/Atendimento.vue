@@ -17,28 +17,29 @@
                             <template slot="beforeAdd">
                                 <!-- Data Documento -->
                                 <v-flex xs12>
-                                    <v-menu ref="menuDataAtendimentos"
-                                        :close-on-content-click="false"
+                                    <v-menu 
+                                        ref="menuDataAtendimentos"
                                         v-model="menuDataAtendimentos"
-                                        :nudge-right="40"
-                                        lazy
+                                        :close-on-content-click="false"
                                         transition="scale-transition"
                                         offset-y
-                                        full-width
                                         max-width="290px"
                                         min-width="290px">
 
-                                        <v-text-field  tabindex="5" 
-                                            mask="##/##/####" return-masked-value
-                                            slot="activator"
-                                            v-model="dataAtendimentosFormatada"
-                                            label="Data"
-                                            hint="DD/MM/AAAA"
-                                            persistent-hint
-                                            prepend-icon="event" 
-                                            @blur="dataAtendimentos = parseDate(dataAtendimentosFormatada)"
-                                            />
-                                        <v-date-picker v-model="dataAtendimentos" no-title @input="menuDataAtendimentos = false" locale="pt-br" />
+                                        <template v-slot:activator="{ on }">
+                                            <v-text-field tabindex="5" 
+                                                v-model="dataAtendimentosFormatada"
+                                                label="Data"
+                                                prepend-icon="event" 
+                                                mask="##/##/####" return-masked-value
+                                                hint="DD/MM/AAAA"
+                                                persistent-hint
+                                                @blur="dataAtendimentos = parseDate(dataAtendimentosFormatada)" 
+                                                v-on="on"
+                                                />
+                                        </template>
+                                        <v-date-picker v-model="dataAtendimentos" no-title locale="pt-br" 
+                                            @input="menuDataAtendimentos = false"/>
                                     </v-menu>
                                 </v-flex>
                             </template>
@@ -50,24 +51,27 @@
                             <template slot="addButtonArea">
                                 <div class="text-xs-center">
                                     <v-tooltip bottom>
-                                        <template slot="activator">
-                                            <v-btn color="primary darken-1" fab large light @click="novo(idTipoPresencial)">
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn color="primary darken-1" fab large light 
+                                                @click="novo(idTipoPresencial)" v-on="on">
                                                 <v-icon>people_outline</v-icon>
                                             </v-btn>
                                         </template>
                                         Iniciar atendimento presencial
                                     </v-tooltip>
                                     <v-tooltip bottom>
-                                        <template slot="activator">
-                                            <v-btn color="primary" fab large @click="novo(idTipoTelefonico)">
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn color="primary" fab large 
+                                                @click="novo(idTipoTelefonico)" v-on="on">
                                                 <v-icon>local_phone</v-icon>
                                             </v-btn>
                                         </template>
                                         Iniciar atendimento telefônico
                                     </v-tooltip>
                                     <v-tooltip bottom>
-                                        <template slot="activator">
-                                            <v-btn color="primary lighten-1" fab large dark @click="novo(idTipoEmail)">
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn color="primary lighten-1" fab large dark 
+                                                @click="novo(idTipoEmail)" v-on="on">
                                                 <v-icon>mail_outline</v-icon>
                                             </v-btn>
                                         </template>
@@ -128,7 +132,7 @@
                                         <!-- Comentários -->
                                         <v-layout row wrap>
                                             <v-flex xs12>
-                                                <v-textarea box 
+                                                <v-textarea filled 
                                                     label="Comentário:"
                                                     placeholder="Registre aqui informações que julgar relevantes ao atendimento prestado."
                                                     v-model="novoComentario" 
@@ -312,6 +316,8 @@ export default {
                         // console.log(response)
                         if(concluir) {
                             this.$store.commit('sistema/mensagem', 'Atendimento Concluído')
+                            this.exibindoGrid = true
+                            return
                         } else {
                             this.$store.commit('sistema/mensagem', 'Alterações salvas com sucesso!')
                         }
