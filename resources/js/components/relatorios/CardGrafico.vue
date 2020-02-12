@@ -1,12 +1,14 @@
 <template>
-    <v-card>
+    <v-card :loading="carregando">
         <v-card-title v-if="titulo">
-            <h3>{{ titulo }}</h3>
+            <div class="overline mb-4">
+              <v-icon v-if="iconTitulo" :color="iconColorTitulo">{{ iconTitulo }}</v-icon>
+              {{ titulo }}
+            </div>
         </v-card-title>
         <v-card-text>
             <p class="text-md-center">
-                <v-progress-circular indeterminate v-if="carregando" color="grey"></v-progress-circular>
-                <slot v-else></slot>
+                <slot v-if="!carregando"></slot>
             </p>
         </v-card-text>
     </v-card>
@@ -23,6 +25,14 @@ export default {
         carregando: {
             type: Boolean,
             default: false
+        },
+        iconTitulo: {
+            type: String,
+            default: null
+        },
+        iconColorTitulo: {
+            type: String,
+            default: "yellow"
         },
     },    
 }

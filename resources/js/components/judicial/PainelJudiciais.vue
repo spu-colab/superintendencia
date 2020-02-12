@@ -1,92 +1,92 @@
 <template>
-  <v-container fill-height fluid grid-list>
+  <v-container fluid>
     
     <!-- layout geral -->
-    <v-layout align-start justify-start row wrap>
+    <v-row align="start">
 
       <!-- primeira coluna -->
-      <v-flex d-flex col xs12 md9 justify-start>
-        <v-layout align-start justify-start row wrap>
+      <v-col xs="12" md="9">
 
-          <!-- parametros -->
-          <v-flex d-flex col xs12 justify-start>
-            <v-layout align-start row wrap>
-              <!-- Data De -->
-              <v-flex col xs12 md4 xl2>
-                <v-menu ref="menuDataDe"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  v-model="menuDataDe"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  max-width="290px"
-                  min-width="290px">
+        <v-row>
+          <!-- Date De -->
+          <v-col xs="12" md="4" xl="2">
+            <v-menu ref="menuDataDe"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              v-model="menuDataDe"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              max-width="290px"
+              min-width="290px">
 
-                  <v-text-field  tabindex="5" 
-                      mask="##/##/####" return-masked-value
-                      slot="activator"
-                      v-model="dataDeFormatada"
-                      label="Demandas recebidas de:"
-                      hint="DD/MM/AAAA"
-                      persistent-hint
-                      prepend-icon="event" 
-                      @blur="dataDe = parseDate(dataDeFormatada)"
-                      />
-                  <v-date-picker v-model="dataDe" no-title @input="menuDataDe = false" locale="pt-br" />
-                </v-menu>
-              </v-flex>
-
-              <!-- Data Até -->
-              <v-flex col xs12 md4 xl2>
-                <v-menu ref="menuDataAte"
-                  :close-on-content-click="false"
-                  :nudge-right="40"
-                  v-model="menuDataAte"
-                  lazy
-                  transition="scale-transition"
-                  offset-y
-                  full-width
-                  max-width="290px"
-                  min-width="290px">
-
-                  <v-text-field  tabindex="5" 
+              <template v-slot:activator="{ on }">
+                <v-text-field  tabindex="5" 
                     mask="##/##/####" return-masked-value
                     slot="activator"
-                    v-model="dataAteFormatada"
-                    label="até:"
+                    v-model="dataDeFormatada"
+                    label="Demandas recebidas de:"
                     hint="DD/MM/AAAA"
                     persistent-hint
                     prepend-icon="event" 
-                    @blur="dataAte = parseDate(dataAteFormatada)"
+                    @blur="dataDe = parseDate(dataDeFormatada)"
+                    v-on="on"
                     />
-                  <v-date-picker v-model="dataAte" no-title @input="menuDataAte = false" locale="pt-br" />
-                </v-menu>
-              </v-flex>
+              </template>
 
-              <v-flex col xs12 md4 xl2>
-                <v-btn @click="aplicarParametros" :disabled="!computedAplicarParametrosValido">
-                  <v-icon>done</v-icon>
-                  Aplicar
-                </v-btn>
-                <div v-if="this.mensagemParametros.length > 0" class="red--text">{{ mensagemParametros }}</div>                
-              </v-flex>
+              <v-date-picker v-model="dataDe" no-title @input="menuDataDe = false" locale="pt-br" />
+            </v-menu>
+          </v-col>
 
-              <v-flex col xs12>
-                <v-divider></v-divider>
-              </v-flex>
+          <!-- Date Ate -->
+          <v-col xs="12" md="4" xl="2">
+            <v-menu ref="menuDataAte"
+              :close-on-content-click="false"
+              :nudge-right="40"
+              v-model="menuDataAte"
+              lazy
+              transition="scale-transition"
+              offset-y
+              full-width
+              max-width="290px"
+              min-width="290px">
 
-              <v-flex col xs12>
-                {{ mensagemParametrosAplicados }}
-              </v-flex>
+              <template v-slot:activator="{ on }">
+                <v-text-field  tabindex="5" 
+                  mask="##/##/####" return-masked-value
+                  slot="activator"
+                  v-model="dataAteFormatada"
+                  label="até:"
+                  hint="DD/MM/AAAA"
+                  persistent-hint
+                  prepend-icon="event" 
+                  @blur="dataAte = parseDate(dataAteFormatada)"
+                  v-on="on"
+                  />
+              </template>
 
-            </v-layout>
-          </v-flex>
-          <!-- fim de parâmetros -->
+              <v-date-picker v-model="dataAte" no-title @input="menuDataAte = false" locale="pt-br" />
+            </v-menu>
+          </v-col>
 
+          <!-- Botão Aplicar -->
+          <v-col xs="12" md="4" xl="2">
+            <v-btn @click="aplicarParametros" :disabled="!computedAplicarParametrosValido">
+              <v-icon>done</v-icon>
+              Aplicar
+            </v-btn>
+            <div v-if="this.mensagemParametros.length > 0" class="red--text">{{ mensagemParametros }}</div>                
+          </v-col>
+        </v-row>
+
+        <v-divider></v-divider>
+
+        {{ mensagemParametrosAplicados }}
+
+        <v-row align="stretch">
           <!-- estatíticas -->
-          <v-flex d-flex col xs12 md5>
+          <v-col xs="12" md="6">
             <card-numero-destaque
               :carregando="!carregouDemandasAbertasPorSituacao"
               icon="show_chart"
@@ -94,6 +94,7 @@
               titulo="Recebidas do período"
               icon-titulo="move_to_inbox"
               icon-color-titulo="primary"
+              v-if="demandasAbertasPorSituacao"
             >
               {{ demandasAbertasPorSituacao.recebidas }}
               <template slot="detalhe">
@@ -128,11 +129,10 @@
                 </v-layout>
               </template>
             </card-numero-destaque>
-          </v-flex>
-          <!-- fim de estatíticas -->
+          </v-col>
 
           <!-- natureza das demandas -->
-          <v-flex d-flex col xs12 md7>
+          <v-col xs="12" md="6">
             <card-grafico titulo="Natureza das Demandas" :carregando="!carregouDemandasPorNaturezaOrgao">
               <grafico-pizza
                 :chartdata="demandasNaturezaOrgao"
@@ -140,74 +140,68 @@
                 style="height:200px; position: 'relative';"
               />
             </card-grafico>
-          </v-flex>  
-          <!-- fim de natureza das demandas -->
+          </v-col>
+        </v-row>
 
-          <v-flex d-flex row xs12>
-            &nbsp;
-          </v-flex>
+        <v-row align="stretch">
 
           <!-- origem das demandas -->
-          <v-flex d-flex col xs12 md6>
+          <v-col xs="12" md="6">
             <card-grafico titulo="Origem das Demandas" :carregando="!carregouDemandasPorDemandante">
               <grafico-barra-horizontal
                 :chartdata="demandasPorDemandante"
                 :options="opcoesRelatorioDemandasPorDemandante"
               />
             </card-grafico>
-          </v-flex>
-          <!-- fim de origem das demandas -->
+          </v-col>
 
           <!-- distribuição das demandas -->
-          <v-flex d-flex col xs12 md6>
+          <v-col xs="12" md="6">
             <card-grafico titulo="Distribuição" :carregando="!carregouDemandasAbertasPorDistribuicao">
               <grafico-barra-horizontal
                 :chartdata="demandasAbertasPorDistribuicao"
                 :options="opcoesRelatorioDemandasAbertasPorDistribuicao"
               />
             </card-grafico>
-          </v-flex>
-          <!-- distribuição das demandas -->
+          </v-col>
 
-        </v-layout>
-      </v-flex>
-      <!-- fim da primeira coluna -->
+        </v-row>
 
+      </v-col>
 
       <!-- segunda coluna -->
-      <v-flex d-flex col xs12 md3 justify-start>
-        <!-- Relatórios -->
-        
-          <v-layout col wrap>
-            
-            <v-flex d-flex row xs12>
-              <h3>Relatórios</h3>
-            </v-flex>           
+      <v-col xs="12" md="3">
+        <v-card outlined>
+          <v-card-title>
+            <div class="overline mb-4">Relatórios</div>
+          </v-card-title>
+          <v-card-text>
 
-            <v-flex  d-flex row xs12>
-              <v-card>
-                  <v-card-text>
-                    <h4>Demandas por Núcleo</h4>
-                    <v-checkbox v-model="incluirReprimidas" label="Incluir Reprimidas"></v-checkbox>
-                    <v-btn @click="gerarRelatorioDemandasPorNucleo" :disabled="carregandoRelatorioDemandasPorNucleo">
-                      <v-progress-circular indeterminate v-if="carregandoRelatorioDemandasPorNucleo" color="grey" size="20" width="3"></v-progress-circular>
-                      Gerar
-                    </v-btn>
-                  </v-card-text>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        <!-- Fim de Relatórios -->
+            <v-list flat three-line>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    Demandas por Núcleo
+                  </v-list-item-title>
+                  <v-checkbox v-model="incluirReprimidas" label="Incluir Reprimidas" small></v-checkbox>
+                </v-list-item-content>
+                <v-list-action>
+                  <v-btn @click="gerarRelatorioDemandasPorNucleo" :disabled="carregandoRelatorioDemandasPorNucleo" small>
+                    <v-progress-circular indeterminate v-if="carregandoRelatorioDemandasPorNucleo" color="grey" size="20" width="3"></v-progress-circular>
+                    Gerar
+                  </v-btn>
+                </v-list-action>
+              </v-list-item>
+            </v-list>
 
-      </v-flex>      
-      <!-- fim de segunda coluna -->
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
 
-      <v-flex d-flex row xs12>
-        <v-divider inset></v-divider>
-      </v-flex>
-
+    <v-row>
       <!-- Entrada x Saída -->
-      <v-flex d-flex col xs12>
+      <v-col cols="12">
         <card-grafico titulo="Entrada x Saída Diária (últimos 30 dias)"
             :carregando="!carregouDemandasEntradaSaidaDiaria">
           <grafico-barra
@@ -216,21 +210,21 @@
             style="height:200px; position: 'relative';"
           />
         </card-grafico>
-      </v-flex>
-
-    </v-layout>
+      </v-col>
+    </v-row>
+    
   </v-container>
 </template>
 
 <script>
 const d3 = require("d3-scale-chromatic");
 
-import rotas from "./../rotas-servico.js";
-import CardGrafico from "./relatorios/CardGrafico";
-import CardNumeroDestaque from "./relatorios/CardNumeroDestaque";
-import GraficoBarra from "./relatorios/GraficoBarra";
-import GraficoBarraHorizontal from "./relatorios/GraficoBarraHorizontal";
-import GraficoPizza from "./relatorios/GraficoPizza";
+import rotas from "./../../rotas-servico.js";
+import CardGrafico from "./../relatorios/CardGrafico";
+import CardNumeroDestaque from "./../relatorios/CardNumeroDestaque";
+import GraficoBarra from "./../relatorios/GraficoBarra";
+import GraficoBarraHorizontal from "./../relatorios/GraficoBarraHorizontal";
+import GraficoPizza from "./../relatorios/GraficoPizza";
 
 export default {
   components: {
@@ -662,7 +656,7 @@ export default {
       let url = rotas.rotas().demanda.relatorio.abertasPorDivisaoOrganograma;
       return this.$http.post(url, formData, { responseType: "arraybuffer" }).then(
         response => {
-          console.log(response.data);
+          // console.log(response.data);
           let blob = new Blob([response.data], {
             type: response.headers.get("content-type")
           });
@@ -692,12 +686,10 @@ export default {
   watch: {
 
     dataDe(val) {
-      console.log(this.dataDe)
       this.dataDeFormatada = this.formatDate(this.dataDe)
     },
 
     dataAte(val) {
-      console.log(this.dataAte)
       this.dataAteFormatada = this.formatDate(this.dataAte)
     },
 
