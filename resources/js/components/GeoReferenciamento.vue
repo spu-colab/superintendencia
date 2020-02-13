@@ -1,121 +1,100 @@
 <template>
     <v-container fill-height fluid grid-list>
-      <v-layout align-start justify-start row wrap>
+      <v-row>
         <!-- MAPA -->
-        <v-flex d-flex col xs12>
+        <v-col cols="12">
           <div id="map" class="map"></div>
-        </v-flex>
+        </v-col>
         <!-- Fim de MAPA -->
+      </v-row>
 
         <!-- Painel -->
+      <v-row>
         <!-- Coluna Camadas -->
-        <v-flex d-flex col xs12 md7>
-          <v-container>  
-            <v-flex d-flex row xs12>
-              <h3>Camadas</h3>
-            </v-flex>
-            <v-flex d-flex row xs12>
-              <v-list dense>
-                <v-list-group
-                  v-for="camada in camadas"
-                  :key="camada.id"
-                  v-model="camada.open"
-                  :prepend-icon="camada.icon"
-                  no-action
-                >
-                  <template v-slot:activator>
-                    <v-list-tile>
-                      <v-list-tile-action>
-                        <v-checkbox dense
-                            v-model="camada.selected"
-                            :label="camada.name" @change="selecionouCamada(camada)"
-                          ></v-checkbox>
-                      </v-list-tile-action>
-                    </v-list-tile>
-                  </template>
-
-                  <v-list-tile
-                    v-for="elementoCamada in camada.children"
-                    :key="elementoCamada.id"
-                  >
-                    <v-list-tile-action>
-                      <v-checkbox dense
-                        v-model="elementoCamada.selected" @change="selecionouElementoCamada(elementoCamada)"
+        <v-col xs="12" md="7">
+          <h3>Camadas</h3>
+          <v-list dense>
+            <v-list-group
+              v-for="camada in camadas"
+              :key="camada.id"
+              v-model="camada.open"
+              :prepend-icon="camada.icon"
+              no-action
+            >
+              <template v-slot:activator>
+                <v-list-item>
+                  <v-list-item-action>
+                    <v-checkbox dense
+                        v-model="camada.selected"
+                        :label="camada.name" @change="selecionouCamada(camada)"
                       ></v-checkbox>
-                    </v-list-tile-action>
+                  </v-list-item-action>
+                </v-list-item>
+              </template>
 
-                    <v-list-tile-content>
-                      <v-list-tile-title @click="selecionouElementoCamada(elementoCamada)" style="cursor: pointer;">{{ elementoCamada.name }}</v-list-tile-title>
-                    </v-list-tile-content>                
-                    
-                  </v-list-tile>
-                </v-list-group>
-              </v-list>
-            </v-flex>
-          </v-container>
-        </v-flex>
+              <v-list-item
+                v-for="elementoCamada in camada.children"
+                :key="elementoCamada.id"
+              >
+                <v-list-item-action>
+                  <v-checkbox dense
+                    v-model="elementoCamada.selected" @change="selecionouElementoCamada(elementoCamada)"
+                  ></v-checkbox>
+                </v-list-item-action>
+
+                <v-list-item-content>
+                  <v-list-item-title @click="selecionouElementoCamada(elementoCamada)" style="cursor: pointer;">{{ elementoCamada.name }}</v-list-item-title>
+                </v-list-item-content>                
+                
+              </v-list-item>
+            </v-list-group>
+          </v-list>
+        </v-col>
         <!-- Fim da Coluna Camadas -->
 
         <!-- Coluna Importação -->
-        <v-flex d-flex col xs12 md5>
-          <v-container>
-            
-            <!-- Botão para importação do Shapefile -->
-            <v-flex d-flex row xs12>
-              <h3>Importar Shapefile</h3>
-            </v-flex>
-
-            <v-flex d-flex row xs12>
-              <input type="file" id="files" ref="files" v-on:change="handleFiles()" value="Importar shapefile (.shp)"/>
-            </v-flex>
-            
-            <!-- Geometrias a Importar -->
-            <v-flex d-flex row xs12 v-if="camadaImportacao">
-              <v-list dense>
+        <v-col xs="12" md="5">
+          <h3>Importar Shapefile</h3>
+          <input type="file" id="files" ref="files" v-on:change="handleFiles()" value="Importar shapefile (.shp)"/>
+              <!-- Geometrias a Importar -->
+              <v-list dense v-if="camadaImportacao">
                 <v-list-group v-if="camadaImportacao.children.length > 0"
                   prepend-icon="layers"
                   no-action
                 >
                   <template v-slot:activator>
-                    <v-list-tile>
-                      <v-list-tile-action>
+                    <v-list-item>
+                      <v-list-item-action>
                         <v-checkbox dense color="red"
                             v-model="camadaImportacao.selected"
                             :label="camadaImportacao.name" @change="selecionouCamada(camadaImportacao)"
                           ></v-checkbox>
-                      </v-list-tile-action>
-                    </v-list-tile>
+                      </v-list-item-action>
+                    </v-list-item>
                   </template>
 
-                  <v-list-tile
+                  <v-list-item
                     v-for="elementoCamada in camadaImportacao.children"
                     :key="elementoCamada.id"
                     @click="selecionouElementoCamada(elementoCamada)"
                   >
-                    <v-list-tile-action>
+                    <v-list-item-action>
                       <v-icon v-if="elementoCamada.selected">check_box</v-icon>
                       <v-icon v-else>check_box_outline_blank</v-icon>
-                    </v-list-tile-action>
+                    </v-list-item-action>
 
-                    <v-list-tile-content>
-                      <v-list-tile-title v-html="elementoCamada.name"></v-list-tile-title>
-                    </v-list-tile-content>                
+                    <v-list-item-content>
+                      <v-list-item-title v-html="elementoCamada.name"></v-list-item-title>
+                    </v-list-item-content>                
                     
-                  </v-list-tile>
+                  </v-list-item>
                 </v-list-group>
               </v-list>
-            </v-flex>            
-
-            <!-- Botão salvar -->
-            <v-flex d-flex row xs12 v-if="camadaImportacao">
-              <v-btn :disabled="botaoSalvarGeometriasSelecionadasDesativado()" @click="salvarGeometrias">Salvar Geometrias Selecionadas</v-btn>
-            </v-flex>
-
-          </v-container>
-        </v-flex>
+          <!-- Botão salvar -->
+          <v-btn :disabled="botaoSalvarGeometriasSelecionadasDesativado()" @click="salvarGeometrias">Salvar Geometrias Selecionadas</v-btn>
+        </v-col>
         <!-- Fim da Coluna Importação -->
-            
-      </v-layout>
+      </v-row>
     </v-container>
 </template>
 
@@ -464,8 +443,8 @@ export default {
           }
         }
       }
-      console.log('Geometrias as salvar:')
-      console.log(geometriasASalvar)
+      // console.log('Geometrias as salvar:')
+      // console.log(geometriasASalvar)
       this.salvarGeometriasAPI(geometriasASalvar)
       
     },
@@ -498,7 +477,7 @@ export default {
         this.$http.post(url, formData)
             .then(
                 response => {
-                    console.log(response)
+                    // console.log(response)
                     this.$store.commit('sistema/mensagem', 'Geometrias salvas com sucesso!')
                     this.reinicializarMapa()
                 },

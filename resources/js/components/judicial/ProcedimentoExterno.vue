@@ -9,7 +9,7 @@
         <template slot="detalhe">
             <v-card>
                 <v-card-text>
-                    <v-tabs v-model="tabAtiva" color="grey lighten-5" @change="mudouDeTab">
+                    <v-tabs v-model="tabAtiva" @change="mudouDeTab">
                         <v-tab>Cadastro</v-tab>
                         <v-tab>Demandas</v-tab>
                         <v-tab>Georreferenciamento</v-tab>
@@ -71,7 +71,7 @@
                                     item-key="id" 
                                     v-if="demandas"
                                     >
-                                    <template slot="items" slot-scope="props">
+                                    <template v-slot:item="props">
                                         <tr @click='$router.push("/demanda/" + props.item.id )' style="cursor:pointer;">
                                             <td>{{ (new Date(props.item.created_at)).toLocaleDateString() }}</td>
                                             <td>
@@ -113,12 +113,14 @@
 </template>
 
 <script>
-import rotas from './../rotas-servico.js'
-import CRUD from './CRUD'
-import GeoReferenciamento from './GeoReferenciamento'
+import rotas from './../../rotas-servico.js'
+import CRUD from './../CRUD'
+import GeoReferenciamento from './../GeoReferenciamento'
+
 const PROCEDIMENTO_TAB_DEMANDAS = 1;
 const PROCEDIMENTO_TAB_GEORREFERENCIAMENTO = 2;
 const ID_GEO_CAMADA_PROCEDIMENTO_EXTERNO = 1;
+
 export default {
     components: {
         'crud' : CRUD
@@ -307,7 +309,7 @@ export default {
             this.$http.get(url)
                 .then(
                     response => {
-                        console.log(response);
+                        // console.log(response);
                         response.body.forEach(element => {
                             // console.log(element)
                             this.demandas.push(element)
