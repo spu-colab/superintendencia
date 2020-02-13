@@ -56,11 +56,14 @@
     <v-content>
       <mensagem-sistema/>
       <v-breadcrumbs :items="$route.meta.breadcrumb"></v-breadcrumbs>
-      <v-container fluid justify-center row fill-height>
-        <transition name="fade">
-            <slot></slot>
-          <!-- <router-view></router-view> -->
-        </transition>
+      <v-container fluid>
+        <v-row align="start">
+          <v-col cols="12" class="ml-auto" align="start">
+            <transition name="fade">
+                <slot></slot>
+            </transition>
+          </v-col>
+        </v-row>
       </v-container>
     </v-content>
   </v-app>

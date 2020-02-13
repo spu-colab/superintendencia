@@ -13,7 +13,7 @@
     <template slot="detalhe">
       <v-card-text>
         <div v-if="entidadeAtual">
-          <v-tabs v-model="tabAtiva" color="grey lighten-5" >
+          <v-tabs v-model="tabAtiva">
             <v-tab>Cadastro</v-tab>
             <v-tab>Usuários</v-tab>
             <v-tabs-slider color="primary"></v-tabs-slider>

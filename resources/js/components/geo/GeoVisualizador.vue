@@ -1,78 +1,73 @@
 <template>
     <v-container fill-height fluid grid-list>
-        <v-layout row>
-            <v-flex col xs12 md9>
+        <v-row>
+            <v-col xs="12" md="9">
                 <div id="mapGeo" class="map"></div>
-            </v-flex>
-            <v-flex col xs12 md3>
+            </v-col>
+            <v-col xs="12" md="3">
                 <v-card>
                     <v-card-title>
                         <h6 class="title text-capitalize">
                             Camadas
                         </h6>
                     </v-card-title>
-                    <v-container>
-                        <v-layout row>
-                            <v-flex col xs12>
-                                <div v-for="camada in camadas" :key="camada.id">
-                                    <v-layout row>
-                                        <v-flex col xs1>
-                                            <v-icon @click="expandirCamada(camada)">{{ camada.expandida ? 'expand_less' : 'expand_more' }}</v-icon>
+                    <v-card-text>
+                        <div v-for="camada in camadas" :key="camada.id">
+                            <v-layout row>
+                                <v-flex col xs1>
+                                    <v-icon @click="expandirCamada(camada)">{{ camada.expandida ? 'expand_less' : 'expand_more' }}</v-icon>
+                                </v-flex>
+                                <v-flex col xs1>
+                                    <v-icon  
+                                        :color="camada.selecionada ? camada.cor : ''" 
+                                        @click="selecionarCamada(camada); return;">
+                                        {{ camada.selecionada ? 'visibility' : 'visibility_off' }}
+                                        </v-icon>
+                                </v-flex>
+                                <v-flex col xs10>
+                                    <div class="subheading">{{ camada.name }}</div>
+                                </v-flex>
+                            </v-layout>
+                            <v-progress-linear v-if="camada.carregando" indeterminate small />
+                            <v-divider />
+                            <transition name="slide-y">
+                                <div v-if="camada.expandida">
+                                    <v-layout row v-for="item in camada.children" v-bind:key="item.id">
+                                        <v-flex xs2>
+                                            &nbsp;
                                         </v-flex>
-                                        <v-flex col xs1>
-                                            <v-icon  
-                                                :color="camada.selecionada ? camada.cor : ''" 
-                                                @click="selecionarCamada(camada); return;">
-                                                {{ camada.selecionada ? 'visibility' : 'visibility_off' }}
-                                                </v-icon>
+                                        <v-flex xs1>
+                                            <v-icon @click="clicouItemCamada(item)" :color="item.selecionado ? item.cor : ''" >
+                                                {{ item.selecionado ? 'visibility' : 'visibility_off' }}
+                                            </v-icon>
                                         </v-flex>
-                                        <v-flex col xs10>
-                                            <div class="subheading">{{ camada.name }}</div>
+                                        <v-flex xs9>
+                                            <div class="body-1">{{ item.name }}</div>
+                                            <div class="caption text--grey-lighten-5">{{ item.subheader }}</div>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-icon small 
+                                                        @click="clicouZoomItemCamada(item)" v-on="on">zoom_in</v-icon>
+                                                </template>
+                                                Mostrar no Mapa
+                                            </v-tooltip>
+                                            <v-tooltip bottom>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-icon small 
+                                                        @click="clicouAbrirCadastroItemCamada(item)" v-on="on">launch</v-icon>
+                                                </template>
+                                                Abrir Cadastro
+                                            </v-tooltip>
+                                            <v-divider />
                                         </v-flex>
                                     </v-layout>
-                                    <v-progress-linear v-if="camada.carregando" indeterminate small />
-                                    <v-divider />
-                                    <transition name="slide-y">
-                                        <div v-if="camada.expandida">
-                                            <v-layout row v-for="item in camada.children" v-bind:key="item.id">
-                                                <v-flex xs2>
-                                                    &nbsp;
-                                                </v-flex>
-                                                <v-flex xs1>
-                                                    <v-icon @click="clicouItemCamada(item)" :color="item.selecionado ? item.cor : ''" >
-                                                        {{ item.selecionado ? 'visibility' : 'visibility_off' }}
-                                                    </v-icon>
-                                                </v-flex>
-                                                <v-flex xs9>
-                                                    <div class="body-1">{{ item.name }}</div>
-                                                    <div class="caption text--grey-lighten-5">{{ item.subheader }}</div>
-                                                    <v-tooltip bottom>
-                                                        <template v-slot:activator="{ on }">
-                                                            <v-icon small 
-                                                                @click="clicouZoomItemCamada(item)" v-on="on">zoom_in</v-icon>
-                                                        </template>
-                                                        Mostrar no Mapa
-                                                    </v-tooltip>
-                                                    <v-tooltip bottom>
-                                                        <template v-slot:activator="{ on }">
-                                                            <v-icon small 
-                                                                @click="clicouAbrirCadastroItemCamada(item)" v-on="on">launch</v-icon>
-                                                        </template>
-                                                        Abrir Cadastro
-                                                    </v-tooltip>
-                                                    <v-divider />
-                                                </v-flex>
-                                            </v-layout>
-                                        </div>
-                                    </transition>
                                 </div>
-                            </v-flex>
-                        </v-layout>
-                    </v-container>
-                    
+                            </transition>
+                        </div>
+                    </v-card-text>
                 </v-card>
-            </v-flex>
-        </v-layout>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
@@ -346,6 +341,7 @@ export default {
 <style scoped>
 .map {
   height: 100%;
+  min-height: 840px;
   max-height: 840px;
   overflow: hidden;
 }

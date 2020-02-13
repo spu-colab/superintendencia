@@ -1,164 +1,156 @@
 <template>
-    <v-container fluid fill-height>
-        <v-layout column>
+    <crud 
+        nomeEntidade="Atendimento" nomeEntidadePlural="Atendimentos" verboAdicionarEntidade="Iniciar"
+        :headers="cabecalhos" :items="registros" :carregando="carregando"
+        @clicou-item="selecionarParaEdicao" 
+        @clicou-salvar="salvar"
+        @clicou-cancelar="cancelar"
+        @clicou-novo="novo"
+        :exibirPrimeiraTela="exibindoGrid"
+        @modou-tela="mudouTela"
+        @validou-formulario="validouFormulario">
+
+        <template slot="beforeAdd">
+            <!-- Data Documento -->
             <v-flex xs12>
-                <v-layout align-start justify-space-between row>
-                        <crud 
-                            nomeEntidade="Atendimento" nomeEntidadePlural="Atendimentos" verboAdicionarEntidade="Iniciar"
-                            :headers="cabecalhos" :items="registros" :carregando="carregando"
-                            @clicou-item="selecionarParaEdicao" 
-                            @clicou-salvar="salvar"
-                            @clicou-cancelar="cancelar"
-                            @clicou-novo="novo"
-                            :exibirPrimeiraTela="exibindoGrid"
-                            @modou-tela="mudouTela"
-                            @validou-formulario="validouFormulario">
+                <v-menu 
+                    ref="menuDataAtendimentos"
+                    v-model="menuDataAtendimentos"
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y
+                    max-width="290px"
+                    min-width="290px">
 
-                            <template slot="beforeAdd">
-                                <!-- Data Documento -->
-                                <v-flex xs12>
-                                    <v-menu 
-                                        ref="menuDataAtendimentos"
-                                        v-model="menuDataAtendimentos"
-                                        :close-on-content-click="false"
-                                        transition="scale-transition"
-                                        offset-y
-                                        max-width="290px"
-                                        min-width="290px">
-
-                                        <template v-slot:activator="{ on }">
-                                            <v-text-field tabindex="5" 
-                                                v-model="dataAtendimentosFormatada"
-                                                label="Data"
-                                                prepend-icon="event" 
-                                                mask="##/##/####" return-masked-value
-                                                hint="DD/MM/AAAA"
-                                                persistent-hint
-                                                @blur="dataAtendimentos = parseDate(dataAtendimentosFormatada)" 
-                                                v-on="on"
-                                                />
-                                        </template>
-                                        <v-date-picker v-model="dataAtendimentos" no-title locale="pt-br" 
-                                            @input="menuDataAtendimentos = false"/>
-                                    </v-menu>
-                                </v-flex>
-                            </template>
-
-                            <template slot="topFormArea">
-                                <h3>{{ computedSituacaoDoAtendimento }}</h3>
-                            </template>
-
-                            <template slot="addButtonArea">
-                                <div class="text-xs-center">
-                                    <v-tooltip bottom>
-                                        <template v-slot:activator="{ on }">
-                                            <v-btn color="primary darken-1" fab large light 
-                                                @click="novo(idTipoPresencial)" v-on="on">
-                                                <v-icon>people_outline</v-icon>
-                                            </v-btn>
-                                        </template>
-                                        Iniciar atendimento presencial
-                                    </v-tooltip>
-                                    <v-tooltip bottom>
-                                        <template v-slot:activator="{ on }">
-                                            <v-btn color="primary" fab large 
-                                                @click="novo(idTipoTelefonico)" v-on="on">
-                                                <v-icon>local_phone</v-icon>
-                                            </v-btn>
-                                        </template>
-                                        Iniciar atendimento telefônico
-                                    </v-tooltip>
-                                    <v-tooltip bottom>
-                                        <template v-slot:activator="{ on }">
-                                            <v-btn color="primary lighten-1" fab large dark 
-                                                @click="novo(idTipoEmail)" v-on="on">
-                                                <v-icon>mail_outline</v-icon>
-                                            </v-btn>
-                                        </template>
-                                        Iniciar atendimento de e-mail
-                                    </v-tooltip>
-                                </div>
-                            </template>
-                            
-                            <template slot="detalhe">
-                                <div v-if="entidadeAtual">                                    
-                                    <v-container>
-                                        <!-- Dados do Atendimento -->
-                                        <v-layout row wrap>
-                                            <v-flex xs12 md6>
-                                                <v-text-field label="Atendente" v-model="computedNomeDoAtendente" disabled/>
-                                            </v-flex>
-                                            <v-flex xs12 md2>
-                                                <v-text-field label="Data" v-model="entidadeAtual.data" disabled/>
-                                            </v-flex>
-                                            <v-flex xs12 md2>
-                                                <v-text-field label="Início" v-model="entidadeAtual.inicio" disabled/>
-                                            </v-flex>
-                                            <v-flex xs12 md2>
-                                                <v-text-field label="Fim" v-model="entidadeAtual.fim" disabled/>
-                                            </v-flex>
-                                        </v-layout>
-                                        
-                                        <!-- Dados do Atendido -->
-                                        <v-layout row wrap>
-                                            <v-flex xs12 md6>
-                                                <v-text-field label="Atendido" v-model="entidadeAtual.atendido" 
-                                                    :rules="[validacoes().obrigatorio, validacoes().min3]" required :disabled="atendimentoConcluido()" />
-                                            </v-flex>
-                                            <v-flex xs12 md3>
-                                                <v-text-field label="CPF" v-model="entidadeAtual.cpf" :disabled="atendimentoConcluido()" />
-                                            </v-flex>
-                                            <v-flex xs12 md3>
-                                                <v-text-field label="E-mail" v-model="entidadeAtual.email" 
-                                                    :rules="[validacoes().email]" :disabled="atendimentoConcluido()" />
-                                            </v-flex>
-                                        </v-layout>
-
-                                        <!-- Assuntos -->
-                                        <v-layout wrap>
-                                            <v-flex xs12>
-                                                
-                                                    <h4>Assuntos</h4>
-                                                    <v-container>
-                                                        <v-layout wrap>
-                                                            <v-flex xs12 md4 lg3 align-start justify-start v-for="assunto in entidadeAtual.assuntos" v-bind:key="assunto.id">
-                                                                <v-checkbox :label="assunto.assunto" align-start v-model="assunto.checked" :disabled="atendimentoConcluido()" ></v-checkbox>
-                                                            </v-flex>
-                                                        </v-layout>
-                                                    </v-container>
-                                            </v-flex>
-                                        </v-layout>
-
-                                        <!-- Comentários -->
-                                        <v-layout row wrap>
-                                            <v-flex xs12>
-                                                <v-textarea filled 
-                                                    label="Comentário:"
-                                                    placeholder="Registre aqui informações que julgar relevantes ao atendimento prestado."
-                                                    v-model="novoComentario" 
-                                                    :error-messages="comentarioValidoMsgs">
-                                                </v-textarea>
-                                            </v-flex>
-                                        </v-layout>
-                                        <v-layout row wrap justify-end>
-                                            <v-btn color="primary lighten-2" @click="inserirComentario" :disabled="!comentarioValido">
-                                                <v-icon>add</v-icon> Inserir Comentário
-                                            </v-btn>
-                                        </v-layout>
-                                        <comentarios :comentarios="entidadeAtual.comentarios"></comentarios>
-                                    </v-container>
-                                </div>
-                            </template>
-                            
-                            <template slot="beforeSaveButton">
-                                <v-btn color="success" @click="concluir" :disabled="!formularioValido() || atendimentoConcluido()">
-                                    <v-icon>check</v-icon> Concluir Atendimento</v-btn>
-                            </template>
-                        </crud>
-                </v-layout>
+                    <template v-slot:activator="{ on }">
+                        <v-text-field tabindex="5" 
+                            v-model="dataAtendimentosFormatada"
+                            label="Data"
+                            prepend-icon="event" 
+                            mask="##/##/####" return-masked-value
+                            hint="DD/MM/AAAA"
+                            persistent-hint
+                            @blur="dataAtendimentos = parseDate(dataAtendimentosFormatada)" 
+                            v-on="on"
+                            />
+                    </template>
+                    <v-date-picker v-model="dataAtendimentos" no-title locale="pt-br" 
+                        @input="menuDataAtendimentos = false"/>
+                </v-menu>
             </v-flex>
-        </v-layout>     
-    </v-container>
+        </template>
+
+        <template slot="topFormArea">
+            <h3>{{ computedSituacaoDoAtendimento }}</h3>
+        </template>
+
+        <template slot="addButtonArea">
+            <div class="text-xs-center">
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn color="primary darken-1" fab large light 
+                            @click="novo(idTipoPresencial)" v-on="on">
+                            <v-icon>people_outline</v-icon>
+                        </v-btn>
+                    </template>
+                    Iniciar atendimento presencial
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn color="primary" fab large 
+                            @click="novo(idTipoTelefonico)" v-on="on">
+                            <v-icon>local_phone</v-icon>
+                        </v-btn>
+                    </template>
+                    Iniciar atendimento telefônico
+                </v-tooltip>
+                <v-tooltip bottom>
+                    <template v-slot:activator="{ on }">
+                        <v-btn color="primary lighten-1" fab large dark 
+                            @click="novo(idTipoEmail)" v-on="on">
+                            <v-icon>mail_outline</v-icon>
+                        </v-btn>
+                    </template>
+                    Iniciar atendimento de e-mail
+                </v-tooltip>
+            </div>
+        </template>
+        
+        <template slot="detalhe">
+            <div v-if="entidadeAtual">                                    
+                <v-container>
+                    <!-- Dados do Atendimento -->
+                    <v-layout row wrap>
+                        <v-flex xs12 md6>
+                            <v-text-field label="Atendente" v-model="computedNomeDoAtendente" disabled/>
+                        </v-flex>
+                        <v-flex xs12 md2>
+                            <v-text-field label="Data" v-model="entidadeAtual.data" disabled/>
+                        </v-flex>
+                        <v-flex xs12 md2>
+                            <v-text-field label="Início" v-model="entidadeAtual.inicio" disabled/>
+                        </v-flex>
+                        <v-flex xs12 md2>
+                            <v-text-field label="Fim" v-model="entidadeAtual.fim" disabled/>
+                        </v-flex>
+                    </v-layout>
+                    
+                    <!-- Dados do Atendido -->
+                    <v-layout row wrap>
+                        <v-flex xs12 md6>
+                            <v-text-field label="Atendido" v-model="entidadeAtual.atendido" 
+                                :rules="[validacoes().obrigatorio, validacoes().min3]" required :disabled="atendimentoConcluido()" />
+                        </v-flex>
+                        <v-flex xs12 md3>
+                            <v-text-field label="CPF" v-model="entidadeAtual.cpf" :disabled="atendimentoConcluido()" />
+                        </v-flex>
+                        <v-flex xs12 md3>
+                            <v-text-field label="E-mail" v-model="entidadeAtual.email" 
+                                :rules="[validacoes().email]" :disabled="atendimentoConcluido()" />
+                        </v-flex>
+                    </v-layout>
+
+                    <!-- Assuntos -->
+                    <v-layout wrap>
+                        <v-flex xs12>
+                            
+                                <h4>Assuntos</h4>
+                                <v-container>
+                                    <v-layout wrap>
+                                        <v-flex xs12 md4 lg3 align-start justify-start v-for="assunto in entidadeAtual.assuntos" v-bind:key="assunto.id">
+                                            <v-checkbox :label="assunto.assunto" align-start v-model="assunto.checked" :disabled="atendimentoConcluido()" ></v-checkbox>
+                                        </v-flex>
+                                    </v-layout>
+                                </v-container>
+                        </v-flex>
+                    </v-layout>
+
+                    <!-- Comentários -->
+                    <v-layout row wrap>
+                        <v-flex xs12>
+                            <v-textarea filled 
+                                label="Comentário:"
+                                placeholder="Registre aqui informações que julgar relevantes ao atendimento prestado."
+                                v-model="novoComentario" 
+                                :error-messages="comentarioValidoMsgs">
+                            </v-textarea>
+                        </v-flex>
+                    </v-layout>
+                    <v-layout row wrap justify-end>
+                        <v-btn color="primary lighten-2" @click="inserirComentario" :disabled="!comentarioValido">
+                            <v-icon>add</v-icon> Inserir Comentário
+                        </v-btn>
+                    </v-layout>
+                    <comentarios :comentarios="entidadeAtual.comentarios"></comentarios>
+                </v-container>
+            </div>
+        </template>
+        
+        <template slot="beforeSaveButton">
+            <v-btn color="success" @click="concluir" :disabled="!formularioValido() || atendimentoConcluido()">
+                <v-icon>check</v-icon> Concluir Atendimento</v-btn>
+        </template>
+    </crud>
 </template>
 
 <script>
