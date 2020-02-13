@@ -10,8 +10,8 @@
         
         <template slot="beforeAdd">
             <v-tooltip bottom>
-                <template slot="activator">
-                    <v-btn icon 
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" rounded 
                         :color="switchSomenteAbertas ? 'green' : 'grey'" 
                         @click="switchSomenteAbertas = !switchSomenteAbertas">
                         <v-icon>play_arrow</v-icon>
@@ -20,8 +20,8 @@
                 Somente demandas abertas
             </v-tooltip>
             <v-tooltip bottom>
-                <template slot="activator">
-                    <v-btn icon 
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" rounded 
                         :color="switchSomenteAtrasadas ? 'red' : 'grey'" 
                         @click="switchSomenteAtrasadas = !switchSomenteAtrasadas">
                         <v-icon>access_alarm</v-icon>
@@ -30,8 +30,8 @@
                 Somente demandas atrasadas
             </v-tooltip>
             <v-tooltip bottom>
-                <template slot="activator">
-                    <v-btn icon 
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" rounded 
                         :color="switchSomenteSentencas ? 'red' : 'grey'" 
                         @click="switchSomenteSentencas = !switchSomenteSentencas">
                         <v-icon>gavel</v-icon>
@@ -40,31 +40,6 @@
                 Somente demandas referentes a sentenças judiciais
             </v-tooltip>
         </template>
-
-        <!--
-        <template slot="footer">
-            <v-layout row fill-height wrap>
-                <v-spacer></v-spacer>
-                <v-flex d-flex column align-center>
-                    <v-pagination
-                        v-model="paginacao.current_page"
-                        :length="paginacao.last_page"
-                        :value="paginacao.current_page"
-                        total-visible=7
-                        @input="carregarItens"
-                    ></v-pagination>
-                </v-flex>
-                <v-flex xs1>
-                    <v-text-field v-model="paginacao.per_page" @blur="carregarItens">
-                    </v-text-field>
-                </v-flex>
-                <v-flex d-flex column>
-                    Exibindo de {{ paginacao.from + ' a ' + paginacao.to + ' do total de ' + paginacao.total }} registros.
-                </v-flex>
-                <v-spacer></v-spacer>
-            </v-layout>
-        </template>
-        -->
 
         <template slot="detalhe">
             <div v-if="entidadeAtual">
@@ -81,18 +56,15 @@
                                 prepend-icon="record_voice_over"
                                 return-object tabindex="1"
                                 :rules="[validacao.obrigatorio]">
-                                <template
-                                slot="item"
-                                slot-scope="data" required
-                                >
+                                <template slot="item" slot-scope="data" required>
                                     <template v-if="typeof data.item !== 'object'">
-                                        <v-list-tile-content v-text="data.item"></v-list-tile-content>
+                                        <v-list-item-content v-text="data.item"></v-list-item-content>
                                     </template>
                                     <template v-else>
-                                        <v-list-tile-content>
-                                        <v-list-tile-title v-html="data.item.nome"></v-list-tile-title>
-                                        <v-list-tile-sub-title v-html="data.item.cargo.cargo + ' - ' + data.item.orgao.sigla"></v-list-tile-sub-title>
-                                        </v-list-tile-content>
+                                        <v-list-item-content>
+                                            <v-list-item-title v-html="data.item.nome"></v-list-item-title>
+                                            <v-list-item-subtitle v-html="data.item.cargo.cargo + ' - ' + data.item.orgao.sigla"></v-list-item-subtitle>
+                                        </v-list-item-content>
                                     </template>
                                 </template>
                             </v-autocomplete>
@@ -113,20 +85,18 @@
                                 placeholder="Número/identificador do procedimento externo"
                                 prepend-icon="account_balance"
                                 return-object 
-                                :rules="[validacao.obrigatorio]"
-                            >
+                                :rules="[validacao.obrigatorio]">
                                 <template
                                 slot="item"
-                                slot-scope="data"
-                                >
+                                slot-scope="data">
                                     <template v-if="typeof data.item !== 'object'">
-                                        <v-list-tile-content v-text="data.item"></v-list-tile-content>
+                                        <v-list-item-content v-text="data.item"></v-list-item-content>
                                     </template>
                                     <template v-else>
-                                        <v-list-tile-content>
-                                        <v-list-tile-title v-html="data.item.procedimento"></v-list-tile-title>
-                                        <v-list-tile-sub-title v-if="data.item.tipo_procedimento_externo" v-html="data.item.tipo_procedimento_externo.tipoprocedimento"></v-list-tile-sub-title>
-                                        </v-list-tile-content>
+                                        <v-list-item-content>
+                                            <v-list-item-title v-html="data.item.procedimento"></v-list-item-title>
+                                            <v-list-item-subtitle v-if="data.item.tipo_procedimento_externo" v-html="data.item.tipo_procedimento_externo.tipoprocedimento"></v-list-item-subtitle>
+                                        </v-list-item-content>
                                     </template>
                                 </template>
                             </v-autocomplete>
@@ -140,8 +110,7 @@
                             <v-autocomplete label="Tipo Documento" tabindex="3" 
                                 :items="tiposDocumento" v-model="entidadeAtual.idTipoDocumento" 
                                 item-text="tipodocumento" item-value="id" 
-                                :rules="[validacao.obrigatorio]"
-                            />
+                                :rules="[validacao.obrigatorio]"/>
                         </v-flex>
 
                         <!-- Documento  -->
@@ -159,24 +128,25 @@
                                 :close-on-content-click="false"
                                 v-model="menuDataDocumento"
                                 :nudge-right="40"
-                                lazy
                                 transition="scale-transition"
                                 offset-y
-                                full-width
                                 max-width="290px"
                                 min-width="290px">
 
-                                <v-text-field  tabindex="5" 
-                                    mask="##/##/####" return-masked-value
-                                    slot="activator"
-                                    v-model="dataDocumentoFormatada"
-                                    label="Data Documento"
-                                    hint="DD/MM/AAAA"
-                                    persistent-hint
-                                    prepend-icon="event" 
-                                    :rules="[validacao.obrigatorio, validacao.date]" required 
-                                    @blur="dataDocumento = parseDate(dataDocumentoFormatada)"
-                                    />
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field  tabindex="5" 
+                                        mask="##/##/####" return-masked-value
+                                        v-on="on"
+                                        v-model="dataDocumentoFormatada"
+                                        label="Data Documento"
+                                        hint="DD/MM/AAAA"
+                                        persistent-hint
+                                        prepend-icon="event" 
+                                        :rules="[validacao.obrigatorio, validacao.date]" required 
+                                        @blur="dataDocumento = parseDate(dataDocumentoFormatada)"
+                                        />
+                                </template>
+
                                 <v-date-picker v-model="dataDocumento" no-title @input="menuDataDocumento = false" locale="pt-br" />
                             </v-menu>
                         </v-flex>
@@ -211,24 +181,25 @@
                                 :close-on-content-click="false"
                                 v-model="menuDataPrazo"
                                 :nudge-right="40"
-                                lazy
                                 transition="scale-transition"
                                 offset-y
-                                full-width
                                 max-width="290px"
                                 min-width="290px">
 
-                                <v-text-field  tabindex="7" 
-                                    mask="##/##/####" return-masked-value
-                                    :rules="[validacao.date]" 
-                                    slot="activator"
-                                    v-model="dataPrazoFormatada"
-                                    label="Prazo"
-                                    hint="DD/MM/AAAA"
-                                    persistent-hint
-                                    prepend-icon="event"
-                                    @blur="dataPrazo = parseDate(dataPrazoFormatada)"
-                                    />
+                                <template v-slot:activator="{ on }">
+                                    <v-text-field  tabindex="7" 
+                                        mask="##/##/####" return-masked-value
+                                        :rules="[validacao.date]" 
+                                        v-on="on" 
+                                        v-model="dataPrazoFormatada"
+                                        label="Prazo"
+                                        hint="DD/MM/AAAA"
+                                        persistent-hint
+                                        prepend-icon="event"
+                                        @blur="dataPrazo = parseDate(dataPrazoFormatada)"
+                                        />
+                                </template>
+
                                 <v-date-picker v-model="dataPrazo" no-title @input="menuDataPrazo = false" locale="pt-br" />
                             </v-menu>
                         </v-flex>
@@ -253,8 +224,8 @@
                             <v-layout row wrap>                            
                                 <v-flex xs6>
                                     <v-tooltip bottom>
-                                        <template slot="activator">
-                                            <v-btn :disabled="!podeCancelar" @click="cancelarDemanda">
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn :disabled="!podeCancelar" @click="cancelarDemanda" v-on="on">
                                                 <v-icon color="error">delete</v-icon>
                                             </v-btn>
                                         </template>
@@ -263,8 +234,8 @@
                                 </v-flex>
                                 <v-flex xs6 v-if="podeAguardarAssinatura">
                                     <v-tooltip bottom>
-                                        <template slot="activator">
-                                            <v-btn @click="aguardarAssinatura">
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn @click="aguardarAssinatura" v-on="on">
                                                 <v-icon color="black">assignment_late</v-icon>
                                             </v-btn>
                                         </template>
@@ -273,8 +244,8 @@
                                 </v-flex>
                                 <v-flex xs6  v-if="podeAguardarAR">
                                     <v-tooltip bottom>
-                                        <template slot="activator">
-                                            <v-btn @click="aguardarAR">
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn @click="aguardarAR" v-on="on">
                                                 <v-icon color="purple">beenhere</v-icon>
                                             </v-btn>
                                         </template>
@@ -283,8 +254,8 @@
                                 </v-flex>
                                 <v-flex xs6 v-if="podeResolver">
                                     <v-tooltip bottom>
-                                        <template slot="activator">
-                                            <v-btn @click="resolverDemanda">
+                                        <template v-slot:activator="{ on }">
+                                            <v-btn @click="resolverDemanda" v-on="on">
                                                 <v-icon color="success">done</v-icon>
                                             </v-btn>
                                         </template>
@@ -299,7 +270,7 @@
 
                     <v-layout row wrap>
                         <!-- Demanda -->
-                        <v-textarea box tabindex="10" 
+                        <v-textarea tabindex="10" 
                             name="input-7-4"
                             label="O demandante nos solicita..."
                             placeholder="informar sobre a situação das inscrições de ocupação..."
@@ -310,7 +281,7 @@
 
                     <v-layout row wrap>
                         <!-- Resumo / Situação -->
-                        <v-textarea box tabindex="11" 
+                        <v-textarea tabindex="11" 
                             name="input-7-4"
                             label="Situação (Resumo Gerencial):"
                             placeholder="Anotação sobre o resumo da situação da demanda para fins gerenciais"
@@ -364,46 +335,47 @@
                                     <v-data-table
                                         :headers="cabecalhoDistribuicao"
                                         :items="entidadeAtual.distribuicoes"
-                                        :expand="expandirDistribuicao"
                                         item-key="id" 
                                         v-if="podeDistribuir"
                                         >
-                                        <template slot="items" slot-scope="props">
+                                        <template v-slot:item="props">
                                             <tr v-on:click="expandirLinhaDistribuicao(props)" style="cursor:pointer;">
-                                            <td>{{ (props.item.dataDistribuicao != null) ?
-                                                new Date(props.item.dataDistribuicao).toLocaleString() : '' }}</td>
-                                            <td>{{ props.item.colaborador_de.name }}</td>
-                                            <td>{{ props.item.assignable ? 
-                                                (props.item.assignable.name ? props.item.assignable.name : props.item.assignable.sigla)
-                                                : '' }}</td>
-                                            <td>{{ props.item.situacao }}</td>
-                                            <td>{{ (props.item.dataAtendimento != null) ?
-                                                new Date(props.item.dataAtendimento).toLocaleString() : '' }}</td>
+                                                <td>{{ (props.item.dataDistribuicao != null) ?
+                                                    new Date(props.item.dataDistribuicao).toLocaleString() : '' }}</td>
+                                                <td>{{ props.item.colaborador_de.name }}</td>
+                                                <td>{{ props.item.assignable ? 
+                                                    (props.item.assignable.name ? props.item.assignable.name : props.item.assignable.sigla)
+                                                    : '' }}</td>
+                                                <td>{{ props.item.situacao }}</td>
+                                                <td>{{ (props.item.dataAtendimento != null) ?
+                                                    new Date(props.item.dataAtendimento).toLocaleString() : '' }}</td>
                                             </tr>
                                         </template>
-                                        <template slot="expand" slot-scope="props">
-                                            <v-card flat>
-                                                <v-card-text>
-                                                    <v-layout row wrap>
-                                                        <!-- Comentário Distribuição 
-                                                        -->
-                                                        <v-textarea label="Comentário Distribuição"
-                                                            v-model="props.item.comentarioDistribuicao">
-                                                        </v-textarea>
-                                                        <!-- Comentário Atendimento -->
-                                                        <v-textarea label="Comentário Atendimento"
-                                                            v-model="props.item.comentarioAtendimento">
-                                                        </v-textarea>
+                                        <template v-slot:expanded-item="{ item }">
+                                            <td colspan="5">
+                                                <v-card flat>
+                                                    <v-card-text>
+                                                        <v-layout row wrap>
+                                                            <!-- Comentário Distribuição 
+                                                            -->
+                                                            <v-textarea label="Comentário Distribuição"
+                                                                v-model="item.comentarioDistribuicao">
+                                                            </v-textarea>
+                                                            <!-- Comentário Atendimento -->
+                                                            <v-textarea label="Comentário Atendimento"
+                                                                v-model="item.comentarioAtendimento">
+                                                            </v-textarea>
 
-                                                    </v-layout>  
-                                                </v-card-text>
-                                                <v-card-actions>
-                                                    <v-btn color="primary lighten-1" @click="salvarDistribuicao(false)" :disabled="!podeSalvarDistribuicao">
-                                                        Alterar Comentário</v-btn>
-                                                    <v-btn color="success lighten-1" @click="salvarDistribuicao(true)" :disabled="!podeSalvarDistribuicao">
-                                                        Marcar Como Atendida</v-btn>
-                                                </v-card-actions>
-                                            </v-card>
+                                                        </v-layout>  
+                                                    </v-card-text>
+                                                    <v-card-actions>
+                                                        <v-btn color="primary lighten-1" @click="salvarDistribuicao(false)" :disabled="!podeSalvarDistribuicao">
+                                                            Alterar Comentário</v-btn>
+                                                        <v-btn color="success lighten-1" @click="salvarDistribuicao(true)" :disabled="!podeSalvarDistribuicao">
+                                                            Marcar Como Atendida</v-btn>
+                                                    </v-card-actions>
+                                                </v-card>
+                                            </td>
                                         </template>
                                     </v-data-table>
                                 </v-card-text>
@@ -419,8 +391,8 @@
 </template>
 
 <script>
-import rotas from './../rotas-servico.js'
-import CRUD from './CRUD'
+import rotas from './../../rotas-servico.js'
+import CRUD from './../CRUD'
 import { isNull } from 'util';
 import { setTimeout } from 'timers';
 export default {
@@ -483,45 +455,51 @@ export default {
                 },
                 // colunas escondidas para tornar possível a busca por seus valores
                 {
-                    type: 'hidden',
                     text: 'Situacao', 
-                    value: 'situacao'
+                    value: 'situacao',
+                    // para esconder a coluna, use as duas propriedades abaixo
+                    align: ' d-none', type : 'hidden',
                 },
                 {
                     text: 'Documento', 
                     value: 'documentoExterno',
-                    type: 'hidden',
                     sortable: false,
-                    width: '0px'
+                    width: '0px',
+                    // para esconder a coluna, use as duas propriedades abaixo
+                    align: ' d-none', type : 'hidden',
                 },
                 {
                     text: 'Órgão', 
                     value: 'orgao',
-                    type: 'hidden',
                     sortable: false,
-                    width: '0px'
+                    width: '0px',
+                    // para esconder a coluna, use as duas propriedades abaixo
+                    align: ' d-none', type : 'hidden',
                 },
                 {
                     text: 'Distribuída para (pesquisa)', 
                     value: 'distribuidaParaValores',
-                    type: 'hidden',
                     sortable: false,
-                    width: '0px'
+                    width: '0px',
+                    // para esconder a coluna, use as duas propriedades abaixo
+                    align: ' d-none', type : 'hidden',
                 },
                 {
                     text: 'Tipo Procedimento Externo', 
                     value: 'tipoProcedimentoExterno',
-                    type: 'hidden',
                     sortable: false,
-                    width: '0px'
+                    width: '0px',
+                    // para esconder a coluna, use as duas propriedades abaixo
+                    align: ' d-none', type : 'hidden',
                 },
                 {
                     text: 'Procedimento Externo Resumo', 
                     value: 'procedimentoExternoResumo',
-                    type: 'hidden',
                     sortable: false,
                     width: '0px',
-                    class: 'hidden'
+                    class: 'hidden',
+                    // para esconder a coluna, use as duas propriedades abaixo
+                    align: ' d-none', type : 'hidden',
                 },
             ],
             registros: [
@@ -605,6 +583,10 @@ export default {
         }
     },
     methods: {
+        consoleLog(obj) {
+            console.log(obj)
+            return obj
+        },
         dataValida(v) {
             if(isNull(v)) return true
             if(v.length == 0) return true
@@ -986,7 +968,9 @@ export default {
         },
 
         expandirLinhaDistribuicao(props) {
-            props.expanded = !props.expanded
+            // console.log("expandirLinhaDistribuicao()")
+            // console.log(props)
+            props.expand(!props.isExpanded)
             this.distribuicao = props.item            
         },
 

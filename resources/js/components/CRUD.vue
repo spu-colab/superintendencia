@@ -108,8 +108,8 @@
                     <v-badge v-if="props.item[header.icon]" :color="header.color">
                       <template slot="badge">
                         <v-tooltip top>
-                          <template slot="activator">
-                            <v-icon dark small>{{ props.item[header.icon] }}</v-icon>
+                          <template v-slot:activator="{ on }">
+                            <v-icon dark small v-on="on">{{ props.item[header.icon] }}</v-icon>
                           </template>
                           {{ props.item.iconTooltip }}
                         </v-tooltip>
@@ -124,8 +124,8 @@
                     <v-badge v-if="props.item[header.icon]" :color="props.item[header.color]" left>
                       <template slot="badge">
                         <v-tooltip top>
-                          <template slot="activator">
-                            <v-icon dark small>{{ props.item[header.icon] }}</v-icon>
+                          <template v-slot:activator="{ on }">
+                            <v-icon dark small v-on="on">{{ props.item[header.icon] }}</v-icon>
                           </template>
                           {{ props.item[header.iconTooltip] }}
                         </v-tooltip>
