@@ -4,9 +4,9 @@ import Home from './../components/Home'
 import Login from './../components/Login'
 import PainelJudiciais from './../components/judicial/PainelJudiciais'
 import DemandaCrud from './../components/judicial/Demanda'
+import AutorDemandaCrud from './../components/judicial/Demandante'
+import OrgaoCrud from './../components/judicial/Orgao'
 import ProcedimentoExternoCrud from './../components/judicial/ProcedimentoExterno'
-import AutorDemandaCrud from './../components/AutorDemandaCrud'
-import OrgaoCrud from './../components/OrgaoCrud'
 import Atendimento from './../components/atendimento/Atendimento'
 import Governanca from './../components/governanca/Governanca'
 import Conteudo from './../components/Conteudo'
@@ -14,7 +14,7 @@ import GeoVisualizador from './../components/geo/GeoVisualizador'
 import Usuario from './../components/permissoes/Usuario'
 import Perfil from './../components/permissoes/Perfil'
 import Organograma from './../components/permissoes/Organograma'
-import FileUpload from './../components/FileUpload'
+// import FileUpload from './../components/FileUpload'
 import store from './../store'
 
 Vue.use(Router)
@@ -317,7 +317,7 @@ let router = new Router({
         ]
       }
     },
-
+    /*
     {
       path: '/arquivo',
       name: 'Arquivo',
@@ -335,19 +335,20 @@ let router = new Router({
         ]
       }
     }
+    */
   ]
 })
 
 router.beforeEach((to, from, next) => {
   let tokenArmazenado = store.getters['auth/token']
-  // console.log(tokenArmazenado)
 
   if(to.matched.some(record => record.meta.requiresAuth)) {
-
     if(tokenArmazenado == null) {
       next({
         path: '/login',
-        params: { nextUrl: to.fullPath }
+        query: {
+          redirect: to.fullPath 
+        }
       })
     } else {
       next()

@@ -52,8 +52,8 @@
 </template>
 
 <script>
-import rotas from './../rotas-servico.js'
-import CRUD from './CRUD'
+import rotas from './../../rotas-servico.js'
+import CRUD from './../CRUD'
 export default {
     components: {
         'crud' : CRUD
@@ -108,7 +108,7 @@ export default {
         selecionarParaEdicao(item) {
             this.carregarTabelasApoio()
             this.entidadeAtual = item
-            console.log('Item selecionado: ' + item.id)
+            // console.log('Item selecionado: ' + item.id)
         },
         salvar() {
             let url = rotas.rotas().autorDemanda.criar;
@@ -133,7 +133,7 @@ export default {
             this.$http.post(url, formData)
                 .then(
                     response => {
-                        console.log(response)
+                        // console.log(response)
                         this.$store.commit('sistema/mensagem', 'Demandante cadastrado com sucesso!')
                         this.$router.push('/demandante')
                     },
