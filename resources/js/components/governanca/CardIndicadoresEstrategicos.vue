@@ -2,9 +2,7 @@
     <v-container fluid fill-height>
         <v-row align="start">
             <v-card>
-                <v-card-title primary title>
-                    <h3>Metas SPU-SC</h3>            
-                </v-card-title>
+                <v-card-title primary title>Metas SPU-SC</v-card-title>
                 
                 <v-container fluid fill-height>
                     <v-layout row wrap>

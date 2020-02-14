@@ -6,10 +6,8 @@
         -->
         <v-card class="mx-auto" :loading="carregando" tile>
           <v-card-title v-if="titulo">
-            <div class="overline mb-4">
-              <v-icon :color="iconColorTitulo">{{ iconTitulo }}</v-icon>
-              {{ titulo }}
-            </div>
+            <v-icon :color="iconColorTitulo">{{ iconTitulo }}</v-icon>
+            {{ titulo }}
           </v-card-title>
 
           <v-card-subtitle>

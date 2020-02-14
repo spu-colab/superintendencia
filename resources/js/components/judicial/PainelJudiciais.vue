@@ -14,10 +14,8 @@
               :close-on-content-click="false"
               :nudge-right="40"
               v-model="menuDataDe"
-              lazy
               transition="scale-transition"
               offset-y
-              full-width
               max-width="290px"
               min-width="290px">
 
@@ -45,10 +43,8 @@
               :close-on-content-click="false"
               :nudge-right="40"
               v-model="menuDataAte"
-              lazy
               transition="scale-transition"
               offset-y
-              full-width
               max-width="290px"
               min-width="290px">
 
@@ -171,9 +167,9 @@
 
       <!-- segunda coluna -->
       <v-col xs="12" md="3">
-        <v-card outlined>
+        <v-card outlined color="grey lighten-4">
           <v-card-title>
-            <div class="overline mb-4">Relatórios</div>
+            Relatórios
           </v-card-title>
           <v-card-text>
 
@@ -185,12 +181,12 @@
                   </v-list-item-title>
                   <v-checkbox v-model="incluirReprimidas" label="Incluir Reprimidas" small></v-checkbox>
                 </v-list-item-content>
-                <v-list-action>
+                <v-list-item-action>
                   <v-btn @click="gerarRelatorioDemandasPorNucleo" :disabled="carregandoRelatorioDemandasPorNucleo" small>
                     <v-progress-circular indeterminate v-if="carregandoRelatorioDemandasPorNucleo" color="grey" size="20" width="3"></v-progress-circular>
                     Gerar
                   </v-btn>
-                </v-list-action>
+                </v-list-item-action>
               </v-list-item>
             </v-list>
 

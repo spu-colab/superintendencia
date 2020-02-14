@@ -1,80 +1,53 @@
 <template>
-    <v-container fluid fill-height>
-        <v-layout column>
-            <v-flex xs12>
+    <v-container fluid>
+        <v-row align="stretch">
+            <!-- Base de Conhecimento -->
+            <v-col xs="12" md="4">
+                <v-card class="align-stretch" href="http://10.209.232.158/wordpress" target="_blank">
+                    <v-img src="/images/baseconhecimento.jpg" aspect-ratio="2.75" />
+                    <v-card-title primary title>
+                        Base de Conhecimento
+                    </v-card-title>
+                    <v-card-subtitle>
+                        Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e ter acesso ao conhecimento produzido na Superintendência.
+                    </v-card-subtitle>
+                </v-card>
+            </v-col>
 
-                <v-layout align-start justify-space-between row>
+            <!-- Geovisualização -->
+            <v-col xs="12" md="4">
+                <v-card class="align-stretch" to="/geo">
+                    <v-img src="/images/geo.jpg" aspect-ratio="2.75" />
+                    <v-card-title primary title>
+                        Geovisualizador
+                    </v-card-title>
+                    <v-card-subtitle>
+                        Conheça nosso painel de geovisualização das demandas juridicas.
+                    </v-card-subtitle>
+                </v-card>
+            </v-col>
 
-                    <!-- Base de Conhecimento -->
-                    <v-flex col xs12 md4>
-                        <a href="http://10.209.232.158/wordpress" target="_blank">
-                            <v-card>
-                                <v-img
-                                    src="/images/baseconhecimento.jpg"
-                                    aspect-ratio="2.75"
-                                ></v-img>
-                                <v-card-title primary title>
-                                    <div>
-                                        <h3>Base de Conhecimento</h3>
-                                        <div>
-                                            Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e ter acesso ao conhecimento produzido na Superintendência.
-                                        </div>
-                                    </div>
-                                </v-card-title>
-                            </v-card>
-                        </a>
-                    </v-flex>
-
-                    <!-- Geovisualização -->
-                    <v-flex col xs12 md4>
-                        <router-link to="/geo">
-                            <v-card>
-                                <v-img
-                                    src="/images/geo.jpg"
-                                    aspect-ratio="2.75"
-                                ></v-img>
-                                <v-card-title primary title>
-                                    <div>
-                                        <h3>Geovisualizador</h3>
-                                        <div>
-                                            Conheça nosso painel de geovisualização das demandas juridicas.
-                                        </div>
-                                    </div>
-                                </v-card-title>
-                            </v-card>
-                        </router-link>
-                    </v-flex>
-
-                    <!-- Demandas Jurídicas e de Controle -->
-                    <v-flex col xs12 md4>
-                        <router-link to="/nujuc">
-                            <v-card>
-                                <v-img
-                                    src="/images/juridicas.jpg"
-                                    aspect-ratio="2.75"
-                                ></v-img>
-                                <v-card-title primary title>
-                                    <div>
-                                        <h3>Demandas Jurídicas e de Controle</h3>
-                                        <div>
-                                            Módulo de gestão das demandas jurídicas e de controle
-                                        </div>
-                                    </div>
-                                </v-card-title>
-                            </v-card>
-                        </router-link>
-                    </v-flex>
-
-                </v-layout>
-            </v-flex>
+            <!-- Demandas Jurídicas e de Controle -->
+            <v-col xs="12" md="4">
+                <v-card class="align-stretch" to="/nujuc">
+                    <v-img src="/images/juridicas.jpg" aspect-ratio="2.75" />
+                    <v-card-title primary title>
+                        Demandas Jurídicas e de Controle
+                    </v-card-title>
+                    <v-card-subtitle>
+                        Módulo de gestão das demandas jurídicas e de controle
+                    </v-card-subtitle>
+                </v-card>
+            </v-col>
 
             <!-- Metas SPU-SC -->
-            <v-flex xs12>
+            <v-col cols="12">
                 <v-layout align-start justify-space-between row>
                     <card-indicadores-estrategicos/>
                 </v-layout>
-            </v-flex>
-        </v-layout>
+            </v-col>
+
+        </v-row>
         
     </v-container>
 
