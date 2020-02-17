@@ -1,6 +1,7 @@
 <?php
 
 namespace Modules\Auth\Http\Controllers;
+
 use App\DivisaoOrganograma;
 use App\UsuarioDivisaoOrganograma;
 use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;

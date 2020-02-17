@@ -44,8 +44,9 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('natureza-orgao', 'OrgaoController@listarNaturezas');
     Route::resource('tipoDocumento', 'TipoDocumentoController');
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
-    Route::resource('usuario/reduzido', 'AuthController@listarReduzido');
-    Route::resource('divisaoOrganograma/listarPai', 'DivisaoOrganogramaController@listarPai');
+    Route::resource('usuario/reduzido', '\Modules\Auth\Http\Controllers\AuthController@listarReduzido');
+    Route::resource('divisaoOrganograma/listarPai', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController@listarPai');
+
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
     Route::get('procedimentoExterno/buscar/{search}', 'ProcedimentoExternoController@search');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');

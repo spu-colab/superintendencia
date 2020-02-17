@@ -15,9 +15,9 @@ use Illuminate\Http\Request;
 
 
 Route::middleware('jwt.auth')->group(function () {     
-    Route::resource('usuario', 'AuthController');
     Route::resource('permissao', 'PermissaoController');
-    Route::resource('divisaoOrganograma', 'DivisaoOrganogramaController');
-    Route::get('divisaoOrganograma/listarPai', 'DivisaoOrganogramaController@listarPai');
-    Route::get('usuario/reduzido', 'AuthController@listarReduzido');    
+    Route::get('divisaoOrganograma/listarPai', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController@listarPai');
+    
+    Route::resource('usuario', '\Modules\Auth\Http\Controllers\AuthController');
+    Route::get('usuario/reduzido', '\Modules\Auth\Http\Controllers\AuthController@listarReduzido');    
 });

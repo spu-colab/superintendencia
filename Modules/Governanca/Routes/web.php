@@ -12,5 +12,5 @@
 */
 
 Route::prefix('governanca')->group(function() {
-    Route::get('/', 'GovernancaController@index');
+    // Route::get('/', 'GovernancaController@index');
 });
