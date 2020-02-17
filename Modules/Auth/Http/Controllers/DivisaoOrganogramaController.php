@@ -23,11 +23,6 @@ class DivisaoOrganogramaController extends Controller
       return DivisaoOrganograma::with('usuarios:idUsuario,name,cpf','divisaoOrganogramaPai:id,nome,sigla')
         ->orderBy('idDivisaoOrganogramaPai', 'asc')->get();
     }
-    public function listarPai()
-    {        
-        $result = DivisaoOrganograma::get();
-        return response()->json($result);
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -47,22 +42,26 @@ class DivisaoOrganogramaController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->nome && $request->sigla && $request->idPai) {
-            $divisao = new DivisaoOrganograma;
-            $this->authorize('store', $divisao);    
-            $divisao->nome = $request->nome;
-            $divisao->sigla = $request->sigla;
-            $divisao->idDivisaoOrganogramaPai = $request->idPai;
-            $result = $divisao->save();
-            if(@$request->usuarios) {
-                foreach ($request->usuarios as $idUsuario) {
-                    $this->incluiUsuarioUsuarioDivisaoOrganograma($idUsuario, $divisao->id);
-                }
-            }   
-
-            return response()->json($result);
+        if($request->nome == null || $request->sigla == null) {
+            return response()->json(['message' => "Erro de Preenchimento"], 404);
         }
-        return response()->json(['message' => "Erro de Preenchimento"], 404);
+
+        $this->authorize('store', $divisao);
+
+        $divisao = new DivisaoOrganograma;
+        $divisao->nome = $request->nome;
+        $divisao->sigla = $request->sigla;
+        if($request->idPai) {
+            $divisao->idDivisaoOrganogramaPai = $request->idPai;
+        }
+
+        $result = $divisao->save();
+        if(@$request->usuarios) {
+            foreach ($request->usuarios as $idUsuario) {
+                $this->incluiUsuarioUsuarioDivisaoOrganograma($idUsuario, $divisao->id);
+            }
+        }
+        return response()->json($result);
     }
 
     /**
@@ -96,25 +95,28 @@ class DivisaoOrganogramaController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if($request->nome && $request->sigla && $request->idPai) {
-            $divisao = DivisaoOrganograma::findOrFail($id);
-            $this->authorize('update', $divisao);    
-            $divisao->nome = $request->nome;
-            $divisao->sigla = $request->sigla;
-            $divisao->idDivisaoOrganogramaPai = 'null';
-            if ($request->idPai){
-                $divisao->idDivisaoOrganogramaPai = $request->idPai;
-            }
-            $result = $divisao->update();
-            $this->removeDivisaoUsuarioDivisaoOrganograma($id);
-            if(@$request->usuarios) {
-                foreach ($request->usuarios as $idUsuario) {
-                    $this->incluiUsuarioUsuarioDivisaoOrganograma($idUsuario, $id);
-                }
-            }   
-            return response()->json($result);
+        if($request->nome == null || $request->sigla == null) {
+            return response()->json(['message' => "Erro de Preenchimento"], 404);
         }
-        return response()->json(['message' => "Erro de Preenchimento"], 404);
+        
+        $divisao = DivisaoOrganograma::findOrFail($id);
+
+        $this->authorize('update', $divisao);    
+
+        $divisao->nome = $request->nome;
+        $divisao->sigla = $request->sigla;
+        if ($request->idPai){
+            $divisao->idDivisaoOrganogramaPai = $request->idPai;
+        }
+        $result = $divisao->update();
+        
+        $this->removeDivisaoUsuarioDivisaoOrganograma($id);
+        if(@$request->usuarios) {
+            foreach ($request->usuarios as $idUsuario) {
+                $this->incluiUsuarioUsuarioDivisaoOrganograma($idUsuario, $id);
+            }
+        }   
+        return response()->json($result);
     }
     /**
      * Remove the specified resource from storage.

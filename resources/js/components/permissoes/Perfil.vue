@@ -16,20 +16,18 @@
           label="Permissao"
           v-model="entidadeAtual.permissao"
           :rules="[validacao.obrigatorio]"
-          :disabled=true    
-          required     
-        />
+          :disabled="true" 
+          required />
+
         <v-text-field
           label="Descrição"
           v-model="entidadeAtual.descricao"
-          :disabled=true          
-        />
+          :disabled="true"  />
+
         <div v-if="entidadeAtual.id">
           <h5><p style="text-align:center">Usuários</p></h5>
           <v-divider/>
-          <CaixaSelecao
-            :itensCaixa="itensCaixa"
-          />  
+          <caixa-selecao :itensCaixa="itensCaixa" />  
         </div>              
       </div>
     </template>
@@ -75,10 +73,11 @@ export default {
       this.entidadeAtual = item
       this.formatarUsuarios(this.entidadeAtual);
     },
+
     carregarUsuarios() {
       this.carregando = true;
       this.usuarios = [];
-      this.$http.get(rotas.rotas().organograma.usuario).then(
+      this.$http.get(rotas.rotas().usuario.listar).then(
         response => {
           response.body.forEach(element => {
             element["checked"] = false;
@@ -129,8 +128,8 @@ export default {
       }
       let url =
         this.entidadeAtual.id === null
-          ? rotas.rotas().perfil.criar
-          : rotas.rotas().perfil.editar + "" + this.entidadeAtual.id;
+          ? rotas.rotas().permissao.criar
+          : rotas.rotas().permissao.editar + "" + this.entidadeAtual.id;
       this.$http.post(url, formData).then(
         response => {
           this.$store.commit(
@@ -160,7 +159,7 @@ export default {
       this.carregando = true;
       this.registros = [];
       var registrosLocal = [];
-      this.$http.get(rotas.rotas().perfil.listar).then(
+      this.$http.get(rotas.rotas().permissao.listar).then(
         response => {          
           response.body.forEach(element => {
             this.registros.push(element);

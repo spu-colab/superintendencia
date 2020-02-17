@@ -15,17 +15,13 @@ export default {
           criar: this.base() + '/atendimento/comentario',
         }
       },
+
       autenticacao: {
         login: this.base() + '/user/login', //jwt.auth
         // login: this.base() + '/login', //auth
         refresh: this.base() + '/user/refresh'
       },
-      conteudo: {
-        consultar: this.base() + '/conteudo/',
-        criar: this.base() + '/conteudo',
-        editar: this.base() + '/conteudo/',
-        upload: ':8000/ckfinder/connector?command=QuickUpload&type=Images&responseType=json'
-      },
+      
       demanda: {
         listar: this.base() + '/demanda',
         listarPorProcedimentoExterno: this.base() + '/demanda/procedimento/',
@@ -49,16 +45,19 @@ export default {
           abertasPorDivisaoOrganograma: this.base() + '/demanda/relatorio/acompanhamento',
         }
       },
+      
       autorDemanda: {
         listar: this.base() + '/autorDemanda',
         criar: this.base() + '/autorDemanda',
         editar: this.base() + '/autorDemanda/',
       },
+      
       cargo: {
         listar: this.base() + '/cargo',
         criar: this.base() + '/cargo',
         editar: this.base() + '/cargo/'
       },
+      
       geo: {
         camada: {
           listar: this.base() + '/geo/camada',
@@ -69,67 +68,74 @@ export default {
           }
         }
       },
+      
       orgao: {
         listar: this.base() + '/orgao',
         listarNaturezas: this.base() + '/natureza-orgao',
         criar: this.base() + '/orgao',
         editar: this.base() + '/orgao/'
       },
+      
       tipoDocumento: {
         listar: this.base() + '/tipoDocumento'
+        
       },
       situacaoDemanda: {
         listar: this.base() + '/situacaoDemanda'
       },
-      divisaoOrganograma: {
-        criar: this.base() + '/divisaoOrganograma',
-        editar: this.base() + '/divisaoOrganograma/',
-        listar: this.base() + '/divisaoOrganograma',
-
-        listarPai: this.base() + '/divisaoOrganograma/listarPai'
-
-      },
-
-      permissao: {
-        listar: this.base() + '/usuario',
-        criar: this.base() + '/usuario',
-        editar: this.base() + '/usuario/',        
-        permissao: this.base() + '/permissao',
-        divisao: this.base() + '/divisaoOrganograma',
-      },
-
-      perfil: {
-        listar: this.base() + '/permissao',
-        criar: this.base() + '/permissao',
-        editar: this.base() + '/permissao/',        
-//        permissao: this.base() + '/permissao',
-//        divisao: this.base() + '/divisaoOrganograma',
-      },
       
-      organograma: {
-        listar: this.base() + '/divisaoOrganograma',
-        criar: this.base() + '/divisaoOrganograma',
-        editar: this.base() + '/divisaoOrganograma/',
-        usuario: this.base() + '/usuario/reduzido',
-        listarPai: this.base() + '/divisaoOrganograma/listarPai'
-      },
-
       procedimentoExterno: {
         listar: this.base() + '/procedimentoExterno',
         buscar: this.base() + '/procedimentoExterno/',
         criar: this.base() + '/procedimentoExterno',
         editar: this.base() + '/procedimentoExterno/'
       },
+
       tipoProcedimentoExterno: {
         listar: this.base() + '/tipoProcedimentoExterno'
       },
+
       poloProcedimentoExterno: {
         listar: this.base() + '/poloProcedimentoExterno'
       },
+
+      /* ---- CONFIGURAÇÔES ---- */
+
+      usuario: {
+        listar: this.base() + '/usuario',
+        criar: this.base() + '/usuario',
+        editar: this.base() + '/usuario/',
+      },
+      
+      permissao: {
+        listar: this.base() + '/permissao',
+        criar: this.base() + '/permissao',
+        editar: this.base() + '/permissao/',        
+      },
+      
+      organograma: {
+        listar: this.base() + '/divisao-organograma',
+        criar: this.base() + '/divisao-organograma',
+        editar: this.base() + '/divisao-organograma/',
+      },
+      
+
+      /*
+      
       arquivo: {
         listar: this.base() + '/arquivo',
         upload: this.base() + '/arquivo'
-      }
+      },
+      
+      conteudo: {
+        consultar: this.base() + '/conteudo/',
+        criar: this.base() + '/conteudo',
+        editar: this.base() + '/conteudo/',
+        upload: ':8000/ckfinder/connector?command=QuickUpload&type=Images&responseType=json'
+      },
+
+      */
+
     }
   }
 }

@@ -139,8 +139,8 @@ export default {
       }
       let url =
         this.entidadeAtual.id === null
-          ? rotas.rotas().permissao.criar
-          : rotas.rotas().permissao.editar + "" + this.entidadeAtual.id;
+          ? rotas.rotas().usuario.criar
+          : rotas.rotas().usuario.editar + "" + this.entidadeAtual.id;
 
       this.$http.post(url, formData).then(
         response => {
@@ -193,7 +193,7 @@ export default {
     carregarDivisoes() {
       this.carregando = true;
       this.divisoes = [];
-      this.$http.get(rotas.rotas().permissao.divisao).then(
+      this.$http.get(rotas.rotas().organograma.listar).then(
         response => {
           response.body.forEach(element => {
             element["checked"] = false;
@@ -230,7 +230,7 @@ export default {
       this.carregando = true;
       this.registros = [];
       var registrosLocal = [];
-      this.$http.get(rotas.rotas().permissao.listar).then(
+      this.$http.get(rotas.rotas().usuario.listar).then(
         response => {
           response.body.forEach(element => {
             this.registros.push(element);

@@ -27,6 +27,7 @@ class AuthController extends Controller
     {
         return response()->json(User::orderBy('name', 'asc')->get());
     }
+
     public function index(Request $request)
     {
         $result = User::with(['permissoes:Permissao.id,permissao,descricao',

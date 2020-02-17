@@ -11,48 +11,44 @@
     @clicou-novo="novo"
   >
     <template slot="detalhe">
-      <v-card-text>
-        <div v-if="entidadeAtual">
-          <v-tabs v-model="tabAtiva">
-            <v-tab>Cadastro</v-tab>
-            <v-tab>Usuários</v-tab>
-            <v-tabs-slider color="primary"></v-tabs-slider>
-            <v-tab-item>
-              <v-container>
-                <v-autocomplete 
-                  label="Divisão Pai" 
-                  :items="divisoesRaiz" 
-                  v-model="entidadeAtual.divisao_organograma_pai.id" 
-                  item-text="nome" 
-                  item-value="id" 
-                  :rules="entidadeAtual.id == null ? [validacao.obrigatorio] : [false]" 
-                  :required="entidadeAtual.divisaoOrganogramaPai == null ? false : true"
-                />          
-                <v-text-field
-                  label="Nome"
-                  v-model="entidadeAtual.nome"
-                  :rules="[validacao.obrigatorio]"
-                  required
-                />
-                <v-text-field
-                  label="Sigla"
-                  v-model="entidadeAtual.sigla"
-                  :rules="[validacao.obrigatorio]"
-                  required
-                />
-              </v-container>
-            </v-tab-item>
-      <!-- Usuarios -->                        
-            <v-tab-item>
-              <h5><br><p style="text-align:center">{{entidadeAtual.nome}}</p></h5>
-              <v-divider/>
-              <CaixaSelecao
-                :itensCaixa="itensCaixa"              
-              />                
-            </v-tab-item>
-          </v-tabs>
-        </div>
-      </v-card-text>
+      <div v-if="entidadeAtual">
+        <v-tabs v-model="tabAtiva">
+          <v-tab>Cadastro</v-tab>
+          <v-tab>Usuários</v-tab>
+          <v-tabs-slider color="primary"></v-tabs-slider>
+          <v-tab-item>
+            <v-container>
+              <v-autocomplete 
+                label="Divisão Pai" 
+                :items="divisoesRaiz" 
+                v-model="entidadeAtual.divisao_organograma_pai.id" 
+                item-text="nome" 
+                item-value="id" 
+              />          
+              <v-text-field
+                label="Nome"
+                v-model="entidadeAtual.nome"
+                :rules="[validacao.obrigatorio]"
+                required
+              />
+              <v-text-field
+                label="Sigla"
+                v-model="entidadeAtual.sigla"
+                :rules="[validacao.obrigatorio]"
+                required
+              />
+            </v-container>
+          </v-tab-item>
+    <!-- Usuarios -->                        
+          <v-tab-item>
+            <h5><br><p style="text-align:center">{{entidadeAtual.nome}}</p></h5>
+            <v-divider/>
+            <CaixaSelecao
+              :itensCaixa="itensCaixa"              
+            />                
+          </v-tab-item>
+        </v-tabs>
+      </div>
     </template>
   </crud>
 </template>
@@ -103,12 +99,15 @@ export default {
         this.entidadeAtual.divisao_organograma_pai = {}
       }
     },
+
     salvar() {
       let formData = new FormData();
       formData.append("id", this.entidadeAtual.id);
       formData.append("nome", this.entidadeAtual.nome);
-      formData.append("sigla", this.entidadeAtual.sigla);      
-      formData.append("idPai", this.entidadeAtual.divisao_organograma_pai.id);      
+      formData.append("sigla", this.entidadeAtual.sigla);
+      if(this.entidadeAtual.divisao_organograma_pai.id != null) {
+        formData.append("idPai", this.entidadeAtual.divisao_organograma_pai.id);      
+      }
       $.each( $(".itemSelecionado option"), function() {
         formData.append("usuarios[]", this.value);
       });
@@ -134,17 +133,20 @@ export default {
         }
       );
     },
+
     cancelar() {},
+
     novo(item) {
       this.entidadeAtual = {
         id: null,
         divisao_organograma_pai: {}
       }        
     },
+
     carregarUsuarios() {
       this.carregando = true;
       this.usuarios = [];
-      this.$http.get(rotas.rotas().organograma.usuario).then(
+      this.$http.get(rotas.rotas().usuario.listar).then(
         response => {
           response.body.forEach(element => {
             element["checked"] = false;
@@ -158,6 +160,7 @@ export default {
         }
       );
     },
+
     formatarUsuarios: function(element) {
       let usuariosLocal = null;
       var index = null;
@@ -179,12 +182,13 @@ export default {
       element["usuariosL"] = usuariosLocal;
       return element;
     },
+
     carregarDivisoes () {
       this.carregando = true;
       this.divisoesRaiz = [];
       var divisaoPai =[];
       this.$http
-          .get(rotas.rotas().organograma.listarPai)
+          .get(rotas.rotas().organograma.listar)
           .then(
               response => {
                 response.body.forEach(element => {
@@ -214,6 +218,7 @@ export default {
         },
         error => {
           console.log(error);
+          this.$store.commit('sistema/alerta', 'Erro ao carregar divisões do organograma');
         }
       );
       this.carregando = false;

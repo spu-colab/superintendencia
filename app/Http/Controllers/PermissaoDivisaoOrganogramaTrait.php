@@ -8,18 +8,23 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 trait PermissaoDivisaoOrganogramaTrait {
+
     public function removeUsuarioUsuarioPermissao($idUsuario){
         UsuarioPermissao::where('idUsuario', $idUsuario)->delete();
     }
+
     public function removeUsuarioUsuarioDivisaoOrganograma($idUsuario){
         UsuarioDivisaoOrganograma::where('idUsuario', $idUsuario)->delete();
     }
+
     public function removePermissaoUsuarioPermissao($idPermissao){
         UsuarioPermissao::where('idPermissao', $idPermissao)->delete(); 
     }
+
     public function removeDivisaoUsuarioDivisaoOrganograma($idDivisaoOrganograma){
         UsuarioDivisaoOrganograma::where('idDivisaoOrganograma', $idDivisaoOrganograma)->delete();
     }
+    
     public function incluiUsuarioUsuarioDivisaoOrganograma($idUsuario, $idDivisaoOrganograma){
         date_default_timezone_set('America/Sao_Paulo');
         $dataAtual  = date("Y-m-d H:i:s");      

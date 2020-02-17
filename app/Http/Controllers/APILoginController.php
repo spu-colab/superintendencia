@@ -28,6 +28,7 @@ class APILoginController extends Controller
         if(!$usuarioLDAP) {
             return response()->json(['error' => 'invalid_credentials_ldap'], 401);
         }
+        // return response()->json($usuarioLDAP);
 
         $user = User::where('cpf', $credentials['cpf'])->first();
         if(@$user->id) {
@@ -66,16 +67,17 @@ class APILoginController extends Controller
             if(!$search) {
                 return false;
             }
-
             $usuario['name']        = $search[0]['displayname'][0];
             $usuario['mail']        = $search[0]['mail'][0];
             $usuario['cpf']         = $search[0]['description'][0];
             $usuario['telefone']    = $search[0]['telephonenumber'][0];
+            $usuario['uf']          = $search[0]['l'];
+            $usuario['uf_sigla']          = $search[0]['st'];
             
             return $usuario;
         } else {
             return null;
         }
-    }   
+    }
     
 }
