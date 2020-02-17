@@ -1,54 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer app v-model="menuEsquerda" clipped left>
-      <v-list dense>
-        <v-list-item v-for="(item, i) in items" v-bind:key="i">
-
-          <v-list-group v-if="item.children" :prepend-icon="item.icon">
-
-            <template v-slot:activator>
-              <v-list-item-title>
-                <router-link :to="item.route + ''" :next="item.route">
-                    {{ item.text }}
-                </router-link>
-              </v-list-item-title>
-            </template>
-
-            <v-divider></v-divider>
-
-            <v-list dense>
-              <v-list-item v-for="(filho, f) in item.children" v-bind:key="f">
-
-                <v-list-item-icon>
-                  <v-icon v-if="filho.icon">{{ filho.icon }}</v-icon>
-                </v-list-item-icon>
-                <v-list-item-title>
-                  <router-link :to="filho.route + ''" :next="filho.route">
-                    {{ filho.text }}
-                  </router-link>
-                </v-list-item-title>
-
-              </v-list-item>
-            </v-list>
-          </v-list-group>
-
-          <v-list-item v-else>
-
-              <v-list-item-icon>
-                <v-icon v-if="item.icon">{{ item.icon }}</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>
-                <a v-if="item.url" :href="item.url" target="_blank">{{ item.text }}</a>
-                <router-link v-else :to="item.route + ''" :next="item.route">
-                  {{ item.text }}
-                </router-link>
-              </v-list-item-title>
-
-          </v-list-item>
-          
-        </v-list-item>
-      </v-list>
-      
+      <spu-menu :itensMenu="itensMenu"></spu-menu>      
     </v-navigation-drawer>
     
   <cabecalho/>
@@ -72,96 +25,104 @@
 <script>
 import MensagemSistema from './MensagemSistema'
 import Cabecalho from './Cabecalho'
+import Menu from './Menu'
+
 export default {
   components: {
-    MensagemSistema, Cabecalho
+    MensagemSistema, Cabecalho, 'spu-menu' : Menu
   },
   data: () => ({
     menuEsquerda: true,
     miniMenu: false,
-    items: [
+    itensMenu: [
       { 
-        text: 'Início',
-        icon: 'home', 
-        route: '/',
-        model: true
+        rotulo: 'Início',
+        icone: 'home', 
+        rota: '/',
       },
+      /*
       {
-        text: 'Base de Conhecimento',
-        icon: 'local_library',
+        divisor: true
+      },*/
+      {
+        rotulo: 'Base de Conhecimento',
+        icone: 'local_library',
         url: 'http://10.209.232.158/wordpress'
       },
-      { 
-        text: 'Atendimento',
-        icon: 'how_to_reg', 
-        route: '/atendimento',
-        model: true
-      },
-      { 
-        text: 'Geovisualizador',
-        icon: 'map', 
-        route: '/geo',
-        model: true
-      },
-      { 
-        text: 'Governança',
-        icon: 'near_me', 
-        route: '/governanca',
-        model: true
-      },
       {
-        text: 'SPU-Admin',
-        icon: 'desktop_windows',
+        rotulo: 'SPU-Admin',
+        icone: 'desktop_windows',
         url: 'http://10.209.232.190/'
       },
+      /*
+      {
+        divisor: true
+      },
+      */
       { 
-        text: 'Judiciais e Controle',
-        icon: 'gavel', 
-        route: '/nujuc',
-        model: true,
-        children: [
+        rotulo: 'Atendimento',
+        icone: 'how_to_reg', 
+        rota: '/atendimento',
+      },
+      { 
+        rotulo: 'Geovisualizador',
+        icone: 'map', 
+        rota: '/geo',
+      },
+      { 
+        rotulo: 'Governança',
+        icone: 'near_me', 
+        rota: '/governanca',
+      },
+      { 
+        rotulo: 'Judiciais e Controle',
+        icone: 'gavel', 
+        submenu: [
           {
-            text: 'Demandas',
-            icon: 'assignment', 
-            route: '/demanda'
+            rotulo: 'Demandas',
+            icone: 'assignment', 
+            rota: '/demanda'
           },
           {
-            text: 'Procedimentos',
-            icon: 'account_balance', 
-            route: '/procedimento'
+            rotulo: 'Procedimentos',
+            icone: 'account_balance', 
+            rota: '/procedimento'
           },
           {
-            text: 'Demandantes',
-            icon: 'record_voice_over', 
-            route: '/demandante'
+            rotulo: 'Demandantes',
+            icone: 'record_voice_over', 
+            rota: '/demandante'
           },
           {
-            text: 'Órgãos',
-            icon: 'business', 
-            route: '/orgao'
+            rotulo: 'Órgãos',
+            icone: 'business', 
+            rota: '/orgao'
+          },
+          {
+            rotulo: 'Relatórios',
+            icone: 'reports',
+            rota: '/nujuc'
           },
         ]
       },
       { 
-        text: 'Configurações',
-        icon: 'build', 
-        route: '/nujuc',
-        model: true,
-        children: [
+        rotulo: 'Configurações',
+        icone: 'build', 
+        submenu: [
           {
-            text: 'Usuários',
-            icon: 'perm_identity', 
-            route: '/permissao'
+            rotulo: 'Usuários',
+            icone: 'perm_identity', 
+            rota: '/permissao'
           },
           {
-            text: 'Permissões',
-            icon: 'recent_actors', 
-            route: '/perfil'
+            rotulo: 'Permissões',
+            icone: 'recent_actors', 
+            rota: '/perfil'
           },
           {
-            text: 'Divisões/Organograma',
-            icon: 'location_city', 
-            route: '/organograma'
+            rotulo: 'Divisões/Organograma',
+            icone: 'location_city', 
+            rota: '/organograma'
           },
         ]
       },

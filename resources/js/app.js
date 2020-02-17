@@ -87,5 +87,8 @@ const app = new Vue({
     el: '#app',
     vuetify: new Vuetify(),
     router,
-    store
+    store,
+    components: {
+      'spu-menu': require('./components/layout/Menu')
+    }
 });
