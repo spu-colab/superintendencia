@@ -10,11 +10,11 @@ class DemandaMovimentacao extends Model
 
     public function divisaoOrigem()
     {
-        return $this->hasOne('App\DivisaoOrganograma', 'id', 'idDivisaoOrganogramaOrigem');
+        return $this->hasOne('Modules\Auth\Entities\DivisaoOrganograma', 'id', 'idDivisaoOrganogramaOrigem');
     }
 
     public function divisaoDestino()
     {
-        return $this->hasOne('App\DivisaoOrganograma', 'id', 'idDivisaoOrganogramaDestino');
+        return $this->hasOne('Modules\Auth\Entities\DivisaoOrganograma', 'id', 'idDivisaoOrganogramaDestino');
     }
 }

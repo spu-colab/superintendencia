@@ -695,7 +695,11 @@ export default {
                 // console.log(this.distribuicao.atribuirPara)
                 let splitAtribuirPara = this.distribuicao.atribuirPara.split(":")
                 formData.append('distribuicao[assignable_id]', splitAtribuirPara[0])
-                formData.append('distribuicao[assignable_type]', "App\\"+splitAtribuirPara[1])
+                let prefixoEntidateAtribuivel = "App\\"
+                if(splitAtribuirPara[1] == 'DivisaoOrganograma') {
+                    prefixoEntidateAtribuivel = "Modules\\Auth\\Entities\\"
+                }
+                formData.append('distribuicao[assignable_type]', prefixoEntidateAtribuivel + splitAtribuirPara[1])
             }
             formData.append('distribuicao[comentarioDistribuicao]', this.distribuicao.comentarioDistribuicao ? this.distribuicao.comentarioDistribuicao : '')
             formData.append('distribuicao[comentarioAtendimento]', this.distribuicao.comentarioAtendimento ? this.distribuicao.comentarioAtendimento : '')

@@ -173,10 +173,11 @@ export default {
       );
       this.entidadeAtual["novo"] = true;
     },
+
     carregarPermissoes() {
       this.carregando = true;
       this.permissoes = [];
-      this.$http.get(rotas.rotas().permissao.permissao).then(
+      this.$http.get(rotas.rotas().permissao.listar).then(
         response => {
           response.body.forEach(element => {
             element["checked"] = false;
@@ -190,6 +191,7 @@ export default {
         }
       );
     },
+
     carregarDivisoes() {
       this.carregando = true;
       this.divisoes = [];
@@ -207,6 +209,7 @@ export default {
         }
       );
     },
+
     formatarPermissoes: function(element) {
       let divisoesLocal = null;
       let permissoesLocal = null;
@@ -226,6 +229,7 @@ export default {
       });
       return element;
     },
+
     carregarItens() {
       this.carregando = true;
       this.registros = [];

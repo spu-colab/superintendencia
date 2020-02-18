@@ -45,8 +45,8 @@ class User extends Authenticatable implements JWTSubject
     public function divisoesOrganograma()
     {
         return $this->hasManyThrough(
-            'App\DivisaoOrganograma',
-            'App\UsuarioDivisaoOrganograma',
+            'Modules\Auth\Entities\DivisaoOrganograma',
+            'Modules\Auth\Entities\UsuarioDivisaoOrganograma',
             'idUsuario', // Foreign key on usuariodivisaoorganograma table...
             'id', // Foreign key on divisaoorganograma table...
             'id', // Local key on users table...

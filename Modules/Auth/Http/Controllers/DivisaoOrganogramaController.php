@@ -2,8 +2,8 @@
 
 namespace Modules\Auth\Http\Controllers;
 
-use App\DivisaoOrganograma;
-use App\UsuarioDivisaoOrganograma;
+use Modules\Auth\Entities\DivisaoOrganograma;
+use Modules\Auth\Entities\UsuarioDivisaoOrganograma;
 use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -67,7 +67,7 @@ class DivisaoOrganogramaController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\DivisaoOrganograma  $divisaoOrganograma
+     * @param  Modules\Auth\Entities\DivisaoOrganograma  $divisaoOrganograma
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -79,7 +79,7 @@ class DivisaoOrganogramaController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\DivisaoOrganograma  $divisaoOrganograma
+     * @param  \Modules\Auth\Entities\DivisaoOrganograma  $divisaoOrganograma
      * @return \Illuminate\Http\Response
      */
     public function edit(DivisaoOrganograma $divisaoOrganograma)
@@ -90,7 +90,7 @@ class DivisaoOrganogramaController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\DivisaoOrganograma  $divisaoOrganograma
+     * @param  \Modules\Auth\Entities\DivisaoOrganograma  $divisaoOrganograma
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -121,11 +121,15 @@ class DivisaoOrganogramaController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\DivisaoOrganograma  $divisaoOrganograma
+     * @param  \Modules\Auth\Entities\DivisaoOrganograma  $divisaoOrganograma
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
+    }
+
+    public function listarSuperintendencias() {
+        return response()->json(DivisaoOrganograma::where('snSuperintendencia', 1)->get());
     }
 }

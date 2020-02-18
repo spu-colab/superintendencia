@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\User;
-use App\DivisaoOrganograma;
+use Modules\Auth\Entities\DivisaoOrganograma;
 
 use Illuminate\Database\Eloquent\Model;
 

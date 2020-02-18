@@ -3,7 +3,7 @@
 namespace App\Providers;
 use App\User;
 use App\Permissao;
-use App\DivisaoOrganograma;
+use Modules\Auth\Entities\DivisaoOrganograma;
 //use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
 
 use App\Policies\UserPolicy;

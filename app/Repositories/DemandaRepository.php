@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\User;
 use App\Demanda;
-use App\DivisaoOrganograma;
+use Modules\Auth\Entities\DivisaoOrganograma;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
@@ -23,7 +23,7 @@ class DemandaRepository implements DemandaRepositoryI {
     public function listarIdsDemandasDistribuidasPara(Model $assignable) : array {
         $assignable_type = 'App\\User';
         if($assignable instanceof DivisaoOrganograma) {
-            $assignable_type = 'App\\DivisaoOrganograma';
+            $assignable_type = 'Modules\Auth\Entities\\DivisaoOrganograma';
         }
 
         $ids = DB::table('demanda')

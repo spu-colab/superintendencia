@@ -9,8 +9,8 @@ use Redirect,DB,Config;
 use App\User;
 use App\Permissao;
 use App\UsuarioPermissao;
-use App\DivisaoOrganograma;
-use App\UsuarioDivisaoOrganograma;
+use Modules\Auth\Entities\DivisaoOrganograma;
+use Modules\Auth\Entities\UsuarioDivisaoOrganograma;
 use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
 use Adldap\Laravel\Facades\Adldap;
 

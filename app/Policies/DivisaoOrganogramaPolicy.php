@@ -1,6 +1,8 @@
 <?php
 namespace App\Policies;
+
 use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
+
 class DivisaoOrganogramaPolicy
 {    
     use PermissaoDivisaoOrganogramaTrait;

@@ -13,6 +13,11 @@ use Illuminate\Http\Request;
 |
 */
 
+/*
+Route::get(
+    'divisao-organograma/superintendencia', 
+    '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController@listarSuperintendencias');    
+*/
 
 Route::middleware('jwt.auth')->group(function () {     
     Route::resource('usuario', '\Modules\Auth\Http\Controllers\AuthController');
