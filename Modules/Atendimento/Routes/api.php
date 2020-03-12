@@ -21,8 +21,12 @@ Route::middleware('jwt.auth')->group(function () {
         ->where(
             ['data' => '[0-9]{4}-[0-9]{2}-[0-9]{2}']
         );
-    Route::put('atendimento/concluir/{id}', 'AtendimentoController@concluir');
-    Route::post('atendimento/comentario', 'AtendimentoController@inserirComentario');
+
+    Route::middleware('jwt.refresh')->post('atendimento', 'AtendimentoController@store');
+    Route::middleware('jwt.refresh')->put('atendimento/{atendimento}', 'AtendimentoController@update');
+
+    Route::middleware('jwt.refresh')->post('atendimento/comentario', 'AtendimentoController@inserirComentario');
+    Route::middleware('jwt.refresh')->put('atendimento/concluir/{id}', 'AtendimentoController@concluir');
     
     // Route::get('atendimento/nao-concluidos/', 'AtendimentoController@listarAtendimentoNaoConcluido')    ;    
 

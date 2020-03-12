@@ -23,7 +23,6 @@ Route::post('user/login', 'APILoginController@login');
 Route::middleware('jwt.auth')->group(function () {
     // Route::resource('conteudo', 'ConteudoController');
 
-
     Route::get('demanda/entidadeAtribuivel', 'DemandaController@listarAtribuiveis');
     Route::post('demanda/cancelar', 'DemandaController@cancelar');
     Route::post('demanda/aguardar-assinatura', 'DemandaController@aguardarAssinatura');
@@ -31,54 +30,38 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('demanda/resolver', 'DemandaController@resolver');
     Route::get('demanda/procedimento/{idProcedimentoExterno}', 'DemandaController@listarPorProcedimentoExterno');
     Route::get('demanda/pdf/{ids}', 'DemandaController@gerarPDF');
-    
     Route::post('demanda/distribuicao/{id?}', 'DemandaController@salvarDistribuicao');
-    
     Route::get('demanda/usuario/{user}', 'DemandaController@listarDistribuidasParaUsuario');
     Route::get('demanda/divisao-organograma/{divisaoOrganograma}', 'DemandaController@listarDistribuidasParaDivisaoOrganograma');
-    
     Route::resource('demanda', 'DemandaController');
-
     Route::resource('autorDemanda', 'AutorDemandaController');
     Route::resource('cargo', 'CargoController');
     Route::resource('orgao', 'OrgaoController');
     Route::get('natureza-orgao', 'OrgaoController@listarNaturezas');
     Route::resource('tipoDocumento', 'TipoDocumentoController');
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
-    
     Route::resource('usuario/reduzido', '\Modules\Auth\Http\Controllers\AuthController@listarReduzido');
     // Route::resource('divisaoOrganograma/listarPai', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController@listarPai');
-
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
     Route::get('procedimentoExterno/buscar/{search}', 'ProcedimentoExternoController@search');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
     Route::resource('poloProcedimentoExterno', 'PoloProcedimentoExternoController');
-
-    
     Route::middleware('jwt.refresh')->post('demanda', 'DemandaController@store');
     Route::middleware('jwt.refresh')->put('demanda/{demanda}', 'DemandaController@update');
-
     Route::middleware('jwt.refresh')->post('procedimentoExterno', 'ProcedimentoExternoController@store');
     Route::middleware('jwt.refresh')->put('procedimentoExterno/{procedimentoExterno}', 'ProcedimentoExternoController@update');
-
     Route::middleware('jwt.refresh')->post('autorDemanda', 'AutorDemandaController@store');
     Route::middleware('jwt.refresh')->put('autorDemanda/{autorDemanda}', 'AutorDemandaController@update');
-
     Route::middleware('jwt.refresh')->post('orgao', 'OrgaoController@store');
     Route::middleware('jwt.refresh')->put('orgao/{orgao}', 'OrgaoController@update');
-
     Route::middleware('jwt.refresh')->get('user/refresh', function () {
         return "OK";
     });
-    
 
     Route::post('geo/referencia', 'GeoController@salvarReferencia');
-
 });
-
  
 //Route::resource('usuario', 'UsuarioController');
-
 
 // Route::get('arquivo', 'ArquivoController@index');
 // Route::get('arquivo/criar', 'ArquivoController@create');
@@ -87,7 +70,6 @@ Route::middleware('jwt.auth')->group(function () {
 Route::get('geo/camada', 'GeoController@listarCamadas');
 Route::get('geo/camada/{camada}/referencia', 'GeoController@listarReferenciasPorCamada');
 Route::get('geo/camada/{id}', 'GeoController@obterCamada');
-
 
 //RELATÓRIOS
 Route::get('demanda/relatorio/entrada-saida-diaria', 'DemandaController@relatorioEntradaSaidaDiaria');
