@@ -74,7 +74,7 @@ Route::middleware('jwt.auth')->group(function () {
 });
 
  
-//Route::resource('usuario', 'UsuarioController');
+//Route::resource('permissao', 'UsuarioController');
 
 
 // Route::get('arquivo', 'ArquivoController@index');

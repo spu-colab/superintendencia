@@ -17,7 +17,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'cpf', 'email', 'password',
+        'name', 'cpf', 'email', 'telefone', 'password',
     ];
 
     /**
@@ -30,26 +30,25 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     public function permissoes()
-    {
-        
-        return $this->hasManyThrough(
+    {        
+        return $this->belongsToMany(
             'App\Permissao',
             'App\UsuarioPermissao',
             'idUsuario', // Foreign key on usuariopermissao table...
-            'id', // Foreign key on permissao table...
-            'id', // Local key on countries table...
+//            'id', // Foreign key on permissao table...
+//            'id', // Local key on countries table...
             'idPermissao' // 
         );
         
     }  
     public function divisoesOrganograma()
     {
-        return $this->hasManyThrough(
+        return $this->belongsToMany(
             'App\DivisaoOrganograma',
             'App\UsuarioDivisaoOrganograma',
             'idUsuario', // Foreign key on usuariodivisaoorganograma table...
-            'id', // Foreign key on divisaoorganograma table...
-            'id', // Local key on users table...
+//            'id', // Foreign key on divisaoorganograma table...
+//            'id', // Local key on users table...
             'idDivisaoOrganograma' // 
         );
     }

@@ -4,7 +4,11 @@
     nomeEntidadePlural="Permissões"
     :headers="cabecalhos"
     :items="registros"
-    :carregando="carregando"    
+    :carregando="carregando"   
+    :imprimir="false"
+    :paginas="paginas"  
+    :exibirPaginacaoCliente=false
+    @mudaPagina="mudaPagina" 
     @clicou-item="selecionarParaEdicao"
     @clicou-salvar="salvar"
     @clicou-cancelar="cancelar"
@@ -56,6 +60,8 @@ export default {
           value: "descricao"
         }
       ],
+      paginas:[],
+      paginaAtual:[],
       registros: [],
       usuarios:[],
       entidadeAtual: null,
@@ -71,6 +77,9 @@ export default {
   },
 
   methods: {
+    mudaPagina(page){
+      this.carregarItens(page);
+    },
     selecionarParaEdicao(item) {
       this.entidadeAtual = item
       this.formatarUsuarios(this.entidadeAtual);
@@ -137,14 +146,13 @@ export default {
             "sistema/mensagem",
             "Permissão atualizada com sucesso",
           );
-          this.$router.push("/perfil");
-          this.carregarItens();
+          this.carregarItens(this.paginaAtual);
         },
         error => {
           console.log(error.body);
           this.$store.commit("sistema/alerta", error.body.message);
         }
-      );
+      );      
     },
     cancelar() {
     },
@@ -155,14 +163,22 @@ export default {
       };
       this.formatarUsuarios(this.entidadeAtual);
     },
-    carregarItens() {
+    carregarItens(page) {
+      this.paginaAtual = page;
       this.carregarUsuarios();
       this.carregando = true;
       this.registros = [];
-      var registrosLocal = [];
-      this.$http.get(rotas.rotas().perfil.listar).then(
-        response => {          
-          response.body.forEach(element => {
+      this.paginas=[];
+      if (!page[1]){
+        page[1]=10
+      }
+      var parametros =  "?page="+page[0]+   "&per_page="+page[1]+
+                        "&search="+page[2]+ "&ordem="+this.cabecalhos[page[3]].value + 
+                        "&ascending="+page[4];
+      this.$http.get(rotas.rotas().perfil.listar+parametros).then(
+        response => {
+          this.paginas = response.body;
+          response.body.data.forEach(element => {
             this.registros.push(element);
           });
         },
@@ -174,7 +190,7 @@ export default {
     }
   },
   mounted() {
-    this.carregarItens();
+    this.carregarItens([1, '10', '', '0', true]);
   }
 }
 </script>

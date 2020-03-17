@@ -12,6 +12,7 @@ use App\UsuarioPermissao;
 use App\DivisaoOrganograma;
 use App\UsuarioDivisaoOrganograma;
 use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
+use Hash;
 use Adldap\Laravel\Facades\Adldap;
 
 class AuthController extends Controller
@@ -29,9 +30,29 @@ class AuthController extends Controller
     }
     public function index(Request $request)
     {
-        $result = User::with(['permissoes:Permissao.id,permissao,descricao',
-            'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])->get();
-        return response()->json($result);
+//        return response()->json(['message' => "CPF: ".$request->ascending." Já Existe na Base "], 404);
+        $ascending = "desc";
+        if ($request->ascending == "true"){
+            $ascending = "asc";
+        }
+
+//        return response()->json(['message' => "CPF: ".$ascending." Já Existe na Base "], 404);
+ 
+        if(strlen ($request->search)>0){
+            return User::with(['permissoes:Permissao.id,permissao,descricao',
+                'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])     
+                ->whereRaw("name LIKE '%".strtolower($request->search)."%'")
+                ->orWhereRaw("email LIKE '%".strtolower($request->search)."%'")
+                ->orWhereRaw("telefone LIKE '%".strtolower($request->search)."%'")
+                ->orWhereRaw("CONVERT(cpf , CHAR) LIKE '%" . strtolower($request->search) . "%'")
+                ->orderBy($request->ordem, $ascending)->paginate($request->per_page);
+        }
+        return User::with(['permissoes:Permissao.id,permissao,descricao',
+            'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])     
+            ->orderBy($request->ordem , $ascending)->paginate($request->per_page);
+
+
+            
     }
     /**
      * Show the form for creating a new resource.
@@ -53,40 +74,28 @@ class AuthController extends Controller
     {
         date_default_timezone_set('America/Sao_Paulo');
         $dataAtual  = date("Y-m-d H:i:s");  
-
         if(@$request->user['cpf']) {
             $user = new User;
             $this->authorize('store', $user);
-
             $user->cpf = $request->user['cpf'];
-    
             $search = Adldap::search()->where('description', '=', $user->cpf)->get();
             if (!@$search[0]['displayname'][0]){
                 return response()->json(['message' => "CPF: ".@$request->user['cpf']." Não Localizado"], 404);
             }
-
             $user['password']       = Hash::make($user->cpf);
             $user['name']           = $search[0]['displayname'][0];
-            $user['email']          = $search[0]['mail'][0];        
-            $user['telefone']       = $search[0]['telephonenumber'][0];
+            if(@$search[0]['mail'][0])
+                $user['email']      = $search[0]['mail'][0];  
+            if(@$search[0]['telephonenumber'][0])                      
+                $user['telefone']       = $search[0]['telephonenumber'][0];
             try{
                 $user->save();
             }
             catch(\Exception $e){
                 return response()->json(['message' => "CPF: ".$user->cpf." Já Existe na Base "], 404);
             }
-
-        if(@$request->permissoes) {
-            foreach ($request->permissoes as $idPermissao) {
-                $this->incluiUsuarioPermissao($user->id, $idPermissao);
-            }
-        }    
-        if(@$request->divisoes) {
-            foreach ($request->divisoes as $idDivisaoOrganograma) {
-                $this->incluiUsuarioUsuarioDivisaoOrganograma($user->id, $idDivisaoOrganograma);
-            }
-        }                
-            return  $this->edit($user->id);
+            $user->permissoes()->sync($request->permissoes);
+            return response()->json($user->divisoesOrganograma()->sync($request->divisoes));
         }   
         return response()->json(['message' => "CPF deve ser informado"], 404);
     }  
@@ -145,6 +154,7 @@ class AuthController extends Controller
         if(@$request->telefone) {
             $user->telefone = $request->telefone;
         }
+/**
         $this->removeUsuarioUsuarioPermissao($id);
         $this->removeUsuarioUsuarioDivisaoOrganograma($id);
 
@@ -157,8 +167,10 @@ class AuthController extends Controller
             foreach ($request->divisoes as $idDivisaoOrganograma) {
                 $this->incluiUsuarioUsuarioDivisaoOrganograma($id, $idDivisaoOrganograma);
             }
-        }            
-        return response()->json(true);
+        } 
+*/           
+        $user->permissoes()->sync($request->permissoes);
+        return response()->json($user->divisoesOrganograma()->sync($request->divisoes));
     }
 
     /**

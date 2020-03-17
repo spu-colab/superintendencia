@@ -2,6 +2,11 @@
     <crud 
         nomeEntidade="Procedimento Externo" nomeEntidadePlural="Procedimentos Externos"
         :headers="cabecalhos" :items="registros" :carregando="carregando"
+
+        :paginas="paginas"  
+        :exibirPaginacaoCliente=false
+        @mudaPagina="mudaPagina" 
+
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -131,6 +136,10 @@ export default {
             carregando: true,
             cabecalhos: [
                 { 
+                    text:'id',
+                    value: 'idProcedimento'
+                },
+                { 
                     text: 'Tipo',
                     value: 'tipoProcedimentoExterno'
                 },
@@ -183,9 +192,16 @@ export default {
                     value: 'situacao'
                 },
             ],
+            paginas:[],
+            paginaAtual:[],
         }
     },
     methods: {
+
+        mudaPagina(page){
+        this.carregarItens(page);
+        },
+
         selecionarParaEdicao(item) {
             // console.log('Item selecionado: ' + item.id)
             this.$http.get(rotas.rotas().procedimentoExterno.buscar + item.id)
@@ -194,7 +210,7 @@ export default {
                         // console.log('consultando procedimento :' + item.id)
                         // console.log(response)
                         response.body.forEach(element => {
-                            element.tipoProcedimentoExterno = element.tipo_procedimento_externo.tipoprocedimento
+//                            element.tipoProcedimentoExterno = element.tipo_procedimento_externo.tipoprocedimento
                             this.entidadeAtual = element
                         })
                     },
@@ -236,7 +252,7 @@ export default {
                 // this.carregarItens()
         },
         cancelar() {
-            this.carregarItens()
+            this.carregarItens(this.paginaAtual)
         },
         novo(item) {
             this.carregarTabelasApoio()
@@ -244,16 +260,29 @@ export default {
                 id: null
             }
         },
-        carregarItens() {
+        carregarItens(page) {
             this.carregando = true;
             this.registros = [];
-            this.$http.get(rotas.rotas().procedimentoExterno.listar)
+
+            this.paginaAtual = page;
+            if (!page[1]){
+                page[1]=10
+            }
+            console.log(this.cabecalhos)
+            var parametros =  "?page="+page[0]+   "&per_page="+page[1]+
+                                "&search="+page[2]+ "&ordem="+this.cabecalhos[page[3]].value + 
+                                "&ascending="+page[4];
+
+            this.$http.get(rotas.rotas().procedimentoExterno.listar+parametros)
                 .then(
                     response => {
-                        // console.log(response);
-                        response.body.forEach(element => {
-                            // console.log(element)
-                            element.tipoProcedimentoExterno = element.tipo_procedimento_externo.tipoprocedimento
+//                        console.log(response);
+                        this.paginas = response.body;
+//                        response.body.forEach(element => {
+                        response.body.data.forEach(element => {
+//                            element.tipoProcedimentoExterno = element.tipoprocedimento
+                            element.idProcedimento = element.idProcedimento.toString() +" ";
+                            console.log(element)
                             this.registros.push(element)
                         })
                         this.carregando = false;
@@ -343,7 +372,9 @@ export default {
         }
     },
     mounted() {
-        this.carregarItens()
+
+        this.carregarItens([1, '25', '', '0', true]);  
+
         if(this.$route.params.id) {
             this.selecionarParaEdicao({ id: this.$route.params.id})
         }

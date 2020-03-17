@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AutorDemanda;
 use App\Http\Requests\AutorDemandaRequest;
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 class AutorDemandaController extends Controller
 {
@@ -13,9 +13,26 @@ class AutorDemandaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return AutorDemanda::with(['cargo', 'orgao'])->orderBy('nome', 'asc')->get();
+
+        $ascending = "desc";
+        if ($request->ascending == "true"){
+            $ascending = "asc";
+        }
+
+        if (!$request->per_page){
+            return AutorDemanda::with(['cargo', 'orgao'])->orderBy('nome', 'asc')->get();
+        }
+        return AutorDemanda::with(['cargo', 'orgao'])
+            ->selectRaw('autordemanda.nome, autordemanda.idcargo, autordemanda.idorgao, cargo.cargo as cargoTexto, orgao.orgao as orgaoTexto, orgao.sigla as siglaOrgaoTexto ')
+            ->leftJoin('cargo','cargo.id' , '=', 'autordemanda.idcargo')
+            ->leftJoin('orgao','orgao.id' , '=', 'autordemanda.idorgao')
+            ->whereRaw("nome LIKE '%".strtolower($request->search)."%'")
+            ->orWhereRaw("cargo LIKE '%".strtolower($request->search)."%'")
+            ->orWhereRaw("orgao LIKE '%".strtolower($request->search)."%'")
+            ->orWhereRaw("sigla LIKE '%" . strtolower($request->search) . "%'")
+            ->orderBy($request->ordem, $ascending)->paginate($request->per_page);
     }
 
     /**

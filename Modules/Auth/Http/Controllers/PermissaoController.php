@@ -17,10 +17,24 @@ class PermissaoController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $result = Permissao::with(['usuarios:idUsuario'])->orderBy('permissao', 'asc')->get();        
-        return response()->json($result);
+        $ascending = "desc";
+        if ($request->ascending == "true"){
+            $ascending = "asc";
+        }
+        if(!$request->per_page){
+            $result = Permissao::with(['usuarios:idUsuario'])->orderBy('permissao', 'asc')->get();        
+            return response()->json($result);
+        }
+
+        if(strlen ($request->search)>0){
+            return Permissao::with(['usuarios:idUsuario'])     
+                ->whereRaw("permissao LIKE '%".strtolower($request->search)."%'")
+                ->orWhereRaw("descricao LIKE '%".strtolower($request->search)."%'")
+                ->orderBy($request->ordem, $ascending)->paginate($request->per_page);
+        }
+        return Permissao::with(['usuarios:idUsuario'])->orderBy($request->ordem , $ascending)->paginate($request->per_page);
     }
 
     public function create()
@@ -59,15 +73,8 @@ class PermissaoController extends Controller
     {        
         $permissao = Permissao::findOrFail($id);
         $this->authorize('update', $permissao);
-        $this->removePermissaoUsuarioPermissao($id);     
-        if(@$request->usuarios) {
-            foreach ($request->usuarios as $idUsuario) {
-                $this->incluiUsuarioPermissao($idUsuario, $id);
-            }
-        }
-        return response()->json(true);
+        return response()->json($permissao->usuarios()->sync($request->usuarios));
     }
-
     public function destroy($id)
     {
         return response()->json(['message' => "Opção desabilitada"], 404);
