@@ -47,10 +47,10 @@ export default {
       {
         rotulo: 'Base de Conhecimento',
         icone: 'local_library',
-        url: 'http://10.209.232.158/wordpress'
+        url: 'http://conhecimento.spu.nossa.floripa.br'
       },
       {
-        rotulo: 'SPU-Admin',
+        rotulo: 'SPU-Admin (Interno)',
         icone: 'desktop_windows',
         url: 'http://10.209.232.190/'
       },

@@ -8,9 +8,11 @@
                     <v-card-title primary title>
                         Base de Conhecimento
                     </v-card-title>
+                    <!--
                     <v-card-subtitle>
                         Espaço criado para que todos os colaboradores da SPU-SC tenham liberdade para criar, compartilhar e ter acesso ao conhecimento produzido na Superintendência.
                     </v-card-subtitle>
+                    -->
                 </v-card>
             </v-col>
 
@@ -21,9 +23,11 @@
                     <v-card-title primary title>
                         Geovisualizador
                     </v-card-title>
+                    <!--
                     <v-card-subtitle>
                         Conheça nosso painel de geovisualização das demandas juridicas.
                     </v-card-subtitle>
+                    -->
                 </v-card>
             </v-col>
 
@@ -32,18 +36,22 @@
                 <v-card class="align-stretch" to="/nujuc">
                     <v-img src="/images/juridicas.jpg" aspect-ratio="2.75" />
                     <v-card-title primary title>
-                        Demandas Jurídicas e de Controle
+                        Demandas Jurídicas
                     </v-card-title>
+                    <!--
                     <v-card-subtitle>
                         Módulo de gestão das demandas jurídicas e de controle
                     </v-card-subtitle>
+                    -->
                 </v-card>
             </v-col>
 
             <!-- Metas SPU-SC -->
             <v-col cols="12">
                 <v-layout align-start justify-space-between row>
+                    <!--
                     <card-indicadores-estrategicos/>
+                    -->
                 </v-layout>
             </v-col>
 

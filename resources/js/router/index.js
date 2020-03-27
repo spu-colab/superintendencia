@@ -89,6 +89,7 @@ let router = new Router({
       name: 'Nujuc',
       component: PainelJudiciais,
       meta: {
+        requiresAuth: true,
         breadcrumb: [
           {
             text: 'Início',
@@ -190,7 +191,7 @@ let router = new Router({
       name: 'Governança',
       component: Governanca,
       meta: {
-        guest: true,
+        requiresAuth: true,
         breadcrumb: [
           {
             text: 'Início',
@@ -249,7 +250,7 @@ let router = new Router({
       name: 'Geo',
       component: GeoVisualizador,
       meta: {
-        guest: true,
+        requiresAuth: true,
         breadcrumb: [
           {
             text: 'Início',
