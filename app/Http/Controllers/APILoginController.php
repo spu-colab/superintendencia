@@ -8,11 +8,13 @@ use JWTFactory;
 use JWTAuth;
 use App\User;
 use Illuminate\Support\Facades\Auth;
-use Adldap\Laravel\Facades\Adldap;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Auth\LoginController;
+// use Adldap\Laravel\Facades\Adldap;
 
-class APILoginController extends Controller
+class APILoginController extends LoginController
 {
+    /*
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -56,7 +58,54 @@ class APILoginController extends Controller
         }
         return response()->json(compact('token'));
     }
+    */
 
+    /**
+     * Handle a login request to the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        if (method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        if ($this->attemptLogin($request)) {
+            // return $this->sendLoginResponse($request);
+            $credentials = $this->credentials($request);
+            try {
+                if (! $token = JWTAuth::attempt($credentials, [
+                    'user' => $this->guard()->user()
+                ])) {
+                    return response()->json(['error' => 'invalid_credentials'], 401);
+                }
+            } catch (JWTException $e) {
+                return response()->json(['error' => 'could_not_create_token'], 500);
+            }
+            return response()->json(compact('token'));
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
+    /*
     public function valida_ldap($cpf, $senha)  
     {
         if(Adldap::auth()->attempt("$cpf@mp.intra", $senha)) {
@@ -79,5 +128,6 @@ class APILoginController extends Controller
             return null;
         }
     }
+    */
     
 }
