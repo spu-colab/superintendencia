@@ -105,6 +105,16 @@ class APILoginController extends LoginController
         return $this->sendFailedLoginResponse($request);
     }
 
+    /**
+     * Get the login username to be used by the controller.
+     *
+     * @return string
+     */
+    public function username()
+    {
+        return 'cpf';
+    }
+
     /*
     public function valida_ldap($cpf, $senha)  
     {
