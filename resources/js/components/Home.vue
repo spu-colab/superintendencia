@@ -3,7 +3,7 @@
         <v-row align="stretch">
             <!-- Base de Conhecimento -->
             <v-col xs="12" md="4">
-                <v-card class="align-stretch" href="http://10.209.232.158/wordpress" target="_blank">
+                <v-card class="align-stretch" href="http://conhecimento.spu.nossa.floripa.br" target="_blank">
                     <v-img src="/images/baseconhecimento.jpg" aspect-ratio="2.75" />
                     <v-card-title primary title>
                         Base de Conhecimento
