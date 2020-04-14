@@ -12,7 +12,7 @@
                     <v-tabs v-model="tabAtiva" @change="mudouDeTab">
                         <v-tab>Cadastro</v-tab>
                         <v-tab>Demandas</v-tab>
-                        <v-tab>Georreferenciamento</v-tab>
+                        <v-tab :disabled="entidadeAtual == null || entidadeAtual.id == null">Georreferenciamento</v-tab>
 
                         <v-tabs-slider color="primary"></v-tabs-slider>
 
@@ -117,6 +117,7 @@ import rotas from './../../rotas-servico.js'
 import CRUD from './../CRUD'
 import GeoReferenciamento from './../GeoReferenciamento'
 
+const PROCEDIMENTO_TAB_CADASTRO = 0;
 const PROCEDIMENTO_TAB_DEMANDAS = 1;
 const PROCEDIMENTO_TAB_GEORREFERENCIAMENTO = 2;
 const ID_GEO_CAMADA_PROCEDIMENTO_EXTERNO = 1;
@@ -190,6 +191,7 @@ export default {
     methods: {
         selecionarParaEdicao(item) {
             // console.log('Item selecionado: ' + item.id)
+            this.tabAtiva = PROCEDIMENTO_TAB_CADASTRO
             this.$http.get(rotas.rotas().procedimentoExterno.buscar + item.id)
                 .then(
                     response => {
@@ -198,6 +200,7 @@ export default {
                         response.body.forEach(element => {
                             element.tipoProcedimentoExterno = element.tipo_procedimento_externo.tipoprocedimento
                             this.entidadeAtual = element
+                            this.atualizarMapa = true
                         })
                     },
                     error => {

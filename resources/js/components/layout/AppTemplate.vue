@@ -64,6 +64,13 @@ export default {
         icone: 'how_to_reg', 
         rota: '/atendimento',
       },
+      /*
+      { 
+        rotulo: 'Demarcação',
+        icone: 'linear_scale', 
+        rota: '/demarcacao',
+      },
+      */
       { 
         rotulo: 'Geovisualizador',
         icone: 'map', 

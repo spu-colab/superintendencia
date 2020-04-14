@@ -1,0 +1,13 @@
+{
+    "name": "Demarcacao",
+    "alias": "demarcacao",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Demarcacao\\Providers\\DemarcacaoServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

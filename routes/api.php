@@ -59,46 +59,53 @@ Route::middleware('jwt.auth')->group(function () {
     });
 
     Route::post('geo/referencia', 'GeoController@salvarReferencia');
-});
- 
-//Route::resource('usuario', 'UsuarioController');
-
-// Route::get('arquivo', 'ArquivoController@index');
-// Route::get('arquivo/criar', 'ArquivoController@create');
-// Route::post('arquivo', 'ArquivoController@uploadFile');
-
-Route::get('geo/camada', 'GeoController@listarCamadas');
-Route::get('geo/camada/{camada}/referencia', 'GeoController@listarReferenciasPorCamada');
-Route::get('geo/camada/{id}', 'GeoController@obterCamada');
-
-//RELATÓRIOS
-Route::get('demanda/relatorio/entrada-saida-diaria', 'DemandaController@relatorioEntradaSaidaDiaria');
-Route::post('demanda/relatorio/acompanhamento', 'DemandaController@gerarPDFAcompanhamento');
-
-Route::get('demanda/relatorio/abertas-distribuicao', 'DemandaController@relatorioAbertasPorDistribuicao');
-Route::get('demanda/relatorio/abertas-distribuicao/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorDistribuicao')
+    Route::get('geo/camada', 'GeoController@listarCamadas');
+    Route::get('geo/camada/{camada}/referencia', 'GeoController@listarReferenciasPorCamada');
+    Route::get('geo/camada/{id}', 'GeoController@obterCamada');
+    Route::get('geo/camada/{idCamada}/referencia/{idReferenciado}', 'GeoController@obterReferencia')
+        ->where([
+            'idCamada' => '[0-9]+',
+            'idReferenciado' => '[0-9]+'
+        ]);
+    
+    //RELATÓRIOS
+    Route::get('demanda/relatorio/entrada-saida-diaria', 'DemandaController@relatorioEntradaSaidaDiaria');
+    Route::post('demanda/relatorio/acompanhamento', 'DemandaController@gerarPDFAcompanhamento');
+    
+    Route::get('demanda/relatorio/abertas-distribuicao', 'DemandaController@relatorioAbertasPorDistribuicao');
+    Route::get('demanda/relatorio/abertas-distribuicao/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorDistribuicao')
+        ->where([
+            'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+            'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+            ]);
+    
+    Route::get('demanda/relatorio/abertas-demandante', 'DemandaController@relatorioAbertasPorDemandante');
+    Route::get('demanda/relatorio/abertas-demandante/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorDemandante')
     ->where([
         'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
         'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
         ]);
-
-Route::get('demanda/relatorio/abertas-demandante', 'DemandaController@relatorioAbertasPorDemandante');
-Route::get('demanda/relatorio/abertas-demandante/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorDemandante')
-->where([
-    'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
-    'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
-    ]);
+        
+        Route::get('demanda/relatorio/estatistica-periodo', 'DemandaController@relatorioEstatisticaPeriodo');
+        Route::get('demanda/relatorio/estatistica-periodo/{dataDe}/{dataAte}', 'DemandaController@relatorioEstatisticaPeriodo')
+        ->where([
+            'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+            'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+        ]);
     
-    Route::get('demanda/relatorio/estatistica-periodo', 'DemandaController@relatorioEstatisticaPeriodo');
-    Route::get('demanda/relatorio/estatistica-periodo/{dataDe}/{dataAte}', 'DemandaController@relatorioEstatisticaPeriodo')
-    ->where([
-        'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
-        'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
-    ]);
+    Route::get('demanda/relatorio/abertas-natureza', 'DemandaController@relatorioAbertasPorNaturezaOrgao');
+    Route::get('demanda/relatorio/abertas-natureza/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorNaturezaOrgao')
+        ->where([
+            'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+            'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
+        ]);
+        
+    //Route::resource('usuario', 'UsuarioController');
+    
+    // Route::get('arquivo', 'ArquivoController@index');
+    // Route::get('arquivo/criar', 'ArquivoController@create');
+    // Route::post('arquivo', 'ArquivoController@uploadFile');
+});
 
-Route::get('demanda/relatorio/abertas-natureza', 'DemandaController@relatorioAbertasPorNaturezaOrgao');
-Route::get('demanda/relatorio/abertas-natureza/{dataDe}/{dataAte}', 'DemandaController@relatorioAbertasPorNaturezaOrgao')
-    ->where([
-        'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
-        'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
-    ]);
+
+ 

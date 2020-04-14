@@ -1,101 +1,91 @@
 <template>
-    <v-container fill-height fluid grid-list>
-      <v-row>
+  <div id="painelGeo" :class="estiloPainelGeo()">
+    <v-container fluid grid-list no-gutters v-resize="onResize">
+      <v-row no-gutters class="overflow-y-auto">
+          <v-col xs="12">
+              <v-toolbar dense dark color="primary">
+                  <v-toolbar-title></v-toolbar-title>
+                  <v-spacer></v-spacer>
+                  <v-tooltip bottom>
+                      <template v-slot:activator="{ on }">
+                          <v-btn icon v-on="on" @click="exibirCamadas = !exibirCamadas">
+                              <v-icon large>{{ exibirCamadas ? 'layers_clear' : 'layers' }}</v-icon>
+                          </v-btn>
+                      </template>
+                      <span>{{ this.dicaExibirCamadas() }}</span>
+                  </v-tooltip>
+                  <v-tooltip left>
+                      <template v-slot:activator="{ on }">
+                          <v-btn icon v-on="on" @click="telaCheia = !telaCheia">
+                              <v-icon large>{{ telaCheia ? 'fullscreen_exit' : 'fullscreen' }}</v-icon>
+                          </v-btn>
+                      </template>
+                      <span>{{ this.dicaTelaCheia() }}</span>
+                  </v-tooltip>
+              </v-toolbar>
+          </v-col>
+      </v-row>
+      <v-row no-gutters>
         <!-- MAPA -->
-        <v-col cols="12">
+        <v-col xs="12" :md="exibirCamadas ? 8 : 12">
           <div id="map" class="map"></div>
         </v-col>
         <!-- Fim de MAPA -->
-      </v-row>
-
-        <!-- Painel -->
-      <v-row>
-        <!-- Coluna Camadas -->
-        <v-col xs="12" md="7">
-          <h3>Camadas</h3>
-          <v-list dense>
-            <v-list-group
-              v-for="camada in camadas"
-              :key="camada.id"
-              v-model="camada.open"
-              :prepend-icon="camada.icon"
-              no-action
-            >
-              <template v-slot:activator>
-                <v-list-item>
-                  <v-list-item-action>
-                    <v-checkbox dense
-                        v-model="camada.selected"
-                        :label="camada.name" @change="selecionouCamada(camada)"
-                      ></v-checkbox>
-                  </v-list-item-action>
-                </v-list-item>
-              </template>
-
-              <v-list-item
-                v-for="elementoCamada in camada.children"
-                :key="elementoCamada.id"
-              >
-                <v-list-item-action>
-                  <v-checkbox dense
-                    v-model="elementoCamada.selected" @change="selecionouElementoCamada(elementoCamada)"
-                  ></v-checkbox>
-                </v-list-item-action>
-
-                <v-list-item-content>
-                  <v-list-item-title @click="selecionouElementoCamada(elementoCamada)" style="cursor: pointer;">{{ elementoCamada.name }}</v-list-item-title>
-                </v-list-item-content>                
-                
-              </v-list-item>
-            </v-list-group>
-          </v-list>
-        </v-col>
-        <!-- Fim da Coluna Camadas -->
 
         <!-- Coluna Importação -->
-        <v-col xs="12" md="5">
-          <h3>Importar Shapefile</h3>
-          <input type="file" id="files" ref="files" v-on:change="handleFiles()" value="Importar shapefile (.shp)"/>
-              <!-- Geometrias a Importar -->
-              <v-list dense v-if="camadaImportacao">
-                <v-list-group v-if="camadaImportacao.children.length > 0"
-                  prepend-icon="layers"
-                  no-action
-                >
-                  <template v-slot:activator>
-                    <v-list-item>
-                      <v-list-item-action>
-                        <v-checkbox dense color="red"
-                            v-model="camadaImportacao.selected"
-                            :label="camadaImportacao.name" @change="selecionouCamada(camadaImportacao)"
-                          ></v-checkbox>
-                      </v-list-item-action>
-                    </v-list-item>
-                  </template>
-
-                  <v-list-item
-                    v-for="elementoCamada in camadaImportacao.children"
-                    :key="elementoCamada.id"
-                    @click="selecionouElementoCamada(elementoCamada)"
-                  >
-                    <v-list-item-action>
-                      <v-icon v-if="elementoCamada.selected">check_box</v-icon>
-                      <v-icon v-else>check_box_outline_blank</v-icon>
-                    </v-list-item-action>
-
-                    <v-list-item-content>
-                      <v-list-item-title v-html="elementoCamada.name"></v-list-item-title>
-                    </v-list-item-content>                
-                    
-                  </v-list-item>
-                </v-list-group>
-              </v-list>
-          <!-- Botão salvar -->
-          <v-btn :disabled="botaoSalvarGeometriasSelecionadasDesativado()" @click="salvarGeometrias">Salvar Geometrias Selecionadas</v-btn>
+        <!-- Geometrias a Importar -->
+        <v-col v-if="exibirCamadas" xs="12" md="4">
+          <v-card tile flat>
+            <v-card-title>
+              <h6 class="title text-capitalize">Importar Geometrias</h6>
+            </v-card-title>
+            <v-card-subtitle>
+              <input type="file" id="files" ref="files" v-on:change="handleFiles()" value="Importar shapefile (.shp)"/>
+            </v-card-subtitle>
+            <v-card-text>
+              <div id="painelCamadas" style="overflow: auto;">
+                <div v-if="camadaImportacao && camadaImportacao.children.length > 0">
+                  <v-row>
+                    <v-col xs="12">
+                      <v-checkbox dense 
+                        v-model="camadaImportacao.selected"
+                        :label="camadaImportacao.name" @change="selecionouCamada(camadaImportacao)" />
+                    </v-col>
+                  </v-row>
+                  <v-row dense v-for="item in camadaImportacao.children" v-bind:key="item.id">
+                    <v-col xs="2">
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon small @click="selecionouElementoCamada(item)" v-on="on">
+                            {{ item.selected ? 'check_box' : 'check_box_outline_blank' }}
+                          </v-icon>
+                        </template>
+                        Mostrar no Mapa
+                      </v-tooltip>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon small @click="clicouZoomItemCamada(item)" v-on="on">zoom_in</v-icon>
+                        </template>
+                        Mostrar no Mapa
+                      </v-tooltip>
+                      {{ item.name + '' }}
+                    </v-col>
+                  </v-row>
+                </div>
+              </div>
+              
+            </v-card-text>
+            <v-card-actions>
+              <!-- Botão salvar -->
+              <v-btn :disabled="botaoSalvarGeometriasSelecionadasDesativado()" 
+                @click="salvarGeometrias">Salvar Selecionadas</v-btn>
+            </v-card-actions>
+          </v-card>
         </v-col>
         <!-- Fim da Coluna Importação -->
       </v-row>
     </v-container>
+  </div>
 </template>
 
 <script>
@@ -115,9 +105,13 @@ export default {
     return {
       map: null,
       baseMaps: {},
-      camadas: [],
+      files: [],
+
+      camada: null,
+      referencia: null,
       camadaImportacao: null,
-      files: []
+      exibirCamadas: true,
+      telaCheia: false,
     }
   },
   props: {
@@ -134,22 +128,19 @@ export default {
       default: false
     }
   },
+
   mounted () {
     this.initMap()
-    this.inicializarCamadas()
+    this.inicializarCamadaImportacao();
     this.carregarCamada();
   },
 
-  methods: {
-    initMap () {
+  methods: {  
+    initMap ()
+    {
       this.map = L.map('map', {
         crs: L.CRS.EPSG3857
-      }).setView([-28.1, -47.5], 7);
-      /*
-      this.map.pm.addControls({
-        position: 'topleft',
-      });
-      */
+      }).setView([-28.1, -47.5], 7)
      
     let tileLayerMapa = L.tileLayer(
       'https://cartodb-basemaps-{s}.global.ssl.fastly.net/rastertiles/voyager/{z}/{x}/{y}.png', {
@@ -157,7 +148,8 @@ export default {
         attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>',
         useCache: true,
         zIndex: 0
-    })
+      }
+    )
 
     let tileLayerSatelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
       attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
@@ -187,23 +179,17 @@ export default {
     }
     tileLayerMapa.addTo(this.map)
     L.control.layers(baseMaps).addTo(this.map)
-    
-
     },
 
     reinicializarMapa() {
       this.map.remove()
       this.initMap()
-      this.inicializarCamadas()
+      this.inicializarCamadaImportacao()
       this.carregarCamada();
     },
 
-    inicializarCamadas() {
-      this.camadas = []
-      this.inicializarCamadaImportacao();
-    },
-
     inicializarCamadaImportacao() {
+      //  console.log("inicializarCamadaImportacao()");
       // TODO - Limpar poligonos dessa camada do map
       this.camadaImportacao = {
         id: -1,
@@ -214,24 +200,24 @@ export default {
     },
 
     carregarCamada() {
+      if(this.idReferenciado == null) return
+      this.referencia = null
+      // console.log('carregarCamada()')
       this.carregandoCamada = true
       if(this.idCamada != null && this.idCamada > 0) {
-        let url = rotas.rotas().geo.camada.listar + '/' + this.idCamada
+        let url = rotas.rotas().geo.camada.referencia.obter
+        url = url.replace('[idCamada]', this.idCamada)
+        url = url.replace('[idReferenciado]', this.idReferenciado)
+        // console.log(url)
+
+
         return this.$http.get(url)
           .then(
               response => {
-                response.body.forEach(element => {
-                  let camada = {
-                    id: element.id,
-                    name: element.titulo,
-                    open: false,
-                    selected: true,
-                    icon: 'layers',
-                    children: [],
-                  }
-                  this.carregarElementosCamada(camada)
-                  this.camadas.push(camada)
-                })
+                this.camada = response.body.camada
+                this.camada.children = []
+                this.referencia = response.body.referencia
+                this.carregarReferencia()
                 this.carregandoCamada = false
               },
               error => {
@@ -242,57 +228,41 @@ export default {
       }
     },
 
-    async carregarElementosCamada(camada) {
-      // console.log('carregarElementosCamada')
-      camada.children = []
-      this.carregandoCamada = true
-      let url = rotas.rotas().geo.camada.referencia.listar
-      url = url.replace('[idCamada]', camada.id)
-      return this.$http.get(url)
-        .then(
-          response => {
-              response.body.forEach(element => {
-                // console.log(element)
-                element.conteudoPopup = this.montarConteudoPopupDaReferencia(element)
-                let feature = {
-                  id: element.id,
-                  name: element.titulo,
-                  popupContent: element.conteudoPopup,
-                  selected: true,
-                  type: 'polygon', // element.poligonais.type,
-                  coords: element.poligonais.coordinates,
-                }
-                let options = { color: 'blue' }
-                if(element.idReferenciado == this.idReferenciado) {
-                  options.color = 'green'
-                }
-                feature.leafletObject = this.criarLeafletObject(feature, options)
-                camada.children.push(feature)
-                // this.atualizarItemDaArvoreNoMapa(feature)
-              })
-              this.atualizarElementosNoMapa()
-              this.carregandoCamada = false
-            },
-            error => {
-              console.log(error)
-              this.carregandoCamada = false
-            }
-        )
+    carregarReferencia() {
+      // console.log('carregarReferencia()')
+      // console.log(this.referencia)
+      if(this.referencia == null) return
+
+      this.referencia.conteudoPopup = this.montarConteudoPopupDaReferencia(this.referencia)
+      let feature = {
+        id: this.referencia.id,
+        name: this.referencia.titulo,
+        popupContent: this.referencia.conteudoPopup,
+        selected: true,
+        type: this.referencia.poligonais.type,
+        features: this.referencia.poligonais.geometries,
+        coordinates: this.referencia.poligonais.coordinates,
+      }
+      let options = { color: 'green' }
+      feature.leafletObject = this.criarLeafletObject(feature, options)
+      this.camada.children.push(feature)
+      this.atualizarElementosNoMapa()
+      this.clicouZoomItemCamada(feature)
     },
 
     atualizarElementosNoMapa() {
       // console.log('atualizarElementosNoMapa')
-      this.camadas.forEach(function(camada) {
-        camada.children.forEach(function(elemento) {
-          if (elemento.selected) {
-            // console.log('addTo')
-            elemento.leafletObject.addTo(this.map)
-          } else {
-            // console.log('remove')
-            elemento.leafletObject.remove()
-          }
-        }.bind(this))
+      
+      this.camada.children.forEach(function(elemento) {
+        if (elemento.selected) {
+          // console.log('addTo')
+          elemento.leafletObject.addTo(this.map)
+        } else {
+          // console.log('remove')
+          elemento.leafletObject.remove()
+        }
       }.bind(this))
+      
 
       this.camadaImportacao.children.forEach(function(elemento) {
         if (elemento.selected) {
@@ -309,18 +279,26 @@ export default {
     selecionouElementoCamada(itemDaArvore) {
       // console.log('selecionouElementoCamada')
       // console.log(itemDaArvore)
-      // itemDaArvore.selected = !itemDaArvore.selected
+      itemDaArvore.selected = !itemDaArvore.selected
       if (itemDaArvore.selected) {
         itemDaArvore.leafletObject.addTo(this.map)
-        this.map.flyToBounds(itemDaArvore.leafletObject.getBounds())
       } else {
         itemDaArvore.leafletObject.removeFrom(this.map)
       }
+      this.atualizarElementosNoMapa()
+    },
+
+    clicouZoomItemCamada(itemDaArvore) {
+      itemDaArvore.selected = true
+      if(itemDaArvore.leafletObject) {
+        this.map.flyToBounds(itemDaArvore.leafletObject.getBounds())
+      }
+      this.atualizarElementosNoMapa()
     },
 
     selecionouCamada(camada) {
-      // console.log('selecionouCamada')
-      // console.log(camada)
+      console.log('selecionouCamada')
+      console.log(camada)
       if(isArray(camada.children)) {
         camada.children.forEach(function(elementoCamada) {
           elementoCamada.selected = !camada.selected
@@ -330,16 +308,40 @@ export default {
     },
 
     criarLeafletObject(feature, options = {}) {
-      // console.log('criarLeafletObject')
+      // console.log('criarLeafletObject()')
       // console.log(feature)
-      if(feature.type == 'polygon') {
-        return L.polygon(feature.coords, options).bindPopup(feature.popupContent)
-      } else {
-        console.log('feature.type "'+ feature.type + '" não suportado')
+      switch (feature.type) {
+        case 'MultiPolygon':
+          return L.polygon(feature.coordinates, options)
+              .bindPopup(feature.popupContent)
+        
+        case 'Polygon':
+          return L.polygon(feature.coordinates, options)
+              .bindPopup(feature.popupContent)
+
+        case 'LineString':
+          // console.log('LineString')
+          // console.log(feature)
+          return L.polyline(feature.coordinates, options)
+            .bindPopup(feature.popupContent)
+
+        case 'GeometryCollection':
+          // console.log('GeometryCollection')
+          // console.log(feature)
+          let geometrias = []
+          feature.features.forEach(geometria => {
+            geometrias.push(this.criarLeafletObject(geometria, options))
+          })
+          return L.featureGroup(geometrias).bindPopup(feature.popupContent)
+
+        default:
+          console.log('feature.type "'+ feature.type + '" não suportado')
+          break;
       }
     },
 
     handleFiles() {
+      // console.log("handleFiles()")
         let uploadedFiles = this.$refs.files.files;
         for(var i = 0; i < uploadedFiles.length; i++) {
           let file = uploadedFiles[i]
@@ -354,9 +356,12 @@ export default {
     },
 
     handleZipFile(file) {
+      // console.log("handleZipFile()")
       var reader = new FileReader();
       reader.onload = function() {
         if (reader.readyState != 2 || reader.error){
+          console.log("error:")
+          console.log(reader)
           return;
         } else {
           this.importarPoligonos(reader.result)
@@ -366,30 +371,37 @@ export default {
     },
 
     importarPoligonos(buffer) {
+      // console.log("importarPoligonos()")
       this.inicializarCamadaImportacao()
       shp(buffer)
         .then(function(geojson) {
+          // console.log("geojson")
+          // console.log(geojson)
           let shapefile = L.shapefile(geojson)
           // console.log(shapefile)
           this.camada_id = 1000000000;
           shapefile.pm.findLayers().forEach(function(layer) {
+            // console.log("layer")
+            // console.log(layer)
             layer.feature.geometry.coordinates = this.converterLongLatParaLagLongs(layer.feature.geometry.coordinates)
             layer.conteudoPopup = this.montarConteudoPopupDaGeometria(layer.feature.properties)
             let feature = {
               id: this.camada_id,
               name: this.camada_id,
               popupContent: layer.conteudoPopup,
-              type: 'polygon', // element.poligonais.type,
+              type: layer.feature.geometry.type,
               selected: true,
-              coords: layer.feature.geometry.coordinates,
+              coordinates: layer.feature.geometry.coordinates,
             }
             feature.leafletObject = this.criarLeafletObject(feature, { color: 'red' })
-            // console.log(feature.leafletObject)
+            // console.log('this.camadaImportacao.children')
+            // console.log(this.camadaImportacao.children)
             this.camadaImportacao.children.push(feature)
             this.camada_id++;
           }.bind(this))
           this.atualizarElementosNoMapa()
         }.bind(this));
+      this.onResize()
     },
 
     montarConteudoPopupDaGeometria(properties) {
@@ -403,6 +415,8 @@ export default {
     },
 
     montarConteudoPopupDaReferencia(referencia) {
+      // console.log('montarConteudoPopupDaReferencia(referencia)')
+      // console.log(referencia)
       var conteudo = referencia.rotulo;
       conteudo += '<h4>' + referencia.titulo + '</h4>'
       conteudo += '<small><i>' + referencia.subtitulo + '</i></small>'
@@ -425,56 +439,52 @@ export default {
     },
 
     salvarGeometrias() {
+      // console.log('salvarGeometrias')
       var geometriasASalvar = []
       if(isArray(this.camadaImportacao.children)) {
-        // this.camadaImportacao.children.forEach(function(feature, f) {
-        for(var f= 0; f < this.camadaImportacao.children.length; f++) {
-          var feature = this.camadaImportacao.children[f]
-          // console.log('Importar geometrias do elemento ' + f + '? ' + feature.selected)
+        this.camadaImportacao.children.forEach(function(feature, f) {
           if(feature.selected) {
-            // console.log(feature)
-            //feature.coords.forEach(function(geometria, g) {
-            for(var g= 0; g < feature.coords.length; g++) {
-              var geometria = feature.coords[g]              
-              geometriasASalvar.push(geometria)
-              // console.log('Geometria ' + g + ':')
-              // console.log(geometria)
-            }
+            geometriasASalvar.push(feature)
           }
-        }
+        })
       }
-      // console.log('Geometrias as salvar:')
-      // console.log(geometriasASalvar)
       this.salvarGeometriasAPI(geometriasASalvar)
-      
     },
 
     salvarGeometriasAPI(geometrias) {
+      // console.log('salvarGeometriasAPI()')
         if(geometrias.length < 0) {
           this.$store.commit('sistema/alerta', 'Nenhuma geometria a ser salva')
           return
         }
-        let formData = new FormData()
-        // formData.append('geo_referencia[id]', this.entidadeAtual.id)
-        formData.append('geo_referencia[idCamada]', this.idCamada)
-        formData.append('geo_referencia[idReferenciado]', this.idReferenciado)
-        for(var g = 0; g < geometrias.length; g++) {
-          for(var p = 0; p < geometrias[g].length; p++) {
-            formData.append('geo_referencia[geometrias]['+g+']['+p+']', geometrias[g][p])
+
+        let jsonPostData = {
+          idCamada: this.idCamada,
+          idReferenciado: this.idReferenciado,
+          geoJson : {
+            'type' : 'FeatureCollection',
+            'features' : []
           }
         }
-        
-        /* TODO fazer ajuste para o update....
-        if(this.entidadeAtual.id != null) {
-            formData.append('_method', 'PUT') 
-        }
-        let url = this.entidadeAtual.id === null ? 
-           rotas.rotas().geo.camada.referencia.criar : 
-           rotas.rotas().geo.camada.referencia.editar + '' + this.entidadeAtual.id;
-        */
+
+        geometrias.forEach(geometria => {
+          let feature = {
+            'type' : 'Feature',
+            'properties' : [],
+            'geometry' : {
+              'type' : geometria.type,
+              'coordinates' : geometria.coordinates
+            }
+          }
+          jsonPostData.geoJson.features.push(feature)
+          // console.log('feature')
+          // console.log(feature)
+        });
+        // console.log(jsonPostData)
+
         let url = rotas.rotas().geo.camada.referencia.criar        
 
-        this.$http.post(url, formData)
+        this.$http.post(url, jsonPostData)
             .then(
                 response => {
                     // console.log(response)
@@ -491,11 +501,11 @@ export default {
 
     botaoSalvarGeometriasSelecionadasDesativado() {
 
-      if(this.idCamada == null || this.idCamada == 0 || this.camadas.length == 0) {
+      if(this.idCamada == null || this.idCamada == 0 || this.idReferenciado == null) {
         return true
       }
       
-      if(!isArray(this.camadaImportacao.children)) {
+      if(this.camadaImportacao == null || !isArray(this.camadaImportacao.children)) {
         return true
       }
       if(this.camadaImportacao.children.length <= 0) {
@@ -508,8 +518,37 @@ export default {
           }
       }
       return true
+    },
+
+    estiloPainelGeo() {
+      return this.telaCheia ? 'painelGeoTelaCheia' : ''
+    },
+
+    dicaExibirCamadas() {
+      return this.exibirCamadas ? 'Esconder painel de camadas' : 'Mostrar painel de camadas'
+    },
+
+    dicaTelaCheia() {
+      return this.telaCheia ? 'Sair do modo tela cheia' : 'Exibir em tela cheia'
+    },
+
+    onResize() {
+      var divMap = document.getElementsByClassName('map')[0]
+      divMap.style.height = (window.innerHeight - 70) + 'px'
+
+      var painelCamadas = document.getElementById('painelCamadas')
+      if(painelCamadas != null) {
+        painelCamadas.style.height = (window.innerHeight - 232) + 'px'
+      }
     }
 
+  },
+
+  mounted () {
+    this.onResize()
+    this.initMap()
+    this.inicializarCamadaImportacao();
+    this.carregarCamada();
   },
 
   watch: {
@@ -524,38 +563,20 @@ export default {
 </script>
 
 <style scoped>
-#map {
-  height: 512px;
-  overflow: hidden;
-}
 
-.dropbox {
-    outline: 2px dashed grey; /* the dash box */
-    outline-offset: -10px;
-    background: lightcyan;
-    color: dimgray;
-    padding: 10px 10px;
-    min-height: 200px; /* minimum height */
-    position: relative;
-    cursor: pointer;
+  #map {
+    height: 512px;
+    overflow: hidden;
   }
 
-  .input-file {
-    opacity: 0; /* invisible but it's there! */
+  div.painelGeoTelaCheia {
+    z-index: 99999;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: 200px;
-    position: absolute;
-    cursor: pointer;
-  }
-
-  .dropbox:hover {
-    background: lightblue; /* when mouse over to the drop zone, change color */
-  }
-
-  .dropbox p {
-    font-size: 1.2em;
-    text-align: center;
-    padding: 50px 0;
-  }
+    height: 100%;
+    background-color: #CECECE;
+}
 </style>
 

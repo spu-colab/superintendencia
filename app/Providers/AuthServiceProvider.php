@@ -4,11 +4,12 @@ namespace App\Providers;
 use App\User;
 use App\Permissao;
 use Modules\Auth\Entities\DivisaoOrganograma;
-//use App\Http\Controllers\PermissaoDivisaoOrganogramaTrait;
+use Modules\Demarcacao\Entities\Demarcacao;
 
 use App\Policies\UserPolicy;
 use App\Policies\PermissaoPolicy;
 use App\Policies\DivisaoOrganogramaPolicy;
+use Modules\Demarcacao\Policies\DemarcacaoPolicy;
 
 //use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -24,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Permissao::class => PermissaoPolicy::class,
         DivisaoOrganograma::class => DivisaoOrganogramaPolicy::class,
+        Demarcacao::class => DemarcacaoPolicy::class
     ];
 
 

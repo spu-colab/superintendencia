@@ -6,9 +6,10 @@ use App\GeoCamada;
 use App\GeoReferencia;
 
 use Grimzy\LaravelMysqlSpatial\Types\LineString;
-use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
+// use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
+use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,13 +23,37 @@ class GeoController extends Controller
     }
 
     public function obterCamada($id) {
-        return GeoCamada::findOrFail($id)->get();
+        return GeoCamada::findOrFail($id);
+    }
+
+    public function obterReferencia($idCamada, $idReferenciado) {
+        $camada = $this->obterCamada($idCamada);
+        $retorno['camada'] = $camada;
+        $referencia['rotulo'] = $camada->rotulo;
+
+        $referencia = GeoReferencia::where([
+            ['idCamada', '=', $camada->id],
+            ['idReferenciado', '=', $idReferenciado]
+        ])->first();
+        $retorno['referencia'] = $referencia;
+
+        if(@$referencia->idReferenciado) {
+            $metaDadosReferencia = DB::table($camada->tabelaReferencia)
+                ->select($camada->colunaTituloReferencia, $camada->colunaSubTituloReferencia)
+                ->where($camada->colunaIdReferencia, '=', $referencia->idReferenciado)
+                ->first();
+    
+            $referencia['titulo'] = $metaDadosReferencia->{$camada->colunaTituloReferencia};
+            $referencia['subtitulo'] = $metaDadosReferencia->{$camada->colunaSubTituloReferencia};
+        }
+
+        return \response()->json($retorno);
     }
 
     public function listarReferenciasPorCamada($idCamada) {
 
         $camada = $this->obterCamada($idCamada);
-        $camada = $camada[0];
+        // $camada = $camada[0];
 
         $referencias = GeoReferencia::where('idCamada', '=', $idCamada)->get();
 
@@ -49,9 +74,12 @@ class GeoController extends Controller
     }
 
     public function salvarReferencia(Request $request) {
-        // return $request;
-        $request_vars = $request['geo_referencia'];
-        extract($request_vars);
+        // return response()->json($request);
+        // $request_vars = $request['geo_referencia'];
+        // extract($request_vars);
+        $idCamada = $request['idCamada'];
+        $idReferenciado = $request['idReferenciado'];
+        $geoJson = $request['geoJson'];
 
         $geoReferencia = GeoReferencia::where([
             ['idCamada', '=', $idCamada],
@@ -63,21 +91,35 @@ class GeoController extends Controller
             $geoReferencia->idCamada = $idCamada;
             $geoReferencia->idReferenciado = $idReferenciado;
         }
+
+        /*
         $poligonosDaGeometria = [];
+        // return \response()->json($geometrias);
+        $pontosFalhos = 0;
         foreach ($geometrias as $geometria) {
             $pontosDaGeometria = [];
             foreach($geometria as $ponto) {
                 $ponto = explode(',', $ponto);
+                if(!\is_array($ponto) || @\sizeof($ponto < 2)) {
+                    $pontosFalhos++;
+                    continue;
+                }
                 $lat = $ponto[1];
                 $lng = $ponto[0];
                 $ponto = new Point($lat, $lng);
                 $pontosDaGeometria[] = $ponto;
             }
-            $poligono = new Polygon([new LineString($pontosDaGeometria)]);
+            $poligono = null; //new Polygon([new LineString($pontosDaGeometria)]);
             $poligonosDaGeometria[] = $poligono;
         }
-        $multiPoligono = new MultiPolygon($poligonosDaGeometria);
-        $geoReferencia->poligonais = $multiPoligono;
+        return \response()->json($pontosFalhos);
+        // $multiPoligono = new MultiPolygon($poligonosDaGeometria);
+        */
+        $jsonEncoded = \json_encode($geoJson);
+        // return response()->json($jsonEncoded);
+        $geometrias = GeometryCollection::fromJson($jsonEncoded);
+        // return response()->json($geometrias);
+        $geoReferencia->poligonais = $geometrias;
         $geoReferencia->idUsuarioCriacao = Auth::id();
         $geoReferencia->idUsuarioAlteracao = Auth::id();
 

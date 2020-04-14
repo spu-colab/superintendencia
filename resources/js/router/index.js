@@ -8,6 +8,7 @@ import AutorDemandaCrud from './../components/judicial/Demandante'
 import OrgaoCrud from './../components/judicial/Orgao'
 import ProcedimentoExternoCrud from './../components/judicial/ProcedimentoExterno'
 import Atendimento from './../components/atendimento/Atendimento'
+import Demarcacao from './../components/demarcacao/Demarcacao'
 import Governanca from './../components/governanca/Governanca'
 import Conteudo from './../components/Conteudo'
 import GeoVisualizador from './../components/geo/GeoVisualizador'
@@ -64,6 +65,40 @@ let router = new Router({
           {
             text: 'Atendimento'
           },
+        ]
+      }
+    },
+    {
+      path: '/demarcacao',
+      name: 'Demarcacao',
+      component: Demarcacao,
+      meta: {
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Demarcação'
+          },
+        ]
+      }
+    },
+    {
+      path: '/demarcacao/:id',
+      name: 'DemarcacaoEditor',
+      component: Demarcacao,
+      meta: {
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Demarcação'
+          }
         ]
       }
     },

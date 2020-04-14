@@ -1,5 +1,6 @@
 {
     "Atendimento": true,
     "Governanca": true,
-    "Auth": true
+    "Auth": true,
+    "Demarcacao": true
 }

@@ -16,6 +16,21 @@ export default {
         }
       },
 
+      demarcacao: {
+        listar: this.base() + '/demarcacao/demarcacao',
+        criar: this.base() + '/demarcacao/demarcacao',
+        editar: this.base() + '/demarcacao/demarcacao/',
+        tipo: {
+          listar: this.base() + '/demarcacao/tipo'
+        },
+        situacao: {
+          listar: this.base() + '/demarcacao/situacao'
+        },
+        trecho: {
+          listar: this.base() + '/demarcacao/trecho'
+        },
+      },
+
       autenticacao: {
         login: this.base() + '/user/login', //jwt.auth
         // login: this.base() + '/login', //auth
@@ -63,6 +78,7 @@ export default {
           listar: this.base() + '/geo/camada',
           referencia: {
             listar: this.base() + '/geo/camada/[idCamada]/referencia',
+            obter: this.base() + '/geo/camada/[idCamada]/referencia/[idReferenciado]',
             criar: this.base() + '/geo/referencia',
             editar: this.base() + '/geo/referencia/',
           }
