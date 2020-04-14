@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use Modules\Demarcacao\Entities\Demarcacao;
 use Modules\Demarcacao\Http\Requests\DemarcacaoRequest;
+use Modules\Demarcacao\Transformers\Demarcacao as DemarcacaoResource;
 
 class DemarcacaoController extends Controller
 {
@@ -19,16 +20,7 @@ class DemarcacaoController extends Controller
     {
         $result = Demarcacao::with(['tipo','situacao','trecho'])
             ->get();
-        return response()->json($result);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     * @return Response
-     */
-    public function create()
-    {
-        return null;
+        return DemarcacaoResource::collection($result);
     }
 
     /**
@@ -45,8 +37,8 @@ class DemarcacaoController extends Controller
 
         $this->authorize('create', $demarcacao);
 
-        $demarcacao->save();        
-        return response()->json($demarcacao);
+        $demarcacao->save();
+        return new DemarcacaoResource($demarcacao);
     }
 
     /**
@@ -56,7 +48,8 @@ class DemarcacaoController extends Controller
      */
     public function show($id)
     {
-        return Demarcacao::with(['tipo','situacao','trecho'])->findOrFail($id);
+        $demarcacao = Demarcacao::with(['tipo','situacao','trecho'])->findOrFail($id);
+        return new DemarcacaoResource($demarcacao);
     }
 
     /**

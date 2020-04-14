@@ -97,7 +97,7 @@
                         <v-tab-item>
                             <v-container>
                                 <geo-referenciamento v-if="entidadeAtual"
-                                    :idCamada="idCamada" 
+                                    :tabelaReferenciaCamada="tabelaReferenciaCamada" 
                                     :idReferenciado="entidadeAtual.id" 
                                     :atualizarMapa="atualizarMapa"></geo-referenciamento>
                             </v-container>
@@ -120,7 +120,6 @@ import GeoReferenciamento from './../GeoReferenciamento'
 const PROCEDIMENTO_TAB_CADASTRO = 0;
 const PROCEDIMENTO_TAB_DEMANDAS = 1;
 const PROCEDIMENTO_TAB_GEORREFERENCIAMENTO = 2;
-const ID_GEO_CAMADA_PROCEDIMENTO_EXTERNO = 1;
 
 export default {
     components: {
@@ -128,7 +127,7 @@ export default {
     },
     data: () => {
         return {
-            idCamada: ID_GEO_CAMADA_PROCEDIMENTO_EXTERNO,
+            tabelaReferenciaCamada: 'procedimentoexterno',
             atualizarMapa: false,
             tabAtiva: 0,
             carregando: true,

@@ -117,7 +117,7 @@ class CriaDemarcacao extends Migration
                     'colunaTituloReferencia' => 'processo',
                     'colunaSubTituloReferencia' => 'subtrecho',
                     'cor' => 'blue',
-                    'rotaFrontEnd' => '/demarcacao/demarcacao/[id]'
+                    'rotaFrontEnd' => '/demarcacao/[id]'
                 ]
             ]);
         

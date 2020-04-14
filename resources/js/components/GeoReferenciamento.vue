@@ -115,9 +115,9 @@ export default {
     }
   },
   props: {
-    idCamada: {
-      type: Number,
-      default: 0
+    tabelaReferenciaCamada: {
+      type: String,
+      default: null
     },
     idReferenciado: {
       type: Number,
@@ -204,12 +204,11 @@ export default {
       this.referencia = null
       // console.log('carregarCamada()')
       this.carregandoCamada = true
-      if(this.idCamada != null && this.idCamada > 0) {
+      if(this.tabelaReferenciaCamada != null) {
         let url = rotas.rotas().geo.camada.referencia.obter
-        url = url.replace('[idCamada]', this.idCamada)
+        url = url.replace('[tabelaReferenciaCamada]', this.tabelaReferenciaCamada)
         url = url.replace('[idReferenciado]', this.idReferenciado)
         // console.log(url)
-
 
         return this.$http.get(url)
           .then(
@@ -297,8 +296,8 @@ export default {
     },
 
     selecionouCamada(camada) {
-      console.log('selecionouCamada')
-      console.log(camada)
+      // console.log('selecionouCamada')
+      // console.log(camada)
       if(isArray(camada.children)) {
         camada.children.forEach(function(elementoCamada) {
           elementoCamada.selected = !camada.selected
@@ -459,7 +458,7 @@ export default {
         }
 
         let jsonPostData = {
-          idCamada: this.idCamada,
+          idCamada: this.camada.id,
           idReferenciado: this.idReferenciado,
           geoJson : {
             'type' : 'FeatureCollection',
@@ -501,7 +500,7 @@ export default {
 
     botaoSalvarGeometriasSelecionadasDesativado() {
 
-      if(this.idCamada == null || this.idCamada == 0 || this.idReferenciado == null) {
+      if(this.tabelaReferenciaCamada == null || this.idReferenciado == null) {
         return true
       }
       

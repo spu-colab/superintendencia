@@ -65,7 +65,7 @@
                         <v-tab-item>
                             <v-container>
                                 <geo-referenciamento v-if="entidadeAtual"
-                                    :idCamada="idCamada" 
+                                    :tabelaReferenciaCamada="tabelaReferenciaCamada" 
                                     :idReferenciado="entidadeAtual.id_demarcacao" 
                                     :atualizarMapa="atualizarMapa"></geo-referenciamento>
                             </v-container>
@@ -81,7 +81,6 @@
 import rotas from './../../rotas-servico.js'
 import CRUD from './../CRUD'
 
-const ID_GEO_CAMADA_DEMARCACAO = 6;
 const DEMARCACAO_TAB_GEORREFERENCIAMENTO = 1;
 
 export default {
@@ -123,7 +122,7 @@ export default {
             carregandoTrechos: false,
             trechos: [],
 
-            idCamada: ID_GEO_CAMADA_DEMARCACAO,
+            tabelaReferenciaCamada: 'demar_demarcacao',
             atualizarMapa: false,
             tabAtiva: 0,
 
@@ -142,7 +141,7 @@ export default {
                         response => {
                             // console.log('consultando procedimento :' + item.id_demarcacao)
                             // console.log(response)
-                            let element = response.body
+                            let element = response.body.data
                             element.tipodemarcacao = element.tipo.tipodemarcacao
                             element.situacaodemarcacao = element.situacao.situacaodemarcacao
                             element.trechodemarcacao = element.trecho.trechodemarcacao
@@ -217,7 +216,7 @@ export default {
                 .then(
                     response => {
                         // console.log(response);
-                        response.body.forEach(element => {
+                        response.body.data.forEach(element => {
                             element.tipodemarcacao = element.tipo.tipodemarcacao
                             element.situacaodemarcacao = element.situacao.situacaodemarcacao
                             element.trechodemarcacao = element.trecho.trechodemarcacao

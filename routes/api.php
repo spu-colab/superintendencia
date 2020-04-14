@@ -62,9 +62,9 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('geo/camada', 'GeoController@listarCamadas');
     Route::get('geo/camada/{camada}/referencia', 'GeoController@listarReferenciasPorCamada');
     Route::get('geo/camada/{id}', 'GeoController@obterCamada');
-    Route::get('geo/camada/{idCamada}/referencia/{idReferenciado}', 'GeoController@obterReferencia')
+    Route::get('geo/camada/{tabelaReferenciaCamada}/referencia/{idReferenciado}', 'GeoController@obterReferencia')
         ->where([
-            'idCamada' => '[0-9]+',
+            'tabelaReferenciaCamada' => '[A-Za-z/_]+',
             'idReferenciado' => '[0-9]+'
         ]);
     

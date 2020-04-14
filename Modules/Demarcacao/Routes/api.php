@@ -14,8 +14,8 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('jwt.auth')->group(function () {    
-    Route::resource('demarcacao/demarcacao', '\Modules\Demarcacao\Http\Controllers\DemarcacaoController');
-    Route::resource('demarcacao/tipo', '\Modules\Demarcacao\Http\Controllers\TipoDemarcacaoController');
-    Route::resource('demarcacao/situacao', '\Modules\Demarcacao\Http\Controllers\SituacaoDemarcacaoController');
-    Route::resource('demarcacao/trecho', '\Modules\Demarcacao\Http\Controllers\TrechoDemarcacaoController');
+    Route::apiResource('demarcacao/demarcacao', '\Modules\Demarcacao\Http\Controllers\DemarcacaoController');
+    Route::apiResource('demarcacao/tipo', '\Modules\Demarcacao\Http\Controllers\TipoDemarcacaoController');
+    Route::apiResource('demarcacao/situacao', '\Modules\Demarcacao\Http\Controllers\SituacaoDemarcacaoController');
+    Route::apiResource('demarcacao/trecho', '\Modules\Demarcacao\Http\Controllers\TrechoDemarcacaoController');
 });

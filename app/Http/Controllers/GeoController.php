@@ -26,8 +26,13 @@ class GeoController extends Controller
         return GeoCamada::findOrFail($id);
     }
 
-    public function obterReferencia($idCamada, $idReferenciado) {
-        $camada = $this->obterCamada($idCamada);
+    public function obterReferencia($tabelaReferenciada, $idReferenciado) {
+        $camada = GeoCamada::where('tabelaReferencia', $tabelaReferenciada)->first();
+
+        if($camada == null) {
+            \abort(404, 'Geo camada não encontrada');
+        }
+
         $retorno['camada'] = $camada;
         $referencia['rotulo'] = $camada->rotulo;
 

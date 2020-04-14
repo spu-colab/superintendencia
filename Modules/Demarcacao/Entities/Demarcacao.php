@@ -35,4 +35,10 @@ class Demarcacao extends Model
         return $this->belongsTo('Modules\Demarcacao\Entities\TrechoDemarcacao',
             'id_trechodemarcacao', 'id_trechodemarcacao');
     }
+
+    public function subtituloGeoReferencia() {
+        return $this->trecho->trechodemarcacao . (
+            $this->subtrecho ? ' - ' . $this->subtrecho : ''
+        );
+    }
 }
