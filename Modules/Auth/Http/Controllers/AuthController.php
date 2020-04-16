@@ -34,7 +34,7 @@ class AuthController extends Controller
     public function index(Request $request)
     {
         $result = User::with(['permissoes:permissao.id,permissao,descricao',
-            'divisoesOrganograma:divisaoOrganograma.id,sigla,nome'])->get();
+            'divisoesOrganograma:divisaoorganograma.id,sigla,nome'])->get();
         return response()->json($result);
     }
 
