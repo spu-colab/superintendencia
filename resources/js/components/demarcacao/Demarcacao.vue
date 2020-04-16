@@ -23,7 +23,8 @@
                                     <v-col xs="12" md="4">
                                         <v-autocomplete label="Tipo" clearable
                                             :items="tipos" v-model="entidadeAtual.tipo.id_tipodemarcacao" 
-                                            item-text="tipodemarcacao" item-value="id_tipodemarcacao"  />
+                                            item-text="tipodemarcacao" item-value="id_tipodemarcacao" 
+                                            :rules="[validacao.obrigatorio]" />
                                     </v-col>
                                     <v-col xs="12" md="4">
                                         <v-autocomplete label="Situação" clearable
@@ -31,7 +32,8 @@
                                             item-text="situacaodemarcacao" item-value="id_situacaodemarcacao"  />
                                     </v-col>
                                     <v-col xs="12" md="4">
-                                        <v-text-field label="Processo" v-model="entidadeAtual.processo" />
+                                        <v-text-field label="Processo" v-model="entidadeAtual.processo" 
+                                         :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.processo, 20)]" />
                                     </v-col>
                                 </v-row>
 
@@ -39,7 +41,8 @@
                                     <v-col xs="12" md="4">
                                         <v-autocomplete label="Trecho" clearable
                                             :items="trechos" v-model="entidadeAtual.trecho.id_trechodemarcacao" 
-                                            item-text="trechodemarcacao" item-value="id_trechodemarcacao"  />
+                                            item-text="trechodemarcacao" item-value="id_trechodemarcacao" 
+                                            :rules="[validacao.obrigatorio]" />
                                     </v-col>
                                     <v-col xs="12" md="4">
                                         <v-text-field label="Subtrecho" v-model="entidadeAtual.subtrecho" />
@@ -80,6 +83,7 @@
 <script>
 import rotas from './../../rotas-servico.js'
 import CRUD from './../CRUD'
+import Validador from './../../validacao.js';
 
 const DEMARCACAO_TAB_GEORREFERENCIAMENTO = 1;
 
@@ -125,6 +129,8 @@ export default {
             tabelaReferenciaCamada: 'demar_demarcacao',
             atualizarMapa: false,
             tabAtiva: 0,
+
+            validacao: Validador
 
         }
     },
