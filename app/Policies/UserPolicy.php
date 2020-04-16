@@ -22,7 +22,7 @@ class UserPolicy
     }
     public function create()
     {
-        //
+        return $this->verificaUsuarioPermissao([Permissao::USUARIO_CADASTRAR]);
     }
 
     public function store()

@@ -20,10 +20,11 @@ Route::get(
 */
 
 Route::middleware('jwt.auth')->group(function () {     
-    Route::resource('usuario', '\Modules\Auth\Http\Controllers\AuthController');
+    Route::apiResource('usuario', '\Modules\Auth\Http\Controllers\AuthController');
     Route::get('usuario/reduzido', '\Modules\Auth\Http\Controllers\AuthController@listarReduzido');    
 
-    Route::resource('permissao', 'PermissaoController');
+    Route::apiResource('permissao', 'PermissaoController');
+    Route::get('permissao/usuario/{permissaoId}', 'PermissaoController@usuarioPossuiPermissao');
 
-    Route::resource('divisao-organograma', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController');
+    Route::apiResource('divisao-organograma', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController');
 });

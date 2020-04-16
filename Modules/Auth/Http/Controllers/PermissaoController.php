@@ -72,4 +72,10 @@ class PermissaoController extends Controller
     {
         return response()->json(['message' => "Opção desabilitada"], 404);
     }
+
+    public function usuarioPossuiPermissao($permissao) {
+        $arrPermissoes = [ $permissao ];
+        $usuario = $this->verificaUsuarioPermissao($arrPermissoes);
+        return response()->json($usuario != null);
+    }
 }

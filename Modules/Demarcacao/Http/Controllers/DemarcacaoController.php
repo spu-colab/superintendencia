@@ -53,16 +53,6 @@ class DemarcacaoController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        return null;
-    }
-
-    /**
      * Update the specified resource in storage.
      * @param DemarcacaoRequest $request
      * @param int $id

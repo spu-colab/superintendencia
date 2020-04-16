@@ -5,65 +5,74 @@
     :headers="cabecalhos"
     :items="registros"
     :carregando="carregando"
+    :podeSalvar="podeSalvar()"
     @clicou-item="selecionarParaEdicao"
     @clicou-salvar="salvar"
     @clicou-cancelar="cancelar"
-    @clicou-novo="novo"
+    @clicou-novo="novo" 
+    @validou-formulario="formularioValido"
   >
     <template slot="detalhe">
       <div v-if="entidadeAtual">
-          <v-text-field
-            label="Nome"
-            v-model="entidadeAtual.name"
-            disabled
-          />
-          <v-text-field
-            label="CPF"
-            v-model="entidadeAtual.cpf"
-            type="number"
-            :rules="[validacao.obrigatorio, validacao.min11]"
-            required
-            counter="11"
-            maxlength=11
-            :disabled="entidadeAtual.id ? true : false"            
-          />
-        <v-container fluid fill-height>
-          <v-layout row wrap>
-            <v-flex xs12 md6>
-                <h4>Permissões</h4>
-                <v-divider/>
-              <div
-                v-for="(permissao) in entidadeAtual.permissoesL"
-                v-bind:key="permissao.id"
-                class="itemLista"
-              >
-                <v-checkbox
-                  :label="permissao.permissao"
-                  align-start
-                  v-model="permissao.checked"
-                  :disabled="false"
-                ></v-checkbox>
-              </div>
-              <br>
-            </v-flex>
-            <v-flex xs12 md6>
-                <h4>Divisões</h4>
-                <v-divider/>
-              <div
-                v-for="(divisao) in entidadeAtual.divisoesL"
-                v-bind:key="divisao.id"
-                class="itemLista"
-              >
-                <v-checkbox
-                  :label="divisao.sigla + ' - ' + divisao.nome"
-                  align-start
-                  v-model="divisao.checked"
-                  :disabled="false"
-                ></v-checkbox>
-              </div>
-            </v-flex>
-          </v-layout>
-        </v-container>
+        <v-row>
+          <v-col xs="12" md="6">
+            <v-text-field label="Nome" v-model="entidadeAtual.name" :disabled="!podeCadastrar" 
+              :rules="[validacao.obrigatorio, validacao.min(entidadeAtual.name, 4)]" required />
+          </v-col>
+          <v-col xs="12" md="6">
+            <v-text-field label="CPF" v-model="entidadeAtual.cpf"
+              type="number" :rules="[validacao.obrigatorio, validacao.min(entidadeAtual.cpf, 11)]" required
+              counter="11" maxlength=11
+              :disabled="entidadeAtual.id ? true : false"            
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col xs="12" md="6">
+            <v-text-field label="E-mail" v-model="entidadeAtual.email" :disabled="!podeCadastrar" 
+              :rules="[validacao.obrigatorio, validacao.email, validacao.min(entidadeAtual.email, 6)]" required />
+          </v-col>
+          <v-col xs="12" md="6">
+            <v-text-field label="Telefone" v-model="entidadeAtual.telefone" :disabled="!podeCadastrar"
+              :rules="[validacao.obrigatorio, validacao.min(entidadeAtual.telefone, 10)]" required 
+              counter="15" maxlength=15 />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col xs="12" md="6">
+            <h4>Permissões</h4>
+            <v-divider/>
+            <div
+              v-for="(permissao) in entidadeAtual.permissoesL"
+              v-bind:key="permissao.id"
+              class="itemLista"
+            >
+              <v-checkbox
+                :label="permissao.permissao"
+                align-start
+                v-model="permissao.checked"
+                :disabled="!podeCadastrar"
+              ></v-checkbox>
+            </div>
+            <br>
+          </v-col>
+          <v-col xs="12" md="6">
+            <h4>Divisões</h4>
+            <v-divider/>
+            <div
+              v-for="(divisao) in entidadeAtual.divisoesL"
+              v-bind:key="divisao.id"
+              class="itemLista"
+            >
+              <v-checkbox
+                :label="divisao.sigla + ' - ' + divisao.nome"
+                align-start
+                v-model="divisao.checked"
+                :disabled="!podeCadastrar"
+              ></v-checkbox>
+            </div>
+          </v-col>
+        </v-row>
       </div>
     </template>
   </crud>
@@ -72,6 +81,8 @@
 <script>
 import rotas from "./../../rotas-servico.js";
 import CRUD from "./../CRUD";
+
+const PERMISSAO_CADASTRAR = "USUARIO_CADASTRAR"
 
 export default {
   components: {
@@ -104,10 +115,11 @@ export default {
       carregando: false,
       validacao: {
         obrigatorio: value => !!value || "Preenchimento obrigatório.",
-        min11: v => (!!v && v.length >= 11) || "No mínimo 11 caracteres",
-        min2: v => (!!v && v.length >= 2) || "No mínimo 2 caracteres",
+        min: (v, min) => (!!v && v.length >= min) || "No mínimo " + min + " caracteres",
         email: v => /.+@.+\..+/.test(v) || "E-mail precisa ser válido"
-      }
+      },
+      podeCadastrar: false,
+      passouValidacao: false
     };
   },
 
@@ -119,8 +131,11 @@ export default {
     salvar() {
       let formData = new FormData();
       let permissoes = [];
-      formData.append("user[id]", this.entidadeAtual.id);
-      formData.append("user[cpf]", this.entidadeAtual.cpf);
+      formData.append("id", this.entidadeAtual.id);
+      formData.append("name", this.entidadeAtual.name);
+      formData.append("cpf", this.entidadeAtual.cpf);
+      formData.append("email", this.entidadeAtual.email);
+      formData.append("telefone", this.entidadeAtual.telefone);
 
       this.entidadeAtual.permissoesL.forEach(element => {
         if (element.checked) {
@@ -137,17 +152,13 @@ export default {
       if (this.entidadeAtual.id != null) {
         formData.append("_method", "PUT");
       }
-      let url =
-        this.entidadeAtual.id === null
+      let url = this.entidadeAtual.id === null
           ? rotas.rotas().usuario.criar
           : rotas.rotas().usuario.editar + "" + this.entidadeAtual.id;
 
       this.$http.post(url, formData).then(
         response => {
-          this.$store.commit(
-            "sistema/mensagem",
-            "Usuário atualizado com sucesso",
-          );
+          this.$store.commit("sistema/mensagem", "Usuário atualizado com sucesso");
           this.$router.push("/permissao");
           this.carregarItens();
         },
@@ -157,7 +168,9 @@ export default {
         }
       );
     },
+
     cancelar() {},
+
     novo(item) {
       this.entidadeAtual = {
         id: null,
@@ -245,10 +258,35 @@ export default {
         }
       );
       this.carregando = false;
+    },
+
+    carregarPermissoesUsuario() {
+      let usuario = this.$store.getters['auth/usuario'];
+
+      this.podeCadastrar = false
+      let url = rotas.rotas().permissao.usuario
+      url = url.replace('[permissao]', PERMISSAO_CADASTRAR)
+      this.$http.get(url).then(
+        response => {
+          this.podeCadastrar = response.body
+        },
+        error => {
+          console.log(error)
+        }
+      )
+    },
+
+    formularioValido(valido) {
+      this.passouValidacao = valido
+    },
+
+    podeSalvar() {
+      return this.podeCadastrar != null && this.podeCadastrar && this.passouValidacao
     }
   },
 
   mounted() {
+    this.carregarPermissoesUsuario();
     this.carregarPermissoes();
     this.carregarDivisoes();
     this.carregarItens();
@@ -257,7 +295,7 @@ export default {
 </script>
 <style scoped>
 .itemLista {
-  height: 25pt;
+  padding: 3pt;
 }
 .container {
   margin: -10pt;

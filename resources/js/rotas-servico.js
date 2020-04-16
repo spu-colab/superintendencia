@@ -126,7 +126,8 @@ export default {
       permissao: {
         listar: this.base() + '/permissao',
         criar: this.base() + '/permissao',
-        editar: this.base() + '/permissao/',        
+        editar: this.base() + '/permissao/',
+        usuario: this.base() + '/permissao/usuario/[permissao]'
       },
       
       organograma: {
