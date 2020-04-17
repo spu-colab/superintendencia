@@ -13,7 +13,6 @@ var Validador = function() {
     }
 
     var tamanhoMinimo = function(valor, tamanho) {
-        console.log('tamanhoMinimo')
         if (valor == null) {
             return true
         }

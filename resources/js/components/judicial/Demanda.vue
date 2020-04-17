@@ -1,7 +1,9 @@
 <template>
     <crud 
         nomeEntidade="Demanda" nomeEntidadePlural="Demandas"
-        :headers="cabecalhos" :items="computedRegistros" :carregando="carregando" :podeSalvar="podeSalvar" :exibirPaginacao="true" :imprimir="true"
+        :headers="cabecalhos" :items="computedRegistros" :carregando="carregando" 
+        :podeSalvar="podeSalvar" :exibirPaginacao="true" :imprimir="true"
+        :voltar-para-primeira-tela-ao-salvar="false" 
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -644,7 +646,9 @@ export default {
             
             formData.append('demanda[idSituacaoDemanda]', this.entidadeAtual.idSituacaoDemanda)
             formData.append('demanda[demanda]', this.entidadeAtual.demanda)
-            formData.append('demanda[resumoSituacao]', this.entidadeAtual.resumoSituacao)
+            if(this.entidadeAtual.resumoSituacao) {
+                formData.append('demanda[resumoSituacao]', this.entidadeAtual.resumoSituacao)
+            }
             if(this.entidadeAtual.dataDocumento) {
                 formData.append('demanda[dataDocumento]', this.entidadeAtual.dataDocumento)     
             }
@@ -667,13 +671,12 @@ export default {
             this.$http.post(url, formData)
                 .then(
                     response => {
-                        console.log(response)
+                        // console.log(response)
                         this.$store.commit('sistema/mensagem', 'Demanda cadastrada com sucesso!')
                         this.selecionarParaEdicao(response.body)
-                        // this.carregarItens()
                     },
                     error => {
-                        console.log(error.body)
+                        // console.log(error.body)
                         this.$store.commit('sistema/alerta', error.body.message)
                     }
                 )

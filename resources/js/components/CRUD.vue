@@ -240,6 +240,10 @@ export default {
       type: Boolean,
       default: true
     },
+    voltarParaPrimeiraTelaAoSalvar: {
+      type: Boolean,
+      default: true
+    },
     nomeEntidade: String,
     nomeEntidadePlural: String,
     verboAdicionarEntidade: {
@@ -289,7 +293,9 @@ export default {
     },
     salvar() {
       this.$emit("clicou-salvar");
-      // this.exibirGrid = true;
+      if(this.voltarParaPrimeiraTelaAoSalvar) {
+        this.exibirGrid = true;
+      }
     },
     cancelar() {
       this.$emit("clicou-cancelar");

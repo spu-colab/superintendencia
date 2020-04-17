@@ -1,7 +1,8 @@
 <template>
     <crud 
         nomeEntidade="Demarcação" nomeEntidadePlural="Demarcações"
-        :headers="cabecalhos" :items="registros" :carregando="carregando"
+        :headers="cabecalhos" :items="registros" :carregando="carregando" 
+        :voltar-para-primeira-tela-ao-salvar="true"
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -131,7 +132,6 @@ export default {
             tabAtiva: 0,
 
             validacao: Validador
-
         }
     },
     
@@ -193,7 +193,11 @@ export default {
                     response => {
                         // console.log(response)
                         this.$store.commit('sistema/mensagem', 'Demarcação cadastrada com sucesso!')
-                        this.$router.push('/demarcacao')
+                        try {
+                            this.carregarItens()
+                        } catch (e) {
+                            console.log(e)
+                        }
                     },
                     error => {
                         console.log(error.body)

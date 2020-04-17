@@ -2,6 +2,7 @@
     <crud 
         nomeEntidade="Atendimento" nomeEntidadePlural="Atendimentos" verboAdicionarEntidade="Iniciar"
         :headers="cabecalhos" :items="registros" :carregando="carregando"
+        :voltar-para-primeira-tela-ao-salvar="false"
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -309,11 +310,12 @@ export default {
                         if(concluir) {
                             this.$store.commit('sistema/mensagem', 'Atendimento Concluído')
                             this.exibindoGrid = true
+                            this.carregarItens()
                             return
                         } else {
                             this.$store.commit('sistema/mensagem', 'Alterações salvas com sucesso!')
+                            this.selecionarParaEdicao(this.entidadeAtual)
                         }
-                        this.selecionarParaEdicao(this.entidadeAtual)
                     },
                     error => {
                         console.log(error.body)
