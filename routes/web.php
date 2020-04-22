@@ -14,6 +14,8 @@
 // Auth::routes();
 // Route::get('/home', 'HomeController@index')->name('home');
 
+Route::post('/password/email', '\App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail');
+
 Route::get('/', function () {
     return view('template');
 });
