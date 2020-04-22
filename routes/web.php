@@ -12,12 +12,22 @@
 */
 
 // Auth::routes();
-
+Auth::routes(['register' => false]);
+/*
 Route::post('/password/email', '\App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')
     ->name('password.email');
 
-Route::get('/password/reset', 'App\Http\Controllers\Auth\ResetPasswordController@showResetForm')
+Route::get('/password/reset', '\App\Http\Controllers\Auth\ResetPasswordController@showResetForm')
     ->name('password.reset');
+
+Route::get('/password/reset/{token}', '\App\Http\Controllers\Auth\ResetPasswordController@showResetForm')
+    ->name('password.reset');
+
+Route::post('/password/reset', '\App\Http\Controllers\Auth\ResetPasswordController@reset')
+    ->name('password.update');
+
+Route::login()
+*/
 
 Route::get('/', function () {
     return view('template');
