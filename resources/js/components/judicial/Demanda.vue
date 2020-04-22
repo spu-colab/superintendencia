@@ -646,9 +646,9 @@ export default {
             
             formData.append('demanda[idSituacaoDemanda]', this.entidadeAtual.idSituacaoDemanda)
             formData.append('demanda[demanda]', this.entidadeAtual.demanda)
-            if(this.entidadeAtual.resumoSituacao) {
-                formData.append('demanda[resumoSituacao]', this.entidadeAtual.resumoSituacao)
-            }
+            
+            formData.append('demanda[resumoSituacao]', this.entidadeAtual.resumoSituacao ? this.entidadeAtual.resumoSituacao : '')
+
             if(this.entidadeAtual.dataDocumento) {
                 formData.append('demanda[dataDocumento]', this.entidadeAtual.dataDocumento)     
             }

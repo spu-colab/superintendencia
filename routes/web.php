@@ -11,22 +11,12 @@
 |
 */
 
-// Auth::routes();
 Auth::routes(['register' => false]);
 /*
-Route::post('/password/email', '\App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')
-    ->name('password.email');
-
-Route::get('/password/reset', '\App\Http\Controllers\Auth\ResetPasswordController@showResetForm')
-    ->name('password.reset');
-
-Route::get('/password/reset/{token}', '\App\Http\Controllers\Auth\ResetPasswordController@showResetForm')
-    ->name('password.reset');
-
-Route::post('/password/reset', '\App\Http\Controllers\Auth\ResetPasswordController@reset')
-    ->name('password.update');
-
-Route::login()
+Route::get('mail', function () {
+    $user = App\User::find(1);
+    return new App\Mail\RecuperarSenha($user, '52df03de6b5b35245738df98f63ebfe048c499f26229be6730cdebbff1a73447');
+});
 */
 
 Route::get('/', function () {

@@ -75,4 +75,15 @@ class User extends Authenticatable implements JWTSubject
             "user" => auth()->user()];
     }
 
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        Mail::to($this)->send(new RecuperarSenha($this, $token));
+    }
+
 }
