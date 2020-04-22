@@ -33,7 +33,7 @@ export default {
 
       autenticacao: {
         login: this.base() + '/user/login', //jwt.auth
-        // login: this.base() + '/login', //auth
+        recuperarSenha: '/password/email',
         refresh: this.base() + '/user/refresh'
       },
       

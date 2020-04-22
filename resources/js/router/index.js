@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './../components/Home'
 import Login from './../components/Login'
+import RecuperarSenha from './../components/RecuperarSenha'
 import PainelJudiciais from './../components/judicial/PainelJudiciais'
 import DemandaCrud from './../components/judicial/Demanda'
 import AutorDemandaCrud from './../components/judicial/Demandante'
@@ -47,6 +48,23 @@ let router = new Router({
           },
           {
             text: 'Login'
+          },
+        ]
+      }
+    },
+    {
+      path: '/recuperar-senha',
+      name: 'RecuperarSenha',
+      component: RecuperarSenha,
+      meta: {
+        guest: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Recuperar Senha'
           },
         ]
       }
