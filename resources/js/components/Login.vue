@@ -25,9 +25,12 @@
                         </v-card-text>
                         <v-card-actions>
                             <v-row justify="end" class="mr-2">
+                                <v-spacer/>
+                                <v-btn text @click="clicouEsqueceuSenha">Esqueceu sua senha?</v-btn>
+                                <v-spacer/>
                                 <v-btn color="info" @click="submit" :disabled="!valid || carregando">
                                     <v-progress-circular indeterminate v-if="carregando" color="grey" size="20" width="3"></v-progress-circular>
-                                    Enviar
+                                    Entrar
                                 </v-btn>
                             </v-row>
                         </v-card-actions>
@@ -83,6 +86,10 @@ export default {
                         this.carregando = false
                     }
                 )
+        },
+
+        clicouEsqueceuSenha() {
+            this.$router.push('/recuperar-senha')
         }
     }
 }
