@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\DistribuicaoDemanda;
+use App\Mail\RecuperarSenha;
 
 class User extends Authenticatable implements JWTSubject
 {
