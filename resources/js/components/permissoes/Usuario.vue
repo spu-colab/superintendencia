@@ -10,7 +10,8 @@
     @clicou-salvar="salvar"
     @clicou-cancelar="cancelar"
     @clicou-novo="novo" 
-    @validou-formulario="formularioValido"
+    @validou-formulario="formularioValido" 
+    :voltar-para-primeira-tela-ao-salvar="false"
   >
     <template slot="detalhe">
       <div v-if="entidadeAtual">

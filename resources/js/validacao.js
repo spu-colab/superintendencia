@@ -22,10 +22,33 @@ var Validador = function() {
         return 'O tamanho mínimo: ' + tamanho + ' caracteres.'
     }
 
+    var tamanho = function(valor, tamanho) {
+        if (valor == null) {
+            return true
+        }
+        if (valor.length == tamanho) {
+            return true
+        }
+        return 'O tamanho deve ser de ' + tamanho + ' caracteres.'
+    }
+
+    var igual = function(valor, aComparar, mensagem) {
+        if(valor == null) {
+            return true
+        }
+
+        if(valor == aComparar) {
+            return true
+        }
+        return mensagem
+    }
+
     return { 
         email: email,
         obrigatorio: obrigatorio,
         tamanhoMinimo : tamanhoMinimo,
+        tamanho: tamanho,
+        igual: igual
     }
 } ();
 

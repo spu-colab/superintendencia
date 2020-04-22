@@ -12,10 +12,11 @@
 */
 
 // Auth::routes();
-// Route::get('/home', 'HomeController@index')->name('home');
 
-Route::post('/password/email', '\App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail');
-Route::get('/password/reset', '\App\Http\Controllers\Auth\ResetPasswordController@showResetForm')
+Route::post('/password/email', '\App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')
+    ->name('password.email');
+
+Route::get('/password/reset', 'App\Http\Controllers\Auth\ResetPasswordController@showResetForm')
     ->name('password.reset');
 
 Route::get('/', function () {
