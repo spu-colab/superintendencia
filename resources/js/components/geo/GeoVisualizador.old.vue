@@ -1,74 +1,102 @@
 <template>
-    <v-container fill-height fluid grid-list>
-        <v-row>
-            <v-col xs="12" md="9">
-                <div id="mapGeo" class="map"></div>
-            </v-col>
-            <v-col xs="12" md="3">
-                <v-card>
-                    <v-card-title>
-                        <h6 class="title text-capitalize">
-                            Camadas
-                        </h6>
-                    </v-card-title>
-                    <v-card-text>
-                        <div v-for="camada in camadas" :key="camada.id">
-                            <v-layout row>
-                                <v-flex col xs1>
-                                    <v-icon @click="expandirCamada(camada)">{{ camada.expandida ? 'expand_less' : 'expand_more' }}</v-icon>
-                                </v-flex>
-                                <v-flex col xs1>
-                                    <v-icon  
-                                        :color="camada.selecionada ? camada.cor : ''" 
-                                        @click="selecionarCamada(camada); return;">
-                                        {{ camada.selecionada ? 'visibility' : 'visibility_off' }}
-                                        </v-icon>
-                                </v-flex>
-                                <v-flex col xs10>
-                                    <div class="subheading">{{ camada.name }}</div>
-                                </v-flex>
-                            </v-layout>
-                            <v-progress-linear v-if="camada.carregando" indeterminate small />
-                            <v-divider />
-                            <transition name="slide-y">
-                                <div v-if="camada.expandida">
-                                    <v-layout row v-for="item in camada.children" v-bind:key="item.id">
-                                        <v-flex xs2>
-                                            &nbsp;
+    <div id="painelGeo" :class="estiloPainelGeo()">
+        <v-container fluid grid-list no-gutters v-resize="onResize">
+            <v-row no-gutters class="overflow-y-auto">
+                <v-col xs="12">
+                    <v-toolbar dense dark color="primary">
+                        <v-toolbar-title>SPU-SC - Geovisualizador</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-btn icon v-on="on" @click="exibirCamadas = !exibirCamadas">
+                                    <v-icon large>{{ exibirCamadas ? 'layers_clear' : 'layers' }}</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>{{ this.dicaExibirCamadas() }}</span>
+                        </v-tooltip>
+                        <v-tooltip left>
+                            <template v-slot:activator="{ on }">
+                                <v-btn icon v-on="on" @click="telaCheia = !telaCheia">
+                                    <v-icon large>{{ telaCheia ? 'fullscreen_exit' : 'fullscreen' }}</v-icon>
+                                </v-btn>
+                            </template>
+                            <span>{{ this.dicaTelaCheia() }}</span>
+                        </v-tooltip>
+                    </v-toolbar>
+                </v-col>
+            </v-row>
+            <v-row no-gutters>
+                <v-col xs="12" :md="exibirCamadas ? 8 : 12">
+                    <div id="mapGeo" class="map"></div>
+                </v-col>
+                <v-col v-if="exibirCamadas" xs="12" md="4">
+                    <v-card tile flat>
+                        <v-card-title>
+                            <h6 class="title text-capitalize">
+                                Camadas
+                            </h6>
+                        </v-card-title>
+                        <v-card-text>
+                            <div id="painelCamadas" style="overflow: auto;">
+                                <div v-for="camada in camadas" :key="camada.id">
+                                    <v-layout row>
+                                        <v-flex col xs1>
+                                            <v-icon @click="expandirCamada(camada)">{{ camada.expandida ? 'expand_less' : 'expand_more' }}</v-icon>
                                         </v-flex>
-                                        <v-flex xs1>
-                                            <v-icon @click="clicouItemCamada(item)" :color="item.selecionado ? item.cor : ''" >
-                                                {{ item.selecionado ? 'visibility' : 'visibility_off' }}
-                                            </v-icon>
+                                        <v-flex col xs1>
+                                            <v-icon  
+                                                :color="camada.selecionada ? camada.cor : ''" 
+                                                @click="selecionarCamada(camada); return;">
+                                                {{ camada.selecionada ? 'visibility' : 'visibility_off' }}
+                                                </v-icon>
                                         </v-flex>
-                                        <v-flex xs9>
-                                            <div class="body-1">{{ item.name }}</div>
-                                            <div class="caption text--grey-lighten-5">{{ item.subheader }}</div>
-                                            <v-tooltip bottom>
-                                                <template v-slot:activator="{ on }">
-                                                    <v-icon small 
-                                                        @click="clicouZoomItemCamada(item)" v-on="on">zoom_in</v-icon>
-                                                </template>
-                                                Mostrar no Mapa
-                                            </v-tooltip>
-                                            <v-tooltip bottom>
-                                                <template v-slot:activator="{ on }">
-                                                    <v-icon small 
-                                                        @click="clicouAbrirCadastroItemCamada(item)" v-on="on">launch</v-icon>
-                                                </template>
-                                                Abrir Cadastro
-                                            </v-tooltip>
-                                            <v-divider />
+                                        <v-flex col xs10>
+                                            <div class="subheading">{{ camada.name }}</div>
                                         </v-flex>
                                     </v-layout>
+                                    <v-progress-linear v-if="camada.carregando" indeterminate small />
+                                    <v-divider />
+                                    <transition name="slide-y">
+                                        <div v-if="camada.expandida">
+                                            <v-layout row v-for="item in camada.children" v-bind:key="item.id">
+                                                <v-flex xs2>
+                                                    &nbsp;
+                                                </v-flex>
+                                                <v-flex xs1>
+                                                    <v-icon @click="clicouItemCamada(item)" :color="item.selecionado ? item.cor : ''" >
+                                                        {{ item.selecionado ? 'visibility' : 'visibility_off' }}
+                                                    </v-icon>
+                                                </v-flex>
+                                                <v-flex xs9>
+                                                    <div class="body-1">{{ item.name }}</div>
+                                                    <div class="caption text--grey-lighten-5">{{ item.subheader }}</div>
+                                                    <v-tooltip bottom>
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-icon small 
+                                                                @click="clicouZoomItemCamada(item)" v-on="on">zoom_in</v-icon>
+                                                        </template>
+                                                        Mostrar no Mapa
+                                                    </v-tooltip>
+                                                    <v-tooltip bottom>
+                                                        <template v-slot:activator="{ on }">
+                                                            <v-icon small 
+                                                                @click="clicouAbrirCadastroItemCamada(item)" v-on="on">launch</v-icon>
+                                                        </template>
+                                                        Abrir Cadastro
+                                                    </v-tooltip>
+                                                    <v-divider />
+                                                </v-flex>
+                                            </v-layout>
+                                        </div>
+                                    </transition>
                                 </div>
-                            </transition>
-                        </div>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
-    </v-container>
+                            </div>
+                        </v-card-text>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </v-container>
+    </div>
 </template>
 
 <script>
@@ -87,10 +115,24 @@ export default {
             camadas: [],
             idsSelecionados: [],
             itensAtivos: [],
+            exibirCamadas: true,
+            telaCheia: true,
         }
     },
 
     methods: {
+
+        estiloPainelGeo() {
+            return this.telaCheia ? 'painelGeoTelaCheia' : ''
+        },
+
+        dicaExibirCamadas() {
+            return this.exibirCamadas ? 'Esconder painel de camadas' : 'Mostrar painel de camadas'
+        },
+
+        dicaTelaCheia() {
+            return this.telaCheia ? 'Sair do modo tela cheia' : 'Exibir em tela cheia'
+        },
 
         initMap () {
             // console.log('initMap()')
@@ -201,10 +243,11 @@ export default {
                                 name: element.titulo,
                                 subheader: element.subtitulo,
                                 popupContent: element.conteudoPopup,
-                                type: 'polygon', // element.poligonais.type,
+                                type: element.poligonais.type,
                                 cor: camada.cor,
                                 selecionado: false,
                                 coords: element.poligonais.coordinates,
+                                features: element.poligonais.geometries
                             }
                             let options = { color: camada.cor }
                             feature.leafletObject = this.criarLeafletObject(feature, options)
@@ -240,12 +283,33 @@ export default {
         },
 
         criarLeafletObject(feature, options = {}) {
-            // console.log('criarLeafletObject')
+            // console.log('criarLeafletObject()')
             // console.log(feature)
-            if(feature.type == 'polygon') {
-                return L.polygon(feature.coords, options).bindPopup(feature.popupContent)
-            } else {
+            if(feature.coordinates == null) {
+                feature.coordinates = feature.coords
+            }
+            switch (feature.type) {
+                case 'MultiPolygon':
+                return L.polygon(feature.coordinates, options).bindPopup(feature.popupContent)
+
+                case 'Polygon':
+                return L.polygon(feature.coordinates, options).bindPopup(feature.popupContent)
+
+                case 'LineString':
+                return L.polyline(feature.coordinates, options).bindPopup(feature.popupContent)
+
+                case 'GeometryCollection':
+                // console.log('GeometryCollection')
+                // console.log(feature)
+                let geometrias = []
+                feature.features.forEach(geometria => {
+                    geometrias.push(this.criarLeafletObject(geometria, options))
+                })
+                return L.featureGroup(geometrias).bindPopup(feature.popupContent)
+
+                default:
                 console.log('feature.type "'+ feature.type + '" não suportado')
+                break;
             }
         },
 
@@ -321,6 +385,16 @@ export default {
             this.$router.push(itemDaArvore.rotaFrontEnd)
         },
 
+        onResize() {
+            // console.log('onResize()')
+            // console.log(window.innerHeight - 70)
+            var divMap = document.getElementsByClassName('map')[0]
+            divMap.style.height = (window.innerHeight - 70) + 'px'
+
+            var painelCamadas = document.getElementById('painelCamadas')
+            painelCamadas.style.height = (window.innerHeight - 170) + 'px'
+        }
+
     },
 
     watch: {
@@ -332,6 +406,7 @@ export default {
     },
 
     mounted () {
+        this.onResize()
         this.initMap()
         this.carregarCamadas();
     },
@@ -341,8 +416,6 @@ export default {
 <style scoped>
 .map {
   height: 100%;
-  min-height: 840px;
-  max-height: 840px;
   overflow: hidden;
 }
 .slide-y-enter-active, .slide-y-leave-active {
@@ -350,5 +423,15 @@ export default {
 }
 .slide-y-enter, .slide-y-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
+}
+
+div.painelGeoTelaCheia {
+    z-index: 99999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #CECECE;
 }
 </style>

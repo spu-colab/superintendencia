@@ -25,7 +25,7 @@
         "popper.js": "^1.12",
         "resolve-url-loader": "^2.3.1",
         "sass": "^1.20.1",
-        "sass-loader": "^7.1.0",
+        "sass-loader": "^8.0.0",
         "vue": "^2.5.17",
         "vue-chartjs": "^3.5.0",
         "vue-resource": "^1.5.1",
@@ -49,9 +49,14 @@
         "@ckeditor/ckeditor5-theme-lark": "^14.2.0",
         "@ckeditor/ckeditor5-vue": "^1.0.1",
         "@mdi/font": "^4.9.95",
+        "@spu-colab/leaflet-simple-set": "^1.0.4",
         "d3-scale-chromatic": "^1.5.0",
+        "leaflet-basemaps": "^0.3.4",
+        "leaflet-groupedlayercontrol": "^0.6.1",
+        "leaflet-minimap": "^3.6.1",
         "node-sass": "^4.13.1",
         "postcss-loader": "^3.0.0",
-        "raw-loader": "^0.5.1"
+        "raw-loader": "^0.5.1",
+        "vue2-leaflet": "^2.5.2"
     }
 }
