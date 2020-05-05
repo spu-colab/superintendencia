@@ -47,7 +47,7 @@
 
           <slot name="beforeTable"></slot>
 
-          <v-data-table          
+          <v-data-table     
             :headers="headers"
             :items="filteredItems"
             :search="search"
@@ -59,11 +59,11 @@
             :pagination.sync="pagination"
             :hide-actions="!exibirPaginacaoCliente"
             :rows-per-page-items="registrosPorPagina()"
-            rows-per-page-text="Registros por página"
+            rows-per-page-text="Registros por página"            
           >
             <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
-            <template slot="headers" slot-scope="props">
+            <template v-if="textHeader" slot="headers" slot-scope="props">
               <tr>
                 <th ></th>
                 <th
@@ -112,11 +112,11 @@
                 <v-checkbox  v-if="imprimir" v-model="props.selected" primary hide-details></v-checkbox>
               </td>
               <td
-                v-for="header in headers"
+                v-for="header in headers"                
                 :key="header.value"
                 :style="estiloDaColuna(header)"
                 @click="clicouItem(props.item)"
-                :class="header.type == 'hidden' ? 'hidden' : ''"
+                :class="header.type == 'hidden' ? 'hidden' : header.class"
               >
                 <!-- hidden -->
                 <div v-if="header.type == 'hidden'"></div>
@@ -301,6 +301,11 @@ export default {
       type: Boolean,
       default: true
     },
+    textHeader: {
+      type: Boolean,
+      default: true
+    },
+
     paginas:{},
   },
   methods: {

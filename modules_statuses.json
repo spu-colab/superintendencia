@@ -1,5 +1,7 @@
 {
     "Atendimento": true,
     "Governanca": true,
-    "Auth": true
+    "Auth": true,
+    "Correspondecia": true,
+    "Correspondencia": true
 }

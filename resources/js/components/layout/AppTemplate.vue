@@ -152,6 +152,13 @@ export default {
         url: 'http://10.209.232.190/'
       },
       { 
+        text: 'Correspondência',
+        icon: 'email', 
+        route: '/correspondencia',
+        model: true
+      },
+
+      { 
         text: 'Judiciais e Controle',
         icon: 'gavel', 
         route: '/nujuc',

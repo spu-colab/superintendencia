@@ -28,10 +28,10 @@
 </template>
 <script>
     export default {
-        props:['pagina','filtro','ordem', 'ascending'],
+        props:['pagina','filtro','ordem', 'ascending', 'pgCorrente'],
         data: () => {
             return {
-                paginaCorrente: 1,
+                paginaCorrente: null,
             }
         },
         methods:{
@@ -52,12 +52,16 @@
                 return ['10'];
             },
             mudaPagina(page){
+                if (this.paginaCorrente == null){
+                    this.paginaCorrente = this.pgCorrente;
+                }                
                 if (page != this.paginaCorrente){
                     this.paginaCorrente = page;
                     this.$emit('mudaPagina', [page, this.pagina.per_page, this.filtro, this.ordem, this.ascending[this.ordem]]);
                 }
             },
             mudaRegistros(registros){
+                this.paginaCorrente = 1;
                 this.$emit('mudaPagina', [1, registros, this.filtro, this.ordem, this.ascending[this.ordem]]);
             },
         },

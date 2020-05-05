@@ -1,0 +1,25 @@
+{
+    "name": "nwidart/correspondencia",
+    "description": "",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Correspondencia\\Providers\\CorrespondenciaServiceProvider"
+            ],
+            "aliases": {
+
+            }
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Correspondencia\\": ""
+        }
+    }
+}

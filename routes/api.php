@@ -30,20 +30,36 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('demanda/aguardar-AR', 'DemandaController@aguardarAR');
     Route::post('demanda/resolver', 'DemandaController@resolver');
     Route::get('demanda/procedimento/{idProcedimentoExterno}', 'DemandaController@listarPorProcedimentoExterno');
-    Route::get('demanda/pdf/{ids}', 'DemandaController@gerarPDF');
-    
-    Route::post('demanda/distribuicao/{id?}', 'DemandaController@salvarDistribuicao');
-    
+    Route::get('demanda/pdf/{ids}', 'DemandaController@gerarPDF');    
+    Route::post('demanda/distribuicao/{id?}', 'DemandaController@salvarDistribuicao');    
     Route::get('demanda/usuario/{user}', 'DemandaController@listarDistribuidasParaUsuario');
-    Route::get('demanda/divisao-organograma/{divisaoOrganograma}', 'DemandaController@listarDistribuidasParaDivisaoOrganograma');
-    
+    Route::get('demanda/divisao-organograma/{divisaoOrganograma}', 'DemandaController@listarDistribuidasParaDivisaoOrganograma');    
     Route::resource('demanda', 'DemandaController');
+
     Route::resource('autorDemanda', 'AutorDemandaController');
     Route::resource('cargo', 'CargoController');
     Route::resource('orgao', 'OrgaoController');
     Route::get('natureza-orgao', 'OrgaoController@listarNaturezas');
+
     Route::resource('tipoDocumento', 'TipoDocumentoController');
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
+
+    Route::resource('correspondencia/setores', 'CorrespondenciaController@setores'); 
+    Route::resource('correspondencia/tipos', 'CorrespondenciaController@tipos'); 
+    Route::resource('correspondencia/pesquisaMunicipio', 'CorrespondenciaController@pesquisaMunicipio');
+    Route::get('correspondencia/postagem', 'CorrespondenciaController@postagem');
+    Route::get('correspondencia/gerarLista', 'CorrespondenciaController@gerarLista');
+    Route::get('correspondencia/concluirLista', 'CorrespondenciaController@concluirLista');    
+    Route::get('correspondencia/gerarEtiqueta/{codigo}', 'CorrespondenciaController@gerarEtiqueta');
+    Route::get('correspondencia/criarDestinatario', 'CorrespondenciaController@criarDestinatario');
+    Route::get('correspondencia/criarCorrespondencia', 'CorrespondenciaController@criarCorrespondencia');
+    Route::get('correspondencia/inserirLista', 'CorrespondenciaController@inserirLista');    
+    Route::resource('correspondencia/autocomplete', 'CorrespondenciaController@autocomplete');
+    Route::resource('correspondencia/logradouros', 'CorrespondenciaController@tipoLogradouro'); 
+    Route::post('correspondencia/descartaCorresp', 'CorrespondenciaController@descartaCorresp');
+    Route::post('correspondencia/receberAR/{id}', 'CorrespondenciaController@receberAR'); 
+    Route::post('correspondencia/descartaDest', 'CorrespondenciaController@descartaDest'); 
+    Route::post('correspondencia/descartarDestLista', 'CorrespondenciaController@descartarDestLista');
     Route::resource('usuario/reduzido', 'AuthController@listarReduzido');
     Route::resource('divisaoOrganograma/listarPai', 'DivisaoOrganogramaController@listarPai');
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');

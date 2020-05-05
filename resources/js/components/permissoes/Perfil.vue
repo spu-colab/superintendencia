@@ -17,7 +17,7 @@
     <template slot="detalhe">
       <div v-if="entidadeAtual">
         <v-text-field
-          label="Permissao"
+          label="Permissão"
           v-model="entidadeAtual.permissao"
           :rules="[validacao.obrigatorio]"
           :disabled=true    

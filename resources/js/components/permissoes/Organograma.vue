@@ -142,8 +142,10 @@ export default {
     cancelar() {},
     novo(item) {
       this.entidadeAtual = {
-        id: null,
-      }        
+        id: null,  
+        usuarios:[],
+      }
+      this.formatarUsuarios(this.entidadeAtual);      
     },
     carregarUsuarios() {
       this.carregando = true;

@@ -57,6 +57,19 @@ return [
             'strict' => true,
             'engine' => null,
         ],
+        'spuadmin' => [
+            'driver'    => env('DB_CONNECTION_ADMIN'),
+            'host'      => env('DB_HOST_ADMIN'),
+            'port'      => env('DB_PORT_ADMIN'),
+            'database'  => env('DB_DATABASE_ADMIN'),
+            'username'  => env('DB_USERNAME_ADMIN'),
+            'password'  => env('DB_PASSWORD_ADMIN'),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
 
         'wordpress' => [
             'driver' => 'mysql',
@@ -72,9 +85,7 @@ return [
             'strict' => true,
             'engine' => null,
         ],
-
-        
-
+    
         'mysql_nildo' => [
             'driver' => env('DB_CONNECTION_2'),
             'host' => env('DB_HOST_2'),
