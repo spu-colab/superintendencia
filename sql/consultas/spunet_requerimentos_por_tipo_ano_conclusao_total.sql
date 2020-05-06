@@ -70,7 +70,7 @@ FROM
 					JOIN servico.tb_hist_requerimento historico USING (id_requerimento) 
 				WHERE
 					atend.nu_atendimento LIKE 'SC%'
-					AND dt_alteracao BETWEEN '2020-03-01' AND '2020-03-31'
+					AND dt_alteracao BETWEEN '2020-04-01' AND '2020-04-30'
 					AND reqto.ds_status IN ('DEFERIDO', 'INDEFERIDO')
 				GROUP BY 1, 2, 3
 			) as parcial
@@ -102,7 +102,7 @@ FROM
 				JOIN (
 					SELECT id_requerimento, max(id_hist_requerimento) as id_hist_requerimento
 					FROM servico.tb_atendimento atend JOIN servico.tb_requerimento reqto USING (id_atendimento) JOIN servico.tb_hist_requerimento hist USING (id_requerimento)
-					WHERE atend.nu_atendimento LIKE 'SC%' AND date(hist.dt_alteracao) < '2020-03-31' 
+					WHERE atend.nu_atendimento LIKE 'SC%' AND date(hist.dt_alteracao) < '2020-04-30' 
 					GROUP BY 1
 				) as hist2 ON hist2.id_requerimento = reqto.id_requerimento	
 				JOIN servico.tb_hist_requerimento hist ON hist2.id_hist_requerimento = hist.id_hist_requerimento
