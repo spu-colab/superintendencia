@@ -129,7 +129,26 @@ export default {
         editar: this.base() + '/permissao/',
         usuario: this.base() + '/permissao/usuario/[permissao]'
       },
-      
+      correspondencia: {
+        listar: this.base() + '/correspondencia',
+        setores: this.base() + '/correspondencia/setores',
+        tipos: this.base() + '/correspondencia/tipos',
+        logradouros: this.base() + '/correspondencia/logradouros',
+        pesquisaMunicipio: this.base() + '/correspondencia/pesquisaMunicipio',
+        autocomplete:this.base() + '/correspondencia/autocomplete',
+        descartaCorresp: this.base() + '/correspondencia/descartaCorresp/',
+        descartaDest: this.base() + '/correspondencia/descartaDest/',
+        criarDestinatario: this.base() + '/correspondencia/criarDestinatario',
+        criarCorrespondencia: this.base() + '/correspondencia/criarCorrespondencia', 
+        inserirLista: this.base() + '/correspondencia/inserirLista',
+        postagem: this.base() + '/correspondencia/postagem/', 
+        gerarLista:this.base() + '/correspondencia/gerarLista', 
+        gerarEtiqueta: this.base() + '/correspondencia/gerarEtiqueta/',
+        concluirLista: this.base() + '/correspondencia/concluirLista',
+        receberAR:this.base() + '/correspondencia/receberAR/',
+        descartaDest: this.base() + '/correspondencia/descartaDest/',
+        descartarDestLista:this.base() + '/correspondencia/descartarDestLista/',
+      },      
       organograma: {
         listar: this.base() + '/divisao-organograma',
         criar: this.base() + '/divisao-organograma',

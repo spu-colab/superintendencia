@@ -4,6 +4,8 @@
     nomeEntidadePlural="Usuários"
     :headers="cabecalhos"
     :items="registros"
+    :imprimir="false"
+    :paginas="paginas"  
     :carregando="carregando"
     :podeSalvar="podeSalvar()"
     @clicou-item="selecionarParaEdicao"
@@ -12,6 +14,8 @@
     @clicou-novo="novo" 
     @validou-formulario="formularioValido" 
     :voltar-para-primeira-tela-ao-salvar="false"
+    :exibirPaginacaoCliente=false
+    @mudaPagina="mudaPagina"
   >
     <template slot="detalhe">
       <div v-if="entidadeAtual">
@@ -75,6 +79,11 @@
           </v-col>
         </v-row>
       </div>
+      <div class="text-center">
+        <template>
+          <div class="text-center"></div>
+        </template>
+      </div>
     </template>
   </crud>
 </template>
@@ -112,6 +121,8 @@ export default {
       registros: [],
       permissoes: [],
       divisoes: [],
+      paginas:[],
+      paginaAtual:[],
       entidadeAtual: null,
       carregando: false,
       validacao: {
@@ -123,8 +134,10 @@ export default {
       passouValidacao: false
     };
   },
-
   methods: {
+    mudaPagina(page){
+      this.carregarItens(page);
+    },
     selecionarParaEdicao(item) {
       this.entidadeAtual = item;
       this.formatarPermissoes(this.entidadeAtual);
@@ -159,9 +172,11 @@ export default {
 
       this.$http.post(url, formData).then(
         response => {
-          this.$store.commit("sistema/mensagem", "Usuário atualizado com sucesso");
-          this.$router.push("/permissao");
-          this.carregarItens();
+          this.$store.commit(
+            "sistema/mensagem",
+            "Usuário atualizado com sucesso",
+          );
+          this.carregarItens(this.paginaAtual);
         },
         error => {
           console.log(error.body);
@@ -243,14 +258,20 @@ export default {
       });
       return element;
     },
-
-    carregarItens() {
+    carregarItens(page) {      
+      this.carregarPermissoes();
+      this.carregarDivisoes();
+      this.paginaAtual = page;
       this.carregando = true;
       this.registros = [];
-      var registrosLocal = [];
-      this.$http.get(rotas.rotas().usuario.listar).then(
+      this.paginas=[];
+      var parametros =  "?page="+page[0]+   "&per_page="+page[1]+
+                        "&search="+page[2]+ "&ordem="+this.cabecalhos[page[3]].value + 
+                        "&ascending="+page[4];
+      this.$http.get(rotas.rotas().permissao.listar+parametros).then(
         response => {
-          response.body.forEach(element => {
+          this.paginas = response.body;
+          response.body.data.forEach(element => {
             this.registros.push(element);
           });
         },
@@ -290,7 +311,7 @@ export default {
     this.carregarPermissoesUsuario();
     this.carregarPermissoes();
     this.carregarDivisoes();
-    this.carregarItens();
+    this.carregarItens([1, '10', '', '0', true]);
   }
 };
 </script>

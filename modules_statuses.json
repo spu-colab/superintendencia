@@ -2,5 +2,6 @@
     "Atendimento": true,
     "Governanca": true,
     "Auth": true,
-    "Demarcacao": true
+    "Demarcacao": true,
+    "Correspondencia": true
 }

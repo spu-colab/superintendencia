@@ -22,7 +22,6 @@ Route::post('user/login', 'APILoginController@login');
 
 Route::middleware('jwt.auth')->group(function () {
     // Route::resource('conteudo', 'ConteudoController');
-
     Route::get('demanda/entidadeAtribuivel', 'DemandaController@listarAtribuiveis');
     Route::post('demanda/cancelar', 'DemandaController@cancelar');
     Route::post('demanda/aguardar-assinatura', 'DemandaController@aguardarAssinatura');
@@ -34,10 +33,12 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('demanda/usuario/{user}', 'DemandaController@listarDistribuidasParaUsuario');
     Route::get('demanda/divisao-organograma/{divisaoOrganograma}', 'DemandaController@listarDistribuidasParaDivisaoOrganograma');
     Route::resource('demanda', 'DemandaController');
+
     Route::resource('autorDemanda', 'AutorDemandaController');
     Route::resource('cargo', 'CargoController');
     Route::resource('orgao', 'OrgaoController');
     Route::get('natureza-orgao', 'OrgaoController@listarNaturezas');
+
     Route::resource('tipoDocumento', 'TipoDocumentoController');
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
     Route::resource('usuario/reduzido', '\Modules\Auth\Http\Controllers\AuthController@listarReduzido');

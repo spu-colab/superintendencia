@@ -5,50 +5,58 @@
     :headers="cabecalhos"
     :items="registros"
     :carregando="carregando"
+    :imprimir="false"
+    :paginas="paginas"  
+    :exibirPaginacaoCliente=false
+    @mudaPagina="mudaPagina" 
     @clicou-item="selecionarParaEdicao"
     @clicou-salvar="salvar"
     @clicou-cancelar="cancelar"
     @clicou-novo="novo"
   >
     <template slot="detalhe">
-      <div v-if="entidadeAtual">
-        <v-tabs v-model="tabAtiva">
-          <v-tab>Cadastro</v-tab>
-          <v-tab>Usuários</v-tab>
-          <v-tabs-slider color="primary"></v-tabs-slider>
-          <v-tab-item>
-            <v-container>
-              <v-autocomplete 
-                label="Divisão Pai" 
-                :items="divisoesRaiz" 
-                v-model="entidadeAtual.divisao_organograma_pai.id" 
-                item-text="nome" 
-                item-value="id" 
-              />          
-              <v-text-field
-                label="Nome"
-                v-model="entidadeAtual.nome"
-                :rules="[validacao.obrigatorio]"
-                required
-              />
-              <v-text-field
-                label="Sigla"
-                v-model="entidadeAtual.sigla"
-                :rules="[validacao.obrigatorio]"
-                required
-              />
-            </v-container>
-          </v-tab-item>
-    <!-- Usuarios -->                        
-          <v-tab-item>
-            <h5><br><p style="text-align:center">{{entidadeAtual.nome}}</p></h5>
-            <v-divider/>
-            <CaixaSelecao
-              :itensCaixa="itensCaixa"              
-            />                
-          </v-tab-item>
-        </v-tabs>
-      </div>
+      <v-card-text>
+        <div v-if="entidadeAtual">
+          <v-tabs v-model="tabAtiva" color="grey lighten-5" >
+            <v-tab>Cadastro</v-tab>
+            <v-tab>Usuários</v-tab>
+            <v-tabs-slider color="primary"></v-tabs-slider>
+            <v-tab-item>
+              <v-container>
+                <v-autocomplete 
+                  label="Divisão Pai" 
+                  :items="divisoesRaiz" 
+                  v-model="entidadeAtual.idPai" 
+                  item-text="nome" 
+                  item-value="id" 
+                  :rules="entidadeAtual.id == null ? [validacao.obrigatorio] : [false]" 
+                  :required="entidadeAtual.idDivisaoOrganogramaPai == null ? false : true"
+                />          
+                <v-text-field
+                  label="Nome"
+                  v-model="entidadeAtual.nomeDiv"
+                  :rules="[validacao.obrigatorio]"
+                  required
+                />
+                <v-text-field
+                  label="Sigla"
+                  v-model="entidadeAtual.siglaDiv"
+                  :rules="[validacao.obrigatorio]"
+                  required
+                />
+              </v-container>
+            </v-tab-item>
+      <!-- Usuarios -->                        
+            <v-tab-item>
+              <h5><br><p style="text-align:center">{{entidadeAtual.nome}}</p></h5>
+              <v-divider/>
+              <CaixaSelecao
+                :itensCaixa="itensCaixa"           
+              />                
+            </v-tab-item>
+          </v-tabs>
+        </div>
+      </v-card-text>
     </template>
   </crud>
 </template>
@@ -69,14 +77,16 @@ export default {
         },
         {
           text: "Nome",
-          value: "nome"
+          value: "nomeDiv"
         },
         {
           text: "Sigla",
-          value: "sigla"
+          value: "siglaDiv"
         }
       ],
       tabAtiva: 0,
+      paginas:[],
+      paginaAtual:[],
       registros: [],
       usuarios: [],
       divisoesRaiz: [],
@@ -92,22 +102,20 @@ export default {
     };
   },
   methods: {
+    mudaPagina(page){
+      this.carregarItens(page);
+    },
     selecionarParaEdicao(item) {
       this.entidadeAtual = item;
       this.formatarUsuarios(this.entidadeAtual);
-      if(this.entidadeAtual.divisao_organograma_pai == null) {
-        this.entidadeAtual.divisao_organograma_pai = {}
-      }
     },
 
     salvar() {
       let formData = new FormData();
       formData.append("id", this.entidadeAtual.id);
-      formData.append("nome", this.entidadeAtual.nome);
-      formData.append("sigla", this.entidadeAtual.sigla);
-      if(this.entidadeAtual.divisao_organograma_pai.id != null) {
-        formData.append("idPai", this.entidadeAtual.divisao_organograma_pai.id);      
-      }
+      formData.append("nome", this.entidadeAtual.nomeDiv);
+      formData.append("sigla", this.entidadeAtual.siglaDiv);     
+      formData.append("idPai", this.entidadeAtual.idPai);      
       $.each( $(".itemSelecionado option"), function() {
         formData.append("usuarios[]", this.value);
       });
@@ -124,13 +132,12 @@ export default {
             "sistema/mensagem",
             "Organograma atualizado com sucesso",
           );
-          this.$router.push("/organograma");
-          this.carregarItens();
+          this.carregarItens(this.paginaAtual);
         },
         error => {
           console.log(error.body);
           this.$store.commit("sistema/alerta", error.body.message);
-        }
+        }       
       );
     },
 
@@ -138,9 +145,10 @@ export default {
 
     novo(item) {
       this.entidadeAtual = {
-        id: null,
-        divisao_organograma_pai: {}
-      }        
+        id: null,  
+        usuarios:[],
+      }
+      this.formatarUsuarios(this.entidadeAtual);      
     },
 
     carregarUsuarios() {
@@ -160,8 +168,7 @@ export default {
         }
       );
     },
-
-    formatarUsuarios: function(element) {
+    formatarUsuarios(element) {
       let usuariosLocal = null;
       var index = null;
       var itensCaixaLocal = [];
@@ -186,7 +193,6 @@ export default {
     carregarDivisoes () {
       this.carregando = true;
       this.divisoesRaiz = [];
-      var divisaoPai =[];
       this.$http
           .get(rotas.rotas().organograma.listar)
           .then(
@@ -202,17 +208,23 @@ export default {
               }
           )
     },
-    carregarItens() {
+    carregarItens(page) {
       this.carregarUsuarios();
-      this.carregarDivisoes();
+      this.carregarDivisoes();      
       this.carregando = true;
       this.registros = [];
-      this.$http.get(rotas.rotas().organograma.listar).then(
+      this.paginaAtual = page;
+      if (!page[1]){
+        page[1]=10
+      }
+      var parametros =  "?page="+page[0]+   "&per_page="+page[1]+
+                        "&search="+page[2]+ "&ordem="+this.cabecalhos[page[3]].value + 
+                        "&ascending="+page[4];
+      this.$http.get(rotas.rotas().organograma.listar+parametros).then(
         response => {
-          response.body.forEach(element => {
-            if (element.divisao_organograma_pai){
-                element.nomePai = element.divisao_organograma_pai['nome'];
-            }
+          this.paginas = response.body;
+          response.body.data.forEach(element => {
+//            console.log(element.usuarios)
             this.registros.push(element);
           });
         },
@@ -220,12 +232,12 @@ export default {
           console.log(error);
           this.$store.commit('sistema/alerta', 'Erro ao carregar divisões do organograma');
         }
-      );
+      );  
       this.carregando = false;
     }
   },
   mounted() {
-    this.carregarItens();
+    this.carregarItens([1, '10', '', '0', true]);  
   }
 };
 </script>

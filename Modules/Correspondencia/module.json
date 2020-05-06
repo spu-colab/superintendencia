@@ -1,0 +1,13 @@
+{
+    "name": "Correspondencia",
+    "alias": "correspondencia",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Correspondencia\\Providers\\CorrespondenciaServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

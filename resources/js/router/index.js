@@ -15,6 +15,7 @@ import Conteudo from './../components/Conteudo'
 import GeoVisualizador from './../components/geo/GeoVisualizador'
 import Usuario from './../components/permissoes/Usuario'
 import Perfil from './../components/permissoes/Perfil'
+import Correspondencia from './../components/correspondencia/Correspondencia'
 import Organograma from './../components/permissoes/Organograma'
 // import FileUpload from './../components/FileUpload'
 import store from './../store'
@@ -348,6 +349,25 @@ let router = new Router({
           },
           {
             text: 'Permissão',
+          }
+        ]
+      }
+    },
+
+    {
+      path: '/correspondencia',
+      name: 'Correspondência',
+      component: Correspondencia,
+      meta: {
+        guest: false,
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Correspondência',
           }
         ]
       }

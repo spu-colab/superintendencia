@@ -2,6 +2,11 @@
     <crud 
         nomeEntidade="Demandante" nomeEntidadePlural="Demandantes"
         :headers="cabecalhos" :items="registros" :carregando="carregando"
+
+        :paginas="paginas"  
+        :exibirPaginacaoCliente=false
+        @mudaPagina="mudaPagina" 
+
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -19,7 +24,7 @@
                     <!-- Cargo -->
                     <v-flex xs12 lg3>
                         <v-autocomplete label="Cargo"
-                        :items="cargos" v-model="entidadeAtual.cargo.id" 
+                        :items="cargos" v-model="entidadeAtual.idcargo" 
                         :rules="[validacao.obrigatorio]"
                         item-text="cargo" item-value="id"  />
                     </v-flex>
@@ -27,7 +32,7 @@
                     <!-- Órgão -->
                     <v-flex xs12 lg9>
                         <v-autocomplete label="Órgão"
-                        :items="orgaos" v-model="entidadeAtual.orgao.id" 
+                        :items="orgaos" v-model="entidadeAtual.idorgao" 
                         :rules="[validacao.obrigatorio]"
                         item-text="orgao" item-value="id"  />
                     </v-flex>
@@ -101,10 +106,14 @@ export default {
 
             orgaos: [],
             carregandoOrgaos: false,
-
+            paginas:[],
+            paginaAtual:[],
         }
     },
     methods: {
+        mudaPagina(page){
+        this.carregarItens(page);
+        },
         selecionarParaEdicao(item) {
             this.carregarTabelasApoio()
             this.entidadeAtual = item
@@ -145,7 +154,7 @@ export default {
         },
 
         cancelar() {
-            this.carregarItens()
+            this.carregarItens(this.paginaAtual)
         },
 
         novo(item) {
@@ -159,17 +168,29 @@ export default {
             }
         },
 
-        carregarItens() {
+        carregarItens(page) {
             this.carregando = true;
             this.registros = [];
-            this.$http.get(rotas.rotas().autorDemanda.listar)
+
+            this.paginaAtual = page;
+            if (!page[1]){
+                page[1]=10
+            }
+            var parametros =  "?page="+page[0]+   "&per_page="+page[1]+
+                                "&search="+page[2]+ "&ordem="+this.cabecalhos[page[3]].value + 
+                                "&ascending="+page[4];
+
+
+
+            this.$http.get(rotas.rotas().autorDemanda.listar+parametros)
                 .then(
                     response => {
-                        // console.log(response);
-                        response.body.forEach(element => {
-                            element.cargoTexto = element.cargo.cargo
-                            element.orgaoTexto = element.orgao.orgao
-                            element.siglaOrgaoTexto = element.orgao.sigla
+                        console.log(response);
+                        this.paginas = response.body;                        
+                        response.body.data.forEach(element => {
+//                            element.cargoTexto = element.cargo.cargo
+//                            element.orgaoTexto = element.orgao.orgao
+//                            element.siglaOrgaoTexto = element.orgao.sigla
                             this.registros.push(element)
                         })
                         this.carregando = false;
@@ -227,7 +248,7 @@ export default {
         
     },
     mounted() {
-        this.carregarItens()
+        this.carregarItens([1, '10', '', '0', true]);        
     }
 }
 </script>

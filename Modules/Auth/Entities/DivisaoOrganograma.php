@@ -9,7 +9,7 @@ class DivisaoOrganograma extends Model
     public const DEMANDA_REPRIMIDA = 10;
     
     protected $table = 'divisaoorganograma';
-    
+//    protected $touches = ['UsuarioDivisaoOrganograma'];
     public function divisaoOrganogramaPai()
     {
         return $this->belongsTo(DivisaoOrganograma::class, 'idDivisaoOrganogramaPai');

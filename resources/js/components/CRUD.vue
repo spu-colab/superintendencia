@@ -7,13 +7,27 @@
             <v-toolbar-title>{{ nomeEntidadePlural }}</v-toolbar-title>
             <v-divider class="mx-2" inset vertical></v-divider>
             <v-spacer></v-spacer>
-            <v-text-field
+            <v-text-field 
+              v-if="exibirPaginacaoCliente"
               v-model="search"
               append-icon="search"
               label="Buscar"
               single-line
               hide-details
-            ></v-text-field>
+            ></v-text-field>             
+            <v-text-field 
+              v-if="!exibirPaginacaoCliente"
+              v-model="pesquisa"
+              :append-outer-icon="filtro ? 'highlight_off' : 'cloud_upload'"
+              :color="filtro ? 'red' : 'blue'"
+              :background-color="filtro ? 'blue lighten-5' : ''"              
+              @click:append-outer="tratarFiltro"
+              @keyup.enter="tratarFiltro"
+              :label="filtro ? 'Exibindo resultados para - '+ filtro : 'Pesquisar na Base de Dados'" 
+              :readonly="filtro ? true : false"
+              single-line
+              hide-details
+            ></v-text-field> 
             <v-spacer></v-spacer>
             <v-divider class="mx-2" inset vertical></v-divider>
             <v-flex>
@@ -33,7 +47,7 @@
 
           <slot name="beforeTable"></slot>
 
-          <v-data-table
+          <v-data-table     
             :headers="headers"
             :items="filteredItems"
             :search="search"
@@ -44,18 +58,18 @@
             item-key="id"
             :loading="carregando"
             :hide-default-header="false"
-            :hide-default-footer="!exibirPaginacao"
+            :hide-default-footer="!exibirPaginacao || !exibirPaginacaoCliente"
             :footer-props="footerProps"
           >
             <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
             <template slot="body.prepend">
               <tr>
-                <th></th>
+                <th ></th>
                 <th
                   v-for="(header, index) in headers"
                   :key="index"
-                  :style="estiloDaColuna(header)"
+                  :style="header.text== 'id' ? '' :estiloDaColuna(header)"
                   role="columnheader"
                 >
                   <h4 v-if="header.type == 'filter'">
@@ -177,6 +191,7 @@
               icon="warning"
             >Sua busca por "{{ search }}" não retornou resultados.</v-alert>
           </v-data-table>
+          <paginador v-if="!exibirPaginacaoCliente" :pagina="paginas" :filtro="filtro" :ordem="ordem" :ascending="ascending" @mudaPagina="mudaPagina"/> 
         </v-card>
       </v-flex>
       <v-flex xs12 v-else fill-height transition="slide-x-transition">
@@ -193,7 +208,7 @@
               </v-btn>
             </v-card-title>
             <v-container>
-              <slot name="detalhe"></slot>
+              <slot name="detalhe"></slot>              
             </v-container>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -233,6 +248,12 @@ export default {
       filteredItems: [],
       columnFilters: [],
       columnFilterProperties: [],
+      page:null,
+      filtro:'',
+      ordem:'0',
+      ascending:[true],
+      pesquisa: "",
+      filtrar:"",
     };
   },
   props: {
@@ -264,22 +285,32 @@ export default {
       type: Array,
       required: true
     },
-    exibirPaginacao: {
+
+    exibirPaginacaoCliente: {
       type: Boolean,
       default: true
     },
+
     imprimir: {
       type: Boolean,
       default: false
     },
+
     carregando: {
       type: Boolean,
       default: true
     },
+    
     podeSalvar: {
       type: Boolean,
       default: true
-    }
+    },
+    textHeader: {
+      type: Boolean,
+      default: true
+    },
+
+    paginas:{},
   },
   methods: {
     clicouItem(item) {
@@ -304,6 +335,25 @@ export default {
     print() {
       this.$emit("clicou-imprimir", this.selected);
     },
+    registrosPorPagina() {
+      return [50, 100, 200, { text: "Todos", value: -1 }];
+    },
+    tratarFiltro(){
+      if (this.filtro && this.filtro.trim().length>0){
+        this.filtro = '';
+        this.pesquisa = null;
+        this.$emit('mudaPagina',[1, this.paginas.per_page, '', this.ordem, this.ascending]);
+      }
+      else
+      if (this.pesquisa && this.pesquisa.trim().length>0){
+        this.$emit('mudaPagina',[1, this.paginas.per_page, this.pesquisa, this.ordem, this.ascending]);
+        this.filtro = this.pesquisa;
+        this.pesquisa = null;
+      }      
+    },
+    mudaPagina(page){  
+      this.$emit('mudaPagina',page)
+    },
     formatDate(date) {
       if (!date) return null;
 
@@ -318,6 +368,32 @@ export default {
       }
       return estilo;
     },
+    toggleSort(index) {
+      this.pagination.descending = !this.pagination.descending;
+      this.pagination.sortBy = this.headers[index].value;
+      if (!this.exibirPaginacaoCliente){
+        if( this.ordem != index){
+          this.pagination.descending = false;
+          this.ascending[index] = false;
+        }
+        this.ordem = index;
+        this.ascending[index] = !this.ascending[index];
+        this.$emit('mudaPagina',['1', this.paginas.per_page, this.filtro, this.ordem, this.ascending[index]]); 
+      }
+    },
+    setaOrdenacaoColuna(index) {
+      // console.log(index)
+      // console.log(this.pagination.sortBy)
+      // console.log(this.headers[index].value)
+      if (this.pagination.sortBy == this.headers[index].value) {
+        return this.pagination.descending ? "arrow_downward" : "arrow_upward";
+      }
+      return "arrow_upward";
+    },
+    colunaSelecionadaOrdenacao(index) {
+      return this.pagination.sortBy == this.headers[index].value;
+    },
+
     computedColumnFilterItems(index, valueProperty) {
       // console.log(index + ': ' + valueProperty)
       this.columnFilterProperties[index] = valueProperty;

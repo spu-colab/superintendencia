@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\ProcedimentoExterno;
+use App\TipoProcedimentoExterno;
 use App\User;
 use App\Http\Requests\ProcedimentoExternoRequest;
+use Illuminate\Http\Request;
 // use \Illuminate\Http\Request;
 
 class ProcedimentoExternoController extends Controller
@@ -14,13 +16,36 @@ class ProcedimentoExternoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return ProcedimentoExterno::with(
-            [
-                'tipoProcedimentoExterno'
-            ]
-        )->get();
+        $ascending = "desc";
+        if ($request->ascending == "true"){
+            $ascending = "asc";
+        }
+        if (!$request->per_page){
+            return ProcedimentoExterno::with(
+                [
+                    'tipoProcedimentoExterno'
+                ]
+            )->get();
+        }
+        
+        if(strlen ($request->search)>0){
+            return ProcedimentoExterno
+                ::selectRaw('procedimentoexterno.id, procedimentoexterno.id as idProcedimento, procedimento, resumo, p.tipoprocedimento as tipoProcedimentoExterno ')
+                ->leftJoin('tipoprocedimentoexterno AS p','p.id' , '=', 'procedimentoexterno.idtipoprocedimentoexterno')
+                ->whereRaw("procedimento LIKE '%".strtolower($request->search)."%'")
+                ->orWhereRaw("p.tipoprocedimento LIKE '%".strtolower($request->search)."%'")
+                ->orWhereRaw("resumo LIKE '%".strtolower($request->search)."%'")
+                ->orderBy($request->ordem, $ascending)                
+                ->paginate($request->per_page);
+        }
+        return ProcedimentoExterno
+            ::selectRaw('procedimentoexterno.id, procedimentoexterno.id as idProcedimento, procedimento, resumo, p.tipoprocedimento as tipoProcedimentoExterno ')
+            ->leftJoin('tipoprocedimentoexterno AS p','p.id' , '=', 'procedimentoexterno.idtipoprocedimentoexterno')
+            ->orderBy($request->ordem, $ascending)                
+            ->paginate($request->per_page);
+    
     }
 
     /**

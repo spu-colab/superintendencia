@@ -4,6 +4,7 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use Modules\Correspondencia\Entities\Postagem;
 
 class Kernel extends ConsoleKernel
 {
@@ -25,6 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $logFile = base_path('backup_log.txt');
+        $logPostagem = base_path('postagem_log.txt');
 
         #/*
         $schedule->command('backup:run')
@@ -40,9 +42,17 @@ class Kernel extends ConsoleKernel
 
         #/*
         $schedule->command('spu:backup')
-        ->dailyAt('23:00')
+            ->dailyAt('23:00')
             ->sendOutputTo($logFile);
         #*/
+        
+        #/*
+        $schedule->call(new Postagem)
+//            ->dailyAt('7:00');
+            ->everyMinute()
+            ->sendOutputTo('postagem_log.txt');
+        #*/
+        
     }
 
     /**

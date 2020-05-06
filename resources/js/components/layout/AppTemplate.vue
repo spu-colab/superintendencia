@@ -82,14 +82,17 @@ export default {
         rota: '/governanca',
       },
       { 
+        rotulo: 'Correspondência',
+        icone: 'email', 
+        rota: '/correspondencia',
+      },
+
+      { 
         rotulo: 'Judiciais e Controle',
         icone: 'gavel', 
-        submenu: [
-          {
-            rotulo: 'Demandas',
-            icone: 'assignment', 
-            rota: '/demanda'
-          },
+        rota: '/nujuc',
+        model: true,
+        children: [
           {
             rotulo: 'Procedimentos',
             icone: 'account_balance', 

@@ -18,10 +18,38 @@ class DivisaoOrganogramaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-      return DivisaoOrganograma::with('usuarios:idUsuario,name,cpf','divisaoOrganogramaPai:id,nome,sigla')
-        ->orderBy('idDivisaoOrganogramaPai', 'asc')->get();
+        $ascending = "desc";
+        if ($request->ascending == "true"){
+            $ascending = "asc";
+        }
+        if (!$request->per_page){
+            return DivisaoOrganograma::with('usuarios:idUsuario,name,cpf','divisaoOrganogramaPai:id,nome,sigla')
+            ->get();
+        }
+        if(strlen ($request->search)>0){
+//            return DivisaoOrganograma::with('usuarios:idUsuario,name,cpf','divisaoOrganogramaPai:id, nome as nomePai, sigla')  
+//                ->whereRaw("divisaoorganograma.nome LIKE '%".strtolower($request->search)."%'")
+//                ->orWhereRaw("divisaoorganograma.sigla LIKE '%".strtolower($request->search)."%'")
+//                ->orderBy($request->ordem, $ascending)->paginate($request->per_page);
+            return DivisaoOrganograma::
+                    selectRaw("divisaoorganograma.id, divisaoorganograma.idDivisaoOrganogramaPai, divisaoorganograma.nome as nomeDiv, divisaoorganograma.sigla as siglaDiv, p.nome as nomePai,
+                    p.id as idPai")
+                    ->leftJoin('divisaoorganograma AS p','p.id' , '=', 'divisaoorganograma.idDivisaoOrganogramaPai')
+                    ->whereRaw("divisaoorganograma.nome LIKE '%".strtolower($request->search)."%'")
+                    ->orWhereRaw("divisaoorganograma.sigla LIKE '%".strtolower($request->search)."%'")
+                    ->with('usuarios:idUsuario,name,cpf')
+                    ->orderBy($request->ordem , $ascending)
+                    ->paginate($request->per_page);
+        }
+//        return DivisaoOrganograma::with('usuarios:idUsuario,name,cpf') 
+        return DivisaoOrganograma::selectRaw("divisaoorganograma.id, divisaoorganograma.idDivisaoOrganogramaPai, divisaoorganograma.nome as nomeDiv, divisaoorganograma.sigla as siglaDiv, p.nome as nomePai,
+             p.id as idPai")
+            ->leftJoin('divisaoorganograma AS p','p.id' , '=', 'divisaoorganograma.idDivisaoOrganogramaPai')
+            ->with('usuarios:idUsuario,name,cpf')
+            ->orderBy($request->ordem , $ascending)
+            ->paginate($request->per_page);
     }
 
     /**
@@ -46,7 +74,7 @@ class DivisaoOrganogramaController extends Controller
             return response()->json(['message' => "Erro de Preenchimento"], 404);
         }
 
-        $this->authorize('store', $divisao);
+        $this->authorize('store');
 
         $divisao = new DivisaoOrganograma;
         $divisao->nome = $request->nome;
