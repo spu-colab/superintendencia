@@ -2,7 +2,7 @@
     <crud 
         nomeEntidade="Demanda" nomeEntidadePlural="Demandas"
         :headers="cabecalhos" :items="computedRegistros" :carregando="carregando" 
-        :podeSalvar="podeSalvar" :exibirPaginacao="true" :imprimir="true"
+        :podeSalvar="podeSalvar" :exibirPaginacaoCliente="true" :imprimir="true"
         :voltar-para-primeira-tela-ao-salvar="false" 
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
@@ -797,6 +797,7 @@ export default {
             */
             this.$http.get(url).then(
                     response => {
+//                         console.log(response)
                         // console.log(response);
                         // PAGINACAO this.obterDadosPaginacao(response.body);
 
@@ -806,6 +807,7 @@ export default {
                         element.demandante = element.autor.nome
                         
                         this.prepararDistribuicoes(element)
+                        
                         element.situacao = element.situacao.situacao
                         switch (element.situacao) {
                             case 'Nova':

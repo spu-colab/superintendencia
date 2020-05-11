@@ -122,12 +122,22 @@ export default {
         criar: this.base() + '/usuario',
         editar: this.base() + '/usuario/',
       },
-      
       permissao: {
+        listar: this.base() + '/usuario',
+        criar: this.base() + '/usuario',
+        editar: this.base() + '/permissao/',        
+        permissao: this.base() + '/permissao',
+        usuario: this.base() + '/permissao/usuario/[permissao]',
+        divisao: this.base() + '/divisaoOrganograma',
+      },
+
+
+      perfil: {
         listar: this.base() + '/permissao',
         criar: this.base() + '/permissao',
-        editar: this.base() + '/permissao/',
-        usuario: this.base() + '/permissao/usuario/[permissao]'
+        editar: this.base() + '/permissao/',        
+//        permissao: this.base() + '/permissao',
+//        divisao: this.base() + '/divisaoOrganograma',
       },
       correspondencia: {
         listar: this.base() + '/correspondencia',

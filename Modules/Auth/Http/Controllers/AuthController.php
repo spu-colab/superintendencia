@@ -33,9 +33,32 @@ class AuthController extends Controller
 
     public function index(Request $request)
     {
-        $result = User::with(['permissoes:permissao.id,permissao,descricao',
-            'divisoesOrganograma:divisaoorganograma.id,sigla,nome'])->get();
-        return response()->json($result);
+        if (!$request->per_page){
+            $result = User::with(['permissoes:permissao.id,permissao,descricao',
+            'divisoesOrganograma:divisaoorganograma.id,sigla,nome'])->orderBy('name','asc')->get();
+            return response()->json($result);
+        }
+
+      //        return response()->json(['message' => "CPF: ".$request->ascending." Já Existe na Base "], 404);
+      $ascending = "desc";
+      if ($request->ascending == "true"){
+          $ascending = "asc";
+      }
+
+//        return response()->json(['message' => "CPF: ".$ascending." Já Existe na Base "], 404);
+
+      if(strlen ($request->search)>0){
+          return User::with(['permissoes:Permissao.id,permissao,descricao',
+              'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])     
+              ->whereRaw("name LIKE '%".strtolower($request->search)."%'")
+              ->orWhereRaw("email LIKE '%".strtolower($request->search)."%'")
+              ->orWhereRaw("telefone LIKE '%".strtolower($request->search)."%'")
+              ->orWhereRaw("CONVERT(cpf , CHAR) LIKE '%" . strtolower($request->search) . "%'")
+              ->orderBy($request->ordem, $ascending)->paginate($request->per_page);
+      }
+      return User::with(['permissoes:Permissao.id,permissao,descricao',
+          'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])     
+          ->orderBy($request->ordem , $ascending)->paginate($request->per_page);
     }
 
     /**

@@ -1,7 +1,7 @@
 <?php
 
 namespace App;
-
+use Modules\Auth\Entities\DivisaoOrganograma;
 use Illuminate\Database\Eloquent\Model;
 
 class Demanda extends Model

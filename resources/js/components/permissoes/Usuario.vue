@@ -206,7 +206,7 @@ export default {
     carregarPermissoes() {
       this.carregando = true;
       this.permissoes = [];
-      this.$http.get(rotas.rotas().permissao.listar).then(
+      this.$http.get(rotas.rotas().permissao.permissao).then(
         response => {
           response.body.forEach(element => {
             element["checked"] = false;
@@ -250,8 +250,9 @@ export default {
           index = permissoesLocal.findIndex(p => p.id == element.id);
           permissoesLocal[index]["checked"] = true;
         });
-      element["divisoesL"] = JSON.parse(JSON.stringify(this.divisoes));
-      divisoesLocal = element["divisoesL"].concat();
+      index = null;
+      (element["divisoesL"] = JSON.parse(JSON.stringify(this.divisoes))),
+      (divisoesLocal = element["divisoesL"].concat()),
       element.divisoes_organograma.forEach(element => {
         index = divisoesLocal.findIndex(p => p.id == element.id);
         divisoesLocal[index]["checked"] = true;
@@ -309,8 +310,8 @@ export default {
 
   mounted() {
     this.carregarPermissoesUsuario();
-    this.carregarPermissoes();
-    this.carregarDivisoes();
+//    this.carregarPermissoes();
+//    this.carregarDivisoes();
     this.carregarItens([1, '10', '', '0', true]);
   }
 };

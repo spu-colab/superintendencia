@@ -125,13 +125,9 @@ export default {
     },
     salvar() {
       let formData = new FormData();
-      formData.append("permissao[id]", this.entidadeAtual.id);
-      formData.append("permissao[permissao]", this.entidadeAtual.permissao);
-      formData.append("permissao[descricao]", this.entidadeAtual.descricao);
       $.each( $(".itemSelecionado option"), function() {
         formData.append("usuarios[]", this.value);
       });
-
       if (this.entidadeAtual.id != null) {
         formData.append("_method", "PUT");
       }

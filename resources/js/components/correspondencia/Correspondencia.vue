@@ -30,7 +30,7 @@
     @clicou-salvar="salvar"
     @clicou-cancelar="cancelar"
     @clicou-novo="novo"
-    @modou-tela="mudouTela"  
+    @mudou-tela="mudouTela"  
   >  
     <template slot="detalhe" >
       <div v-if="cadastrarNovo">
@@ -128,25 +128,25 @@
             </v-flex>
             <v-flex align=right>
                 <v-tooltip bottom v-if="entidadeAtual.descartar" >
-                  <template slot="activator">
-                    <v-btn color="red light" style="color:white" @click="descartarCorrespondencia(entidadeAtual.codigo)">
-                      <v-icon small color="white">delete</v-icon>descartar
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" color="red light" style="color:white" @click="descartarCorrespondencia(entidadeAtual.codigo)">
+                      <v-icon small  color="white">delete</v-icon>descartar
                     </v-btn>
                   </template>
                   Remover Correspondência
                 </v-tooltip>
                 <v-tooltip bottom v-if="!entidadeAtual.descartar" >
-                  <template slot="activator">
-                    <v-btn color="green" style="color:white" v-on:click="gerarEtiqueta(entidadeAtual.codigo)">
-                    <v-icon small color="white" >print</v-icon> Imprimir
+                  <template slot="activator" slot-scope="{ on }">
+                    <v-btn v-on="on" color="green" style="color:white" v-on:click="gerarEtiqueta(entidadeAtual.codigo)">
+                    <v-icon small  color="white" >print</v-icon> Imprimir
                     </v-btn>
                   </template>
-                  Gerar Etiquetas
+                  <span>Gerar Etiquetas</span>
                 </v-tooltip>
                 <v-tooltip bottom>
-                  <template slot="activator">
-                    <v-btn color="primary" style="color:white" v-on:click="cadastrarDestinatario = true; podeSalvar = true">
-                      <v-icon small color="white">add</v-icon>Destinatário
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" color="primary" style="color:white" v-on:click="cadastrarDestinatario = true; podeSalvar = true">
+                      <v-icon small  color="white">add</v-icon>Destinatário
                     </v-btn>
                   </template>
                   Novo Destinatário
@@ -199,18 +199,18 @@
               </td>
               <td style="padding: 30px;" valign="middle" align="right">
                 <v-tooltip bottom >
-                  <template slot="activator">
-                    <v-btn small outline color="grey dark" style="color:white" v-if="item.tipo_dev < 3" v-on:click="descartarDestinatario(item.codigo)">
+                  <template v-slot:activator="{ on }">
+                    <v-btn  v-on="on" small outlined color="grey dark" style="color:white" v-if="item.tipo_dev < 3" v-on:click="descartarDestinatario(item.codigo)">
                       <v-icon left small color="red lighten-1" >cancel</v-icon>remover
                     </v-btn>
                   </template>
                   <span>Remover Destinatário</span>
                 </v-tooltip>
                 <v-tooltip bottom>
-                  <template slot="activator">
-                    <v-btn small outline color="grey dark" style="color:white" v-on:click="receberAR(item.codigo)" 
+                  <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" small outlined color="grey dark" style="color:white" v-on:click="receberAR(item.codigo)" 
                       v-if="(item.tipo_dev == (6 || 9)) && (item.situacao_ar == 1)">
-                    <v-icon>done</v-icon>receber ar
+                    <v-icon >done</v-icon>receber ar
                     </v-btn>
                   </template>
                   Receber AR
@@ -225,26 +225,26 @@
 
     <div v-if="receberApoio" >
       <v-container grid-list-md >
-        <v-card style="margin-top: -20px;">
+        <v-card style="width: 100%; margin: 0 auto">
           <div>
-            <table style="width: 100%;">
-              <tr style="width: 100%;">
+            <table style="width: 100%; margin-bottom:20px; margin-left:12px;">
+              <tr style="margin-left: 12px;width: 100%;">
                 <td>
                   <h5>Itens inseridos na lista: {{anoLista}}/{{numeroLista}}</h5>
                 </td>
                 <td align="right" style="margin-left: 12px; color:white">
                     <v-tooltip bottom  >
-                      <template slot="activator">
-                        <v-btn color="green" style="color:white" v-on:click="concluirLista()">
+                      <template v-slot:activator="{ on }">
+                        <v-btn  v-on="on" color="green" style="color:white" v-on:click="concluirLista()">
                         <v-icon color="white" >done</v-icon> Concluir
                         </v-btn>
                       </template>
                       Registrar entrega aos Correios
                     </v-tooltip>
                     <v-tooltip bottom  >
-                      <template slot="activator">
-                        <v-btn color="blue" style="color:white" v-on:click="gerarLista()">
-                        <v-icon color="white" >print</v-icon> Imprimir
+                      <template v-slot:activator="{ on }">
+                        <v-btn v-on="on" color="blue" style="color:white" v-on:click="gerarLista()">
+                        <v-icon  color="white" >print</v-icon> Imprimir
                         </v-btn>
                       </template>
                       Gerar lista em PDF
@@ -253,24 +253,24 @@
                 <td style="width: 6.5%;"></td>   
               </tr>
             </table>             
-            <v-layout style="margin: 2px;" d-flex mb-6 align-end v-for="item in postagens" :key="item.codigo">
+            <v-layout no-gutters style="height:20px;margin-bottom:-10px;margin-left:10px" d-flex mb-6 align-end v-for="item in postagens" :key="item.codigo">
               <v-flex xs3>
-                <h6 style="line-height:20px;">{{item.documento.dsc_tipo.descricao}} {{item.documento.dsc_setor.descricao}} </h6> 
+                <h6 >{{item.documento.dsc_tipo.descricao}} {{item.documento.dsc_setor.descricao}} </h6> 
               </v-flex>
               <v-flex xs1>
-                <h6 style="line-height:20px;" align="right">{{item.documento.sequencia}}/{{item.documento.ano}}</h6>
+                <h6 align="right">{{item.documento.sequencia}}/{{item.documento.ano}}</h6>
               </v-flex>
               <v-flex xs4>
-                <h6 style="line-height:20px;">- {{item.destinatario.nome}}</h6>
+                <h6 >- {{item.destinatario.nome}}</h6>
               </v-flex>
               <v-flex xs3>
-                <h6 style="line-height:20px;"  align="right">{{("00"+item.documento.ano).slice(-2)}}{{("000000"+item.codigo).slice(-6)}} {{item.codcorreio}}</h6>
+                <h6   align="right">{{("00"+item.documento.ano).slice(-2)}}{{("000000"+item.codigo).slice(-6)}} {{item.codcorreio}}</h6>
               </v-flex>
               <v-flex xs1>
-                <h6 style="line-height:20px;">
+                <h6 >
                 <v-tooltip bottom>
-                  <template slot="activator" align-start >
-                      <v-icon left small align-start v-on:click="descartarDestLista(item.codigo)" color="blue-grey lighten-3" >cancel</v-icon>
+                  <template v-slot:activator="{ on }" align-start >
+                      <v-icon left small v-on="on"  align-start v-on:click="descartarDestLista(item.codigo)" color="blue-grey lighten-3" >cancel</v-icon>
                   </template>
                   <span>Remover etiqueta {{("00"+item.documento.ano).slice(-2)}}{{("000000"+item.codigo).slice(-6)}}</span>
                 </v-tooltip>
@@ -280,8 +280,8 @@
           </div>
         </v-card>
       </v-container>
-      <v-container grid-list-md >
-        <v-card style="margin-top: -20px;">
+      <v-container grid-list-md style="width: 100%; margin: 0 auto">
+        <v-card style="width: 100%; margin: 0 auto">
           <div>
             <h5>Inserir documento na lista de postagem</h5>  
             <v-layout style="width: 100%; margin: 0 auto">
@@ -304,7 +304,6 @@
             </v-layout>
           </div>
         </v-card>
-
       </v-container>
     </div>
     <div v-if="cadastrarDestinatario" >
@@ -323,7 +322,8 @@
             <h5>{{entidadeAtual.referencia}}</h5>
           </v-flex>
         </v-layout>
-        <h4>Inclusão de Destinatário</h4>
+        <br><br>
+        <h5>Inclusão de Destinatário</h5>
         <br>
         <v-text-field dense
           label="Nome"
@@ -349,7 +349,7 @@
             ></v-select>
           </v-flex>
           <v-flex xs6>      
-            <v-text-field dense
+            <v-text-field 
               label="Logradouro"
               v-model="entidadeAtual.novo.logradouro"
               :rules="[validacao.obrigatorio]"
@@ -357,7 +357,7 @@
             />
           </v-flex>    
           <v-flex xs1>        
-            <v-text-field dense
+            <v-text-field 
               label="Número"
               v-model="entidadeAtual.novo.numero"                
             />
@@ -415,23 +415,21 @@ export default {
     return {
       cabecalhos: [
         {
-          value: "codigo",
-          type: 'hidden',          
+          value: "id",
+          type: 'hidden',
+          class: 'hidden',
           sortable:false
         },
         {
-          text: "Tipo",
-          align: 'end',
+          text: "Origem",          
           value: "tipo",
-          sortable:false,
-          width: '0px'
+          sortable:false          
         },
         {
-          text: "",
+          text: "Sequência/ Ano",
           align: 'end',
+          class: 'text-end',
           value: "descricao",
-          class:"descricao",
-          align: 'end',
           sortable:false
         },
         {
@@ -443,8 +441,8 @@ export default {
         {
           text: "Referência",
           value: "referencia",
-          class:"referencia",
-          align: 'end',
+          class:"",
+          
           icon: 'iconeSituacao',
           color: 'corIconeSituacao',
           iconTooltip: 'situacao',
@@ -452,7 +450,7 @@ export default {
         }
       ],
       exibirGrid:false,
-      verboAdicionar:'Cadastrar',
+      verboAdicionar:'',
       verboConsultar:'Controle de',
       timer:null,
       search: '',
@@ -648,7 +646,7 @@ export default {
       this.receberApoio = true; 
       this.podeSalvar = true;  
       this.verboAdicionar ='Postar';
-      this.verboConsultar = 'Postar';
+      this.verboConsultar = 'Consultar';
       let formData = new FormData();
       let url = rotas.rotas().correspondencia.postagem +""+ this.userLegado ;
       this.$http.put(url, formData).then(
@@ -756,10 +754,12 @@ export default {
     },
     incluirLista(){
       let formData = new FormData();
+      console.log( this.codigoEtiqueta)
       formData.append("codigo",  this.codigoEtiqueta);
       formData.append("codcorreio",  this.codigoECT);
       formData.append("lista",  this.numeroLista);
-      formData.append("_method", "GET");
+//      formData.append("_method", "GET");
+      console.log(formData)
       let url = rotas.rotas().correspondencia.inserirLista;
       this.$http.post(url, formData).then(
         response => {
@@ -792,10 +792,11 @@ export default {
         sequencia = this.entidadeAtual.sequencia;
       }
       formData.append("sequencia", sequencia);
-      formData.append("_method", "GET");
+      formData.append("_method", "POST");
       let url = rotas.rotas().correspondencia.criarCorrespondencia;
       this.$http.post(url, formData).then(
         response => {
+          console.log(response);
           this.$store.commit(            
             "sistema/mensagem",
             "Correspondência criada com sucesso",
@@ -867,7 +868,7 @@ export default {
       this.podeSalvar = false;
       this.codigoEtiqueta = '';
       this.codigoECT = '';
-      this.verboAdicionar ='Postar';
+      this.verboAdicionar ='';
     },
     novo() {
       this.verboAdicionar ='Cadastrar';
@@ -889,7 +890,6 @@ export default {
       this.$http.get(rotas.rotas().correspondencia.setores).then(
         response => {
           response.body.forEach(element => {
-//            console.log(element);
             if (element.codigo){              
               this.setores.push({'text':element.descricao, 'value':element.codigo});
               this.setoresInclusao.push({'text':element.descricao, 'value':element.codigo});
@@ -915,8 +915,8 @@ export default {
       this.tipoSelect = -1;
       this.tipoAtual  = this.tipoSelect;
       this.$http.get(rotas.rotas().correspondencia.tipos).then(
-        response => {          
-          response.body.forEach(element => {
+        response => {       
+          response.data.forEach(element => {
             this.tipoDocumento.push({'text':element.descricao, 'value':element.codigo});
             this.tipoDocumentoInclusao.push({'text':element.descricao, 'value':element.codigo});
           });
@@ -929,8 +929,8 @@ export default {
     carregarLogradouros(){
       this.logradouros = [];
       this.$http.get(rotas.rotas().correspondencia.logradouros).then(
-        response => {          
-          response.body.forEach(element => {
+        response => {     
+          response.data.forEach(element => {
             this.logradouros.push({'text':element.descricao, 'value':element.codigo});
           });
         },
@@ -966,7 +966,6 @@ export default {
             if (element.sequencia.length < 4){
               element.sequencia = ("0000"+element.sequencia).slice(-4);
             }
-            //console.log(element);
             element.setor = element.dsc_setor.descricao;
             element.tipo = element.dsc_tipo.descricao + " " + element.setor;          
             element.descricao = element.sequencia + "/"+element.ano;

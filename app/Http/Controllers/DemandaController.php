@@ -34,6 +34,7 @@ class DemandaController extends Controller
      */
     public function index(Request $request)
     {
+        
         $per_page = $request->input('per_page');
         $result = Demanda::with(
             [
@@ -189,7 +190,7 @@ class DemandaController extends Controller
 
     public function listarAtribuiveis() {
         $divisoes = DB::table('divisaoorganograma')
-            ->select(DB::raw("concat(id, ':DivisaoOrganograma') as id, sigla as text"));
+            ->select(DB::raw("concat(id, ':Modules\Auth\Entities\DivisaoOrganograma') as id, sigla as text"));
             //->get();
         $usuarios = DB::table('users')
             ->select(DB::raw("concat(id, ':User') as id, name as text"))

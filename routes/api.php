@@ -21,6 +21,37 @@ Route::post('user/login', 'APILoginController@login');
 
 
 Route::middleware('jwt.auth')->group(function () {
+    
+    Route::resource('correspondencia/setores', 'CorrespondenciaController@setores'); 
+    Route::resource('correspondencia/tipos', 'CorrespondenciaController@tipos'); 
+    Route::resource('correspondencia/pesquisaMunicipio', 'CorrespondenciaController@pesquisaMunicipio');
+
+    Route::get('correspondencia/postagem', 'CorrespondenciaController@postagem');
+    Route::get('correspondencia/gerarLista', 'CorrespondenciaController@gerarLista');
+    Route::get('correspondencia/concluirLista', 'CorrespondenciaController@concluirLista');    
+    Route::get('correspondencia/gerarEtiqueta/{codigo}', 'CorrespondenciaController@gerarEtiqueta');
+    Route::get('correspondencia/criarDestinatario', 'CorrespondenciaController@criarDestinatario');
+    Route::post('correspondencia/inserirLista', 'CorrespondenciaController@inserirLista');
+    Route::resource('correspondencia/autocomplete', 'CorrespondenciaController@autocomplete');
+    Route::resource('correspondencia/logradouros', 'CorrespondenciaController@tipoLogradouro'); 
+    Route::post('correspondencia/descartaCorresp', 'CorrespondenciaController@descartaCorresp');
+    Route::post('correspondencia/receberAR/{id}', 'CorrespondenciaController@receberAR'); 
+    Route::post('correspondencia/descartaDest', 'CorrespondenciaController@descartaDest'); 
+    Route::post('correspondencia/descartarDestLista', 'CorrespondenciaController@descartarDestLista');
+    
+//Route::get('correspondencia/pesquisaMunicipio', 'CorrespondenciaController@pesquisaMunicipio');
+
+    Route::resource('usuario/reduzido', 'AuthController@listarReduzido');
+    Route::resource('divisaoOrganograma/listarPai', 'DivisaoOrganogramaController@listarPai');
+    Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
+    Route::get('procedimentoExterno/buscar/{search}', 'ProcedimentoExternoController@search');
+    Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
+    Route::resource('poloProcedimentoExterno', 'PoloProcedimentoExternoController');
+
+//    Route::post('correspondencia/criarCorrespondencia', 'CorrespondenciaController@criarCorrespondencia');
+
+
+
     // Route::resource('conteudo', 'ConteudoController');
     Route::get('demanda/entidadeAtribuivel', 'DemandaController@listarAtribuiveis');
     Route::post('demanda/cancelar', 'DemandaController@cancelar');

@@ -54,12 +54,12 @@
             <v-flex>
               <slot name="beforeAdd"></slot>
             </v-flex>
+            <slot name="addButtonArea">
               <v-btn color="green" dark class="mb-2" @click="receberApoio">
                 <v-icon>add</v-icon>
                 Postagens
               </v-btn>
-
-            <slot name="addButtonArea">
+              <v-spacer></v-spacer> 
               <v-btn color="primary" dark class="mb-2" @click="cadastrarNovo">
                 <v-icon>add</v-icon>
                 {{ verboAdicionarEntidade}} {{ nomeEntidade }}
@@ -69,15 +69,13 @@
 
           <slot name="beforeTable"></slot>
 
-          <v-data-table     
-            :dense="true"
+          <v-data-table
             :headers="headers"
             :items="filteredItems"
             :search="search"
             v-model="selected"
             :sort-by="pagination.sortBy"
-            :descending="pagination.descending" 
-            show-select
+            :descending="pagination.descending"
             item-key="id"
             :loading="carregando"
             :hide-default-header="false"
@@ -86,60 +84,19 @@
           >
             <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
-            <template v-if="textHeader" slot="headers" slot-scope="props">
-              <tr>
-                <th ></th>
-                <th
-                  v-for="(header, index) in headers"
-                  :key="index"
-                  :style="header.text== 'id' ? '' :estiloDaColuna(header)"
-                  role="columnheader"
-                  @click="toggleSort(index)"
-                >
-                  <h4 v-if="header.type == 'filter'">
-                    <v-layout align-center row fill-height>
-                      <v-autocomplete
-                        :label="header.text"
-                        tabindex="2"
-                        clearable
-                        :items="computedColumnFilterItems(index, header.valueProperty)"
-                        v-model="columnFilters[index]"
-                      ></v-autocomplete>
-                      <v-icon
-                        small
-                        :color="colunaSelecionadaOrdenacao(index) ? 'blue' : 'gray'"
-                      >{{ setaOrdenacaoColuna(index) }}</v-icon>
-                    </v-layout>
-                  </h4>
-                  <v-card-text v-else-if="header.text == 'id'" hidden style="cursor: auto;">
-                    {{ header.text }}
-                    <v-icon
-                      small
-                      :color="colunaSelecionadaOrdenacao(index) ? 'blue' : 'gray'"
-                    >{{ setaOrdenacaoColuna(index) }}</v-icon>
-                  </v-card-text>
-                  <v-card-text v-else>
-                    {{ header.text }}
-                    <v-icon
-                      small
-                      :color="colunaSelecionadaOrdenacao(index) ? 'blue' : 'gray'"
-                    >{{ setaOrdenacaoColuna(index) }}</v-icon>
-                  </v-card-text>
-                </th>
-              </tr>
-            </template>
 
-            <template slot="items" slot-scope="props" :dense="true">
+            <template slot="item" slot-scope="props" :dense="true">
               <tr>
-              <td >
-                <v-checkbox  v-if="imprimir" v-model="props.selected" primary hide-details></v-checkbox>
+              <td v-if="imprimir">
+                <v-checkbox  v-model="props.selected" :value="item" primary hide-details></v-checkbox>
               </td>
               <td
                 v-for="header in headers"                
                 :key="header.value"
+                :class="header.class"
                 :style="estiloDaColuna(header)"
                 @click="clicouItem(props.item)"
-                :class="header.type == 'hidden' ? 'hidden' : header.class"
+               
               >
                 <!-- hidden -->
                 <div v-if="header.type == 'hidden'"></div>
@@ -166,8 +123,8 @@
                   <v-badge v-if="props.item[header.icon]" :color="header.color">
                     <template slot="badge">
                       <v-tooltip top>
-                        <template slot="activator">
-                          <v-icon dark small>{{ props.item[header.icon] }}</v-icon>
+                        <template v-slot:activator="{ on }">
+                          <v-icon dark small v-on="on">{{ props.item[header.icon] }}</v-icon>
                         </template>
                         {{ props.item.iconTooltip }}
                       </v-tooltip>
@@ -182,13 +139,13 @@
                   <v-badge v-if="props.item[header.icon]" :color="props.item[header.color]" left>
                     <template slot="badge">
                       <v-tooltip top>
-                        <template slot="activator">
-                          <v-icon dark small>{{ props.item[header.icon] }}</v-icon>
+                        <template v-slot:activator="{ on }">
+                          <v-icon dark small v-on="on">{{ props.item[header.icon] }}</v-icon>
                         </template>
                         {{ props.item[header.iconTooltip] }}
                       </v-tooltip>
                     </template>
-                    {{ props.item[header.value] }} 
+                    {{ props.item[header.value] }}
                     <div
                       v-if="props.item[header.subheader]"
                       class="caption grey--text"
@@ -225,12 +182,12 @@
                   <v-icon>print</v-icon>Imprimir
                 </v-btn>
               </td>
-              <td :colspan="headers.length - 2">
+              <td v-if="exibirPaginacaoCliente" :colspan="headers.length - 2">
                 <slot name="footer"></slot>
               </td>
             </template>
-
             <v-alert
+              v-if="exibirPaginacaoCliente"
               slot="no-results"
               :value="true"
               color="error"
@@ -309,6 +266,13 @@ export default {
     anoPostagem:Array,
     tipoDocumento:Array,
     descartar:Boolean,
+    setorSelect:null,
+    anoSelect:null,
+    tipoSelect:null,
+    textHeader: {
+      type: Boolean,
+      default: true
+    },
     exibirPrimeiraTela: {
       type: Boolean,
       default: true
@@ -342,13 +306,6 @@ export default {
       default: true
     },
     podeSalvar: {
-      type: Boolean,
-      default: true
-    },
-    setorSelect:null,
-    anoSelect:null,
-    tipoSelect:null,
-    textHeader: {
       type: Boolean,
       default: true
     },
@@ -504,7 +461,6 @@ export default {
     },
 
     exibirPrimeiraTela: function(val) {
-      console.log('mudou prim '+ val);
       this.exibirGrid = val;
     },
 
@@ -514,8 +470,7 @@ export default {
 
     exibirGrid: function(val) {
       // console.log('CRUD emitiu mudou-tela com val = ' + val)
-      console.log('mudou grid '+ val);
-      this.$emit("modou-tela", val);
+      this.$emit("mudou-tela", val);
     },
 
     columnFilters: function(columnFilters) {

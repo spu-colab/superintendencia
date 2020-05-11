@@ -17,7 +17,7 @@
     <template slot="detalhe">
       <v-card-text>
         <div v-if="entidadeAtual">
-          <v-tabs v-model="tabAtiva" color="grey lighten-5" >
+          <v-tabs v-model="tabAtiva">
             <v-tab>Cadastro</v-tab>
             <v-tab>Usuários</v-tab>
             <v-tabs-slider color="primary"></v-tabs-slider>
@@ -29,7 +29,7 @@
                   v-model="entidadeAtual.idPai" 
                   item-text="nome" 
                   item-value="id" 
-                  :rules="entidadeAtual.id == null ? [validacao.obrigatorio] : [false]" 
+                  :rules="entidadeAtual.id == null ? [validacao.obrigatorio] : []" 
                   :required="entidadeAtual.idDivisaoOrganogramaPai == null ? false : true"
                 />          
                 <v-text-field

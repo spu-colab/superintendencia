@@ -226,7 +226,7 @@ class CorrespondenciaController extends Controller
         $codigo = substr($request->codigo, -6);
         $dest = CorrespDest::find($codigo);
         if ($dest == null) {
-            return response()->json(['message' => "Etiqueta '".$request->codigo."' não existe"], 404);
+            return response()->json(['message' => "Etiqueta '".$request->lista."' não existe"], 404);
         }
         $dest->tipo_dev = 3;
         $dest->lista = $request->lista;

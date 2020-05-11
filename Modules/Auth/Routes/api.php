@@ -23,7 +23,7 @@ Route::middleware('jwt.auth')->group(function () {
     Route::apiResource('usuario', '\Modules\Auth\Http\Controllers\AuthController');
     Route::get('usuario/reduzido', '\Modules\Auth\Http\Controllers\AuthController@listarReduzido');    
 
-    Route::apiResource('permissao', 'PermissaoController');
+    Route::resource('permissao', 'PermissaoController');
     Route::get('permissao/usuario/{permissaoId}', 'PermissaoController@usuarioPossuiPermissao');
 
     Route::apiResource('divisao-organograma', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController');

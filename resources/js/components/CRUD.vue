@@ -54,11 +54,12 @@
             v-model="selected"
             :sort-by="pagination.sortBy"
             :descending="pagination.descending" 
+            :single-select="!imprimir"
             show-select
             item-key="id"
             :loading="carregando"
             :hide-default-header="false"
-            :hide-default-footer="!exibirPaginacao || !exibirPaginacaoCliente"
+            :hide-default-footer="!exibirPaginacaoCliente"
             :footer-props="footerProps"
           >
             <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
@@ -90,7 +91,7 @@
             <template slot="item" slot-scope="props">
               <tr>
                 <td>
-                  <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
+                  <v-checkbox v-if="imprimir" v-model="selected" :value="props.item" primary hide-details></v-checkbox>
                 </td>
                 <td v-for="(header, index2) in headers" :key="index2"
                   :style="estiloDaColuna(header)"
@@ -102,7 +103,7 @@
 
                   <!-- checkbox -->
                   <div v-else-if="header.type == 'checkbox'">
-                    <v-checkbox disabled v-model="props.item[header.value]" :color="header.color"></v-checkbox>
+                    <v-checkbox disabled v-model="props.item[header.value]" :color="header.color"></v-checkbox>                    
                   </div>
 
                   <!-- boolean-icon -->

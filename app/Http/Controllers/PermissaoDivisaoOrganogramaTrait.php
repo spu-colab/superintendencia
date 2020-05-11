@@ -51,5 +51,6 @@ trait PermissaoDivisaoOrganogramaTrait {
         $user = Auth::user();
         $usuario = User::with(['permissoes'])->find($user->id);
         return $usuario->permissoes()->whereIn('permissao', $permissoesArray)->first();
+        //dd($usuario->permissoes()->whereIn('permissao', $permissoesArray)->first());
     }
 }

@@ -1,8 +1,9 @@
 <?php
 
 namespace App;
-
+use Modules\Auth\Entities\DivisaoOrganograma;
 use Illuminate\Database\Eloquent\Model;
+
 
 class DemandaMovimentacao extends Model
 {

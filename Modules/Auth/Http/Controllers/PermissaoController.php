@@ -19,7 +19,11 @@ class PermissaoController extends Controller
      */
     public function index(Request $request)
     {
+        
         $ascending = "desc";
+        if ($request->ordem =='name'){
+            $request->ordem = 'permissao';
+        }
         if ($request->ascending == "true"){
             $ascending = "asc";
         }

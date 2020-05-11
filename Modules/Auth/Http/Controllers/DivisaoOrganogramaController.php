@@ -128,12 +128,12 @@ class DivisaoOrganogramaController extends Controller
         }
         
         $divisao = DivisaoOrganograma::findOrFail($id);
-
+//        return $this->verificaUsuarioPermissao(['DIVISAO_ORGANOGRAMA_CADASTRAR']);
         $this->authorize('update', $divisao);    
 
         $divisao->nome = $request->nome;
         $divisao->sigla = $request->sigla;
-        if ($request->idPai){
+        if ($request->idPai!= 'null'){
             $divisao->idDivisaoOrganogramaPai = $request->idPai;
         }
         $result = $divisao->update();
