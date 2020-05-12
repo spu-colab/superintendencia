@@ -5,11 +5,13 @@ use App\User;
 use App\Permissao;
 use Modules\Auth\Entities\DivisaoOrganograma;
 use Modules\Demarcacao\Entities\Demarcacao;
-
+use Modules\Correspondencia\Entities\CorrespDest;
+use Modules\Correspondencia\Entities\ListaPostagem;
 use App\Policies\UserPolicy;
 use App\Policies\PermissaoPolicy;
 use App\Policies\DivisaoOrganogramaPolicy;
 use Modules\Demarcacao\Policies\DemarcacaoPolicy;
+use Modules\Correspondencia\Policies\CorrespondenciaPolicy;
 
 //use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -25,6 +27,8 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         Permissao::class => PermissaoPolicy::class,
         DivisaoOrganograma::class => DivisaoOrganogramaPolicy::class,
+        CorrespDest::class => CorrespondenciaPolicy::class,
+        ListaPostagem::class => CorrespondenciaPolicy::class,
         Demarcacao::class => DemarcacaoPolicy::class
     ];
 

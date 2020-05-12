@@ -15,9 +15,11 @@ use Modules\Correspondencia\Entities\ListaPostagem;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Routing\Controller;
+//use Illuminate\Routing\Controller;
+use Nwidart\Modules\Routing\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
 use PDF;
 use DNS1D;
@@ -161,6 +163,7 @@ class CorrespondenciaController extends Controller
     }
     public function  concluirLista(){
         $lista = ListaPostagem::Aberta()->without(['tec_resp','destPost'])->first();
+        $this->authorize('create', $lista);
         if (!$lista){
             return response()->json(['message' => "Lista não existe"], 404);
         }
@@ -177,6 +180,7 @@ class CorrespondenciaController extends Controller
     public function receberAR($id)
     {
         $dest = CorrespDest::findOrFail($id);
+        $this->authorize('create', $dest);
         $dest->situacao_ar = 2;
         $dest->dtdev_ar = date('Y-m-d H:i:s');
         return response()->json($dest->update());
@@ -191,6 +195,7 @@ class CorrespondenciaController extends Controller
     public function descartarDestLista($id)
     {
         $dest = CorrespDest::findOrFail($id);
+        $this->authorize('create', $dest);        
         $dest->tipo_dev = 2;
         $dest->lista = NULL;
         $dest->codcorreio = NULL;
@@ -225,9 +230,11 @@ class CorrespondenciaController extends Controller
     {
         $codigo = substr($request->codigo, -6);
         $dest = CorrespDest::find($codigo);
+
         if ($dest == null) {
             return response()->json(['message' => "Etiqueta '".$request->lista."' não existe"], 404);
         }
+        $this->authorize('create',$dest);
         $dest->tipo_dev = 3;
         $dest->lista = $request->lista;
         $dest->codcorreio = $request->codcorreio;
