@@ -6,7 +6,7 @@ use App\User;
 use App\Orgao;
 use App\NaturezaOrgao;
 use App\Http\Requests\OrgaoRequest;
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 
 class OrgaoController extends Controller
 {
@@ -15,13 +15,41 @@ class OrgaoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Orgao::with(
-            [
-                'orgaoPai',
-                'natureza'
-            ])->orderBy('orgao', 'asc')->get();
+        $consulta =  Orgao::with(['orgaoPai', 'natureza'])
+            ->selectRaw('orgao.*, naturezaorgao.natureza as naturezaorgao, orgaoPai.orgao as orgaopai')
+            ->leftJoin('naturezaorgao','naturezaorgao.id' , '=', 'orgao.idnaturezaorgao')
+            ->leftJoin('orgao as orgaoPai','orgaoPai.id' , '=', 'orgao.idorgaopai');
+
+        if($request->search) {
+            $where = [
+                "orgao.orgao LIKE '%".strtolower($request->search)."%'",
+                "orgao.sigla LIKE '%".strtolower($request->search)."%'",
+                "orgao.email LIKE '%".strtolower($request->search)."%'",
+                "orgao.telefone LIKE '%".strtolower($request->search)."%'",
+                "naturezaorgao.natureza LIKE '%".strtolower($request->search)."%'",
+                "orgaoPai.orgao LIKE '%".strtolower($request->search)."%'",
+
+            ];
+            foreach ($where as $w => $vWhere) {
+                $consulta = $w ? 
+                    $consulta->orWhereRaw($vWhere) :
+                    $consulta->whereRaw($vWhere); 
+            }
+        }
+    
+        $consulta = $consulta->orderBy(
+            $request->order ?? 'orgao', 
+            $request->ascending === 'false' ? 'desc' : 'asc',
+            SORT_NATURAL|SORT_FLAG_CASE
+        );
+
+        $resultado = $request->per_page > 0 
+            ? $consulta->paginate($request->per_page)
+            : $consulta->get();
+        return response()->json($resultado);
+
     }
 
     /**

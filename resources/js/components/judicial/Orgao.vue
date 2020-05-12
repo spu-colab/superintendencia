@@ -1,7 +1,9 @@
 <template>
-    <crud 
+    <crud v-if="urlBase" ref="crud"
         nomeEntidade="Órgão" nomeEntidadePlural="Órgãos"
-        :headers="cabecalhos" :items="registros" :carregando="carregando"
+        :headers="cabecalhos" 
+        :resource-url="urlBase"
+        itemKey="id"
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -36,17 +38,15 @@
 
 <script>
 import rotas from './../../rotas-servico.js'
-import CRUD from './../CRUD'
+import CRUD from './../ApiCrud'
+import Validador from './../../validacao';
+
 export default {
     components: {
         'crud' : CRUD
     },
     data: () => {
         return {
-            carregando: true,
-            carregandoOrgaos: false,
-            orgaosRaiz: [],
-            naturezas: [],
             cabecalhos: [
                 { 
                     text: 'Natureza',
@@ -65,15 +65,15 @@ export default {
                     value: 'sigla'
                 }
             ],
-            registros: [
-            ],
             entidadeAtual: null,
-            validacao: {
-                obrigatorio: value => !!value || 'Preenchimento obrigatório.',
-                min8: v => !!v && v.length >= 8 || 'No mínimo 8 caracteres' ,
-                min2: v => !!v && v.length >= 2 || 'No mínimo 2 caracteres',
-                email: v => /.+@.+\..+/.test(v) || 'E-mail precisa ser válido'
-            }
+            validacao: Validador,
+
+            orgaosRaiz: [],
+            carregandoOrgaos: false,
+
+            naturezas: [],
+
+            urlBase: rotas.rotas().orgao.listar
         }
     },
     methods: {
@@ -113,9 +113,8 @@ export default {
             this.$http.post(url, formData)
                 .then(
                     response => {
-                        // console.log(response)
                         this.$store.commit('sistema/mensagem', 'Órgão cadastrado com sucesso!')
-                        this.$router.push('/orgao')
+                        this.$refs.crud.loadItems()
                     },
                     error => {
                         console.log(error.body)
@@ -124,7 +123,7 @@ export default {
                 )
         },
         cancelar() {
-            this.carregarItens()
+            this.$refs.crud.loadItems()
         },
         novo(item) {
             this.carregarOrgaos()
@@ -135,38 +134,12 @@ export default {
                 orgao_pai: {}
             }
         },
-        carregarItens() {
-            this.carregando = true;
-            this.registros = [];
-            this.$http.get(rotas.rotas().orgao.listar)
-                .then(
-                    response => {
-                        // console.log(response);
-                        response.body.forEach(element => {
-                        // console.log(element)
-                        element.orgaopai = ''
-                        if(element.natureza) {
-                            element.naturezaorgao = element.natureza.natureza
-                        }
-                        if(element.orgao_pai) {
-                            element.orgaopai = element.orgao_pai.orgao
-                        }
-                        this.registros.push(element)
-                        })
-                        this.carregando = false;
-                    },
-                    error => {
-                        console.log(error)
-                        this.carregando = false;
-                    }
-                )
-        },
 
         carregarOrgaos () {
             this.carregandoOrgaos = true
             this.orgaosRaiz = []
             this.$http
-                .get(rotas.rotas().orgao.listar)
+                .get(rotas.rotas().orgao.listar + "?per_page=-1")
                 .then(
                     response => {
                         response.body.forEach(element => {
@@ -201,7 +174,6 @@ export default {
         },
     },
     mounted() {
-        this.carregarItens()
     }
 }
 </script>

@@ -92,7 +92,13 @@ export default {
         icone: 'gavel', 
         rota: '/nujuc',
         model: true,
-        children: [
+        submenu: [
+          {
+            rotulo: 'Demandas',
+            icone: 'assignment',
+            rota: '/demanda'
+
+          },
           {
             rotulo: 'Procedimentos',
             icone: 'account_balance', 

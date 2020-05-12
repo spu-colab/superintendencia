@@ -15,24 +15,33 @@ class AutorDemandaController extends Controller
      */
     public function index(Request $request)
     {
-
-        $ascending = "desc";
-        if ($request->ascending == "true"){
-            $ascending = "asc";
-        }
-
-        if (!$request->per_page){
-            return AutorDemanda::with(['cargo', 'orgao'])->orderBy('nome', 'asc')->get();
-        }
-        return AutorDemanda::with(['cargo', 'orgao'])
-            ->selectRaw('autordemanda.nome, autordemanda.idcargo, autordemanda.idorgao, cargo.cargo as cargoTexto, orgao.orgao as orgaoTexto, orgao.sigla as siglaOrgaoTexto ')
+        $consulta = AutorDemanda::with(['cargo', 'orgao'])
+            ->selectRaw('autordemanda.id, autordemanda.nome, autordemanda.email, autordemanda.telefone, autordemanda.idcargo, autordemanda.idorgao, cargo.cargo as cargoTexto, orgao.orgao as orgaoTexto, orgao.sigla as siglaOrgaoTexto ')
             ->leftJoin('cargo','cargo.id' , '=', 'autordemanda.idcargo')
-            ->leftJoin('orgao','orgao.id' , '=', 'autordemanda.idorgao')
-            ->whereRaw("nome LIKE '%".strtolower($request->search)."%'")
-            ->orWhereRaw("cargo LIKE '%".strtolower($request->search)."%'")
-            ->orWhereRaw("orgao LIKE '%".strtolower($request->search)."%'")
-            ->orWhereRaw("sigla LIKE '%" . strtolower($request->search) . "%'")
-            ->orderBy($request->ordem, $ascending)->paginate($request->per_page);
+            ->leftJoin('orgao','orgao.id' , '=', 'autordemanda.idorgao');
+
+        if($request->search) {
+            $where = [
+            "nome LIKE '%".strtolower($request->search)."%'",
+            "cargo LIKE '%".strtolower($request->search)."%'",
+            "orgao LIKE '%".strtolower($request->search)."%'",
+            "sigla LIKE '%" . strtolower($request->search) . "%'"
+            ];
+            foreach ($where as $w => $vWhere) {
+                $consulta = $w ? 
+                    $consulta->orWhereRaw($vWhere) :
+                    $consulta->whereRaw($vWhere); 
+            }
+        }
+        
+        $consulta = $consulta->orderBy(
+            $request->order ?? 'autordemanda.nome', 
+            $request->ascending === 'false' ? 'desc' : 'asc',
+            SORT_NATURAL|SORT_FLAG_CASE
+        );
+
+        $resultado = $consulta->paginate($request->per_page);
+        return response()->json($resultado);
     }
 
     /**
