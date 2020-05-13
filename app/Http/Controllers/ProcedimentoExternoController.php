@@ -18,6 +18,35 @@ class ProcedimentoExternoController extends Controller
      */
     public function index(Request $request)
     {
+
+        $consulta =  ProcedimentoExterno::with(['tipoprocedimentoexterno'])
+            ->selectRaw('procedimentoexterno.*, tipoprocedimentoexterno.tipoprocedimento as tipoProcedimentoExterno')
+            ->leftJoin('tipoprocedimentoexterno','tipoprocedimentoexterno.id' , '=', 'procedimentoexterno.idtipoprocedimentoexterno');
+
+        if($request->search) {
+            $where = [
+                "procedimentoexterno.procedimento LIKE '%".strtolower($request->search)."%'",
+                "procedimentoexterno.resumo LIKE '%".strtolower($request->search)."%'",
+                "tipoprocedimentoexterno.tipoprocedimento LIKE '%".strtolower($request->search)."%'",
+            ];
+            foreach ($where as $w => $vWhere) {
+                $consulta = $w ? 
+                    $consulta->orWhereRaw($vWhere) :
+                    $consulta->whereRaw($vWhere); 
+            }
+        }
+    
+        $consulta = $consulta->orderBy(
+            $request->order ?? 'procedimento', 
+            $request->ascending === 'false' ? 'desc' : 'asc',
+            SORT_NATURAL|SORT_FLAG_CASE
+        );
+
+        $resultado = $request->per_page > 0 
+            ? $consulta->paginate($request->per_page)
+            : $consulta->get();
+        return response()->json($resultado);
+        /*
         $ascending = "desc";
         if ($request->ascending == "true"){
             $ascending = "asc";
@@ -45,6 +74,7 @@ class ProcedimentoExternoController extends Controller
             ->leftJoin('tipoprocedimentoexterno AS p','p.id' , '=', 'procedimentoexterno.idtipoprocedimentoexterno')
             ->orderBy($request->ordem, $ascending)                
             ->paginate($request->per_page);
+        */
     
     }
 

@@ -1,12 +1,9 @@
 <template>
-    <crud 
+    <crud v-if="urlBase" ref="crud"
         nomeEntidade="Demandante" nomeEntidadePlural="Demandantes"
-        :headers="cabecalhos" :items="registros" :carregando="carregando"
-
-        :paginas="paginas"  
-        :exibirPaginacaoCliente=false
-        @mudaPagina="mudaPagina" 
-
+        :headers="cabecalhos" 
+        :resource-url="urlBase"
+        itemKey="id"
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -57,15 +54,16 @@
 </template>
 
 <script>
-import rotas from './../../rotas-servico.js'
-import CRUD from './../CRUD'
+import rotas from './../../rotas-servico'
+import ApiCrud from './../ApiCrud'
+import Validador from './../../validacao';
+
 export default {
     components: {
-        'crud' : CRUD
+        'crud' : ApiCrud
     },
     data: () => {
         return {
-            carregando: true,
             cabecalhos: [
                 { 
                     text: 'Nome',
@@ -91,48 +89,41 @@ export default {
                     width: '0px'
                 },
             ],
-            registros: [
-            ],
             entidadeAtual: null,
-            validacao: {
-                obrigatorio: value => !!value || 'Preenchimento obrigatório.',
-                min8: v => !!v && v.length >= 8 || 'No mínimo 8 caracteres' ,
-                min2: v => !!v && v.length >= 2 || 'No mínimo 2 caracteres',
-                email: v => /.+@.+\..+/.test(v) || 'E-mail precisa ser válido'
-            },
+            validacao: Validador,
 
             cargos: [],
             carregandoCargos: false,
 
             orgaos: [],
             carregandoOrgaos: false,
-            paginas:[],
-            paginaAtual:[],
+
+            urlBase: rotas.rotas().autorDemanda.listar,
         }
     },
     methods: {
-        mudaPagina(page){
-        this.carregarItens(page);
-        },
+
         selecionarParaEdicao(item) {
             this.carregarTabelasApoio()
             this.entidadeAtual = item
             // console.log('Item selecionado: ' + item.id)
         },
         salvar() {
+            console.log('salvar()')
             let url = rotas.rotas().autorDemanda.criar;
             let formData = new FormData()
+            console.log(this.entidadeAtual)
             if(this.entidadeAtual.id) {
                 formData.append('autordemanda[id]', this.entidadeAtual.id)
                 formData.append('_method', 'PUT') 
                 url = rotas.rotas().autorDemanda.editar + '' + this.entidadeAtual.id;
             }
             formData.append('autordemanda[nome]', this.entidadeAtual.nome)
-            if(this.entidadeAtual.cargo.id) {
-                formData.append('autordemanda[idCargo]', this.entidadeAtual.cargo.id)
+            if(this.entidadeAtual.idcargo) {
+                formData.append('autordemanda[idCargo]', this.entidadeAtual.idcargo)
             }
-            if(this.entidadeAtual.orgao.id) {
-                formData.append('autordemanda[idOrgao]', this.entidadeAtual.orgao.id)
+            if(this.entidadeAtual.idorgao) {
+                formData.append('autordemanda[idOrgao]', this.entidadeAtual.idorgao)
             }
             formData.append('autordemanda[email]', this.entidadeAtual.email)
             if(this.entidadeAtual.telefone) {
@@ -142,9 +133,8 @@ export default {
             this.$http.post(url, formData)
                 .then(
                     response => {
-                        // console.log(response)
                         this.$store.commit('sistema/mensagem', 'Demandante cadastrado com sucesso!')
-                        this.$router.push('/demandante')
+                        this.$refs.crud.loadItems()
                     },
                     error => {
                         console.log(error.body)
@@ -154,7 +144,6 @@ export default {
         },
 
         cancelar() {
-            this.carregarItens(this.paginaAtual)
         },
 
         novo(item) {
@@ -166,41 +155,6 @@ export default {
                 orgao: {
                 }
             }
-        },
-
-        carregarItens(page) {
-            this.carregando = true;
-            this.registros = [];
-
-            this.paginaAtual = page;
-            if (!page[1]){
-                page[1]=10
-            }
-            var parametros =  "?page="+page[0]+   "&per_page="+page[1]+
-                                "&search="+page[2]+ "&ordem="+this.cabecalhos[page[3]].value + 
-                                "&ascending="+page[4];
-
-
-
-            this.$http.get(rotas.rotas().autorDemanda.listar+parametros)
-                .then(
-                    response => {
-                        console.log(response);
-                        this.paginas = response.body;                        
-                        response.body.data.forEach(element => {
-//                            element.cargoTexto = element.cargo.cargo
-//                            element.orgaoTexto = element.orgao.orgao
-//                            element.siglaOrgaoTexto = element.orgao.sigla
-                            this.registros.push(element)
-                        })
-                        this.carregando = false;
-                    },
-                    error => {
-                        this.carregando = false;
-                        console.log(error)
-                    }
-                )
-            
         },
 
         carregarCargos () {
@@ -244,11 +198,10 @@ export default {
         carregarTabelasApoio() {
             this.carregarCargos()
             this.carregarOrgaos()
-        }
+        },
         
     },
     mounted() {
-        this.carregarItens([1, '10', '', '0', true]);        
     }
 }
 </script>

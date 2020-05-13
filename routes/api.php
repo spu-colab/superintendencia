@@ -65,7 +65,7 @@ Route::middleware('jwt.auth')->group(function () {
     Route::get('demanda/divisao-organograma/{divisaoOrganograma}', 'DemandaController@listarDistribuidasParaDivisaoOrganograma');
     Route::resource('demanda', 'DemandaController');
 
-    Route::resource('autorDemanda', 'AutorDemandaController');
+    Route::apiResource('autorDemanda', 'AutorDemandaController');
     Route::resource('cargo', 'CargoController');
     Route::resource('orgao', 'OrgaoController');
     Route::get('natureza-orgao', 'OrgaoController@listarNaturezas');

@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app v-model="menuEsquerda" clipped left>
+    <v-navigation-drawer app :value="exibirMenu" clipped left>
       <spu-menu :itensMenu="itensMenu"></spu-menu>      
     </v-navigation-drawer>
     
@@ -81,18 +81,25 @@ export default {
         icone: 'near_me', 
         rota: '/governanca',
       },
+      /*
       { 
         rotulo: 'Correspondência',
         icone: 'email', 
         rota: '/correspondencia',
       },
-
+      */
       { 
         rotulo: 'Judiciais e Controle',
         icone: 'gavel', 
         rota: '/nujuc',
         model: true,
-        children: [
+        submenu: [
+          {
+            rotulo: 'Demandas',
+            icone: 'assignment',
+            rota: '/demanda'
+
+          },
           {
             rotulo: 'Procedimentos',
             icone: 'account_balance', 
