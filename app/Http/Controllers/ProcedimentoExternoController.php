@@ -19,15 +19,15 @@ class ProcedimentoExternoController extends Controller
     public function index(Request $request)
     {
 
-        $consulta =  ProcedimentoExterno::with(['tipoProcedimentoExterno'])
-            ->selectRaw('procedimentoExterno.*, tipoProcedimentoExterno.tipoProcedimento as tipoProcedimentoExterno')
-            ->leftJoin('tipoProcedimentoExterno','tipoProcedimentoExterno.id' , '=', 'procedimentoExterno.idTipoProcedimentoExterno');
+        $consulta =  ProcedimentoExterno::with(['tipoprocedimentoexterno'])
+            ->selectRaw('procedimentoexterno.*, tipoprocedimentoexterno.tipoprocedimento as tipoprocedimentoexterno')
+            ->leftJoin('tipoprocedimentoexterno','tipoprocedimentoexterno.id' , '=', 'procedimentoexterno.idtipoprocedimentoexterno');
 
         if($request->search) {
             $where = [
-                "procedimentoExterno.procedimento LIKE '%".strtolower($request->search)."%'",
-                "procedimentoExterno.resumo LIKE '%".strtolower($request->search)."%'",
-                "tipoProcedimentoExterno.tipoProcedimento LIKE '%".strtolower($request->search)."%'",
+                "procedimentoexterno.procedimento LIKE '%".strtolower($request->search)."%'",
+                "procedimentoexterno.resumo LIKE '%".strtolower($request->search)."%'",
+                "tipoprocedimentoexterno.tipoprocedimento LIKE '%".strtolower($request->search)."%'",
             ];
             foreach ($where as $w => $vWhere) {
                 $consulta = $w ? 
