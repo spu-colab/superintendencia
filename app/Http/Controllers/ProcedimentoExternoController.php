@@ -20,7 +20,7 @@ class ProcedimentoExternoController extends Controller
     {
 
         $consulta =  ProcedimentoExterno::with(['tipoprocedimentoexterno'])
-            ->selectRaw('procedimentoexterno.*, tipoprocedimentoexterno.tipoprocedimento as tipoprocedimentoexterno')
+            ->selectRaw('procedimentoexterno.*, tipoprocedimentoexterno.tipoprocedimento as tipoProcedimentoExterno')
             ->leftJoin('tipoprocedimentoexterno','tipoprocedimentoexterno.id' , '=', 'procedimentoexterno.idtipoprocedimentoexterno');
 
         if($request->search) {
