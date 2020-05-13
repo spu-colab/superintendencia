@@ -34,7 +34,7 @@ const mutations = {
         state.mensagem = ''
         state.alerta = ''
     },
-    mostraEscondeMenu (state) {
+    exibirMenu (state) {
         state.exibirMenu = !state.exibirMenu
     }
 }

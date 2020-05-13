@@ -59,7 +59,7 @@ export default {
       this.$router.push('/login')
     },
     mostraEscondeMenu() {
-      this.$store.commit('sistema/mostraEscondeMenu')
+      this.$store.commit('sistema/exibirMenu')
     },
     refreshToken() {
       this.$http

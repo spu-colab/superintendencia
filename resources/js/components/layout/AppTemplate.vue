@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app v-model="menuEsquerda" clipped left>
+    <v-navigation-drawer app :value="exibirMenu" clipped left>
       <spu-menu :itensMenu="itensMenu"></spu-menu>      
     </v-navigation-drawer>
     
