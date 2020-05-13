@@ -1,12 +1,9 @@
 <template>
-    <crud 
+    <crud v-if="urlBase" ref="crud"
         nomeEntidade="Procedimento Externo" nomeEntidadePlural="Procedimentos Externos"
-        :headers="cabecalhos" :items="registros" :carregando="carregando"
-
-        :paginas="paginas"  
-        :exibirPaginacaoCliente=false
-        @mudaPagina="mudaPagina" 
-
+        :headers="cabecalhos" 
+        :resource-url="urlBase"
+        itemKey="id"
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -34,7 +31,7 @@
                                         </v-flex>
                                         <v-flex xs12 lg4>
                                             <v-text-field label="Procedimento" v-model="entidadeAtual.procedimento" 
-                                                :rules="[validacao.obrigatorio, validacao.min8]" required 
+                                                :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.procedimento, 8)]" required 
                                                 counter="150"  maxlength="150"/>
                                         </v-flex>
                                         <v-flex xs12 lg4>
@@ -119,7 +116,8 @@
 
 <script>
 import rotas from './../../rotas-servico.js'
-import CRUD from './../CRUD'
+import CRUD from './../ApiCrud'
+import Validador from './../../validacao';
 import GeoReferenciamento from './../GeoReferenciamento'
 
 const PROCEDIMENTO_TAB_CADASTRO = 0;
@@ -135,12 +133,14 @@ export default {
             tabelaReferenciaCamada: 'procedimentoexterno',
             atualizarMapa: false,
             tabAtiva: 0,
-            carregando: true,
+            urlBase: rotas.rotas().procedimentoExterno.listar,
             cabecalhos: [
+                /*
                 { 
-                    text:'id',
+                    text: 'id',
                     value: 'idProcedimento'
                 },
+                */
                 { 
                     text: 'Tipo',
                     value: 'tipoProcedimentoExterno'
@@ -154,15 +154,9 @@ export default {
                     value: 'resumo'
                 }
             ],
-            registros: [
-            ],
             entidadeAtual: null,
-            validacao: {
-                obrigatorio: value => !!value || 'Preenchimento obrigatório.',
-                min8: v => !!v && v.length >= 8 || 'No mínimo 8 caracteres' ,
-                min2: v => !!v && v.length >= 2 || 'No mínimo 2 caracteres',
-                email: v => /.+@.+\..+/.test(v) || 'E-mail precisa ser válido'
-            },
+
+            validacao: Validador,
 
             tiposProcedimento: [],
             carregandoTiposProcedimento: false,
@@ -194,15 +188,9 @@ export default {
                     value: 'situacao'
                 },
             ],
-            paginas:[],
-            paginaAtual:[],
         }
     },
     methods: {
-
-        mudaPagina(page){
-        this.carregarItens(page);
-        },
 
         selecionarParaEdicao(item) {
             // console.log('Item selecionado: ' + item.id)
@@ -224,6 +212,7 @@ export default {
                 )
             this.carregarTabelasApoio()
         },
+
         salvar() {
             let formData = new FormData()
             formData.append('procedimentoExterno[id]', this.entidadeAtual.id)
@@ -244,19 +233,17 @@ export default {
             this.$http.post(url, formData)
                 .then(
                     response => {
-                        console.log(response)
                         this.$store.commit('sistema/mensagem', 'Procedimento Externo cadastrado com sucesso!')
-                        this.$router.push('/procedimento')
+                        this.$refs.crud.loadItems()
                     },
                     error => {
                         console.log(error.body)
                         this.$store.commit('sistema/alerta', error.body.message)
                     }
                 )
-                // this.carregarItens()
         },
         cancelar() {
-            this.carregarItens(this.paginaAtual)
+            this.$refs.crud.loadItems()
         },
         novo(item) {
             this.carregarTabelasApoio()
@@ -264,6 +251,8 @@ export default {
                 id: null
             }
         },
+
+        /*
         carregarItens(page) {
             this.carregando = true;
             this.registros = [];
@@ -298,6 +287,8 @@ export default {
                 )
             
         },
+        */
+
         carregarTiposProcedimento () {
             this.carregandoTiposProcedimento = true
             this.tiposProcedimento = []
@@ -316,6 +307,7 @@ export default {
                     }
                 )
         },
+
         carregarPolosProcedimento () {
             this.carregandoPolosProcedimento = true
             this.polosProcedimento = []
@@ -334,6 +326,7 @@ export default {
                     }
                 )
         },
+
         carregarDemandas() {
             this.demandas = [];
             let url = rotas.rotas().demanda.listarPorProcedimentoExterno + this.entidadeAtual.id
@@ -377,7 +370,7 @@ export default {
     },
     mounted() {
 
-        this.carregarItens([1, '25', '', '0', true]);  
+        // this.carregarItens([1, '25', '', '0', true]);  
 
         if(this.$route.params.id) {
             this.selecionarParaEdicao({ id: this.$route.params.id})
