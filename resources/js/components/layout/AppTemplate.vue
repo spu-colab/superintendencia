@@ -81,13 +81,11 @@ export default {
         icone: 'near_me', 
         rota: '/governanca',
       },
-      /*
       { 
         rotulo: 'Correspondência',
         icone: 'email', 
         rota: '/correspondencia',
       },
-      */
       { 
         rotulo: 'Judiciais e Controle',
         icone: 'gavel', 
