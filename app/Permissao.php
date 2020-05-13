@@ -15,6 +15,7 @@ class Permissao extends Model
 
     // seguir este padrão: MODULO RECURSO AÇÃO
     public const DEMARCACAO_DEMARCACAO_CADASTRAR = 'DEMARCACAO_DEMARCACAO_CADASTRAR';
+    public const CORRESPONDENCIA_CORRESPONDENCIA_POSTAR = 'CORRESPONDENCIA_CORRESPONDENCIA_POSTAR';
 
     public function usuarios(){    
 
