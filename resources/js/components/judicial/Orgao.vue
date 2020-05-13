@@ -14,6 +14,7 @@
                 
                 <v-autocomplete label="Natureza" clearable
                     :items="naturezas" v-model="entidadeAtual.natureza.id" 
+                    :rules="[validacao.obrigatorio]" required 
                     item-text="natureza" item-value="id"  />
                 
                 <v-autocomplete label="Órgão Pai" clearable
@@ -21,10 +22,10 @@
                     item-text="orgao" item-value="id"  />
                 
                 <v-text-field label="Órgão" v-model="entidadeAtual.orgao" 
-                    :rules="[validacao.obrigatorio, validacao.min8]" required 
+                    :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.orgao, 8)]" required 
                     counter="255" maxlength="255"/>
                 <v-text-field label="Sigla" v-model="entidadeAtual.sigla" 
-                    :rules="[validacao.obrigatorio, validacao.min2]" required 
+                    :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.sigla, 2)]" required 
                     counter="50"  maxlength="50"/>
                 <v-text-field label="E-mail" v-model="entidadeAtual.email" 
                     :rules="[validacao.obrigatorio, validacao.email]" required 
