@@ -16,7 +16,7 @@ class AutorDemandaController extends Controller
     public function index(Request $request)
     {
         $consulta = AutorDemanda::with(['cargo', 'orgao'])
-            ->selectRaw('autordemanda.id, autordemanda.nome, autordemanda.email, autordemanda.telefone, autordemanda.idcargo, autordemanda.idorgao, cargo.cargo as cargoTexto, orgao.orgao as orgaoTexto, orgao.sigla as siglaOrgaoTexto ')
+            ->selectRaw('autordemanda.*, cargo.cargo as cargoTexto, orgao.orgao as orgaoTexto, orgao.sigla as siglaOrgaoTexto ')
             ->leftJoin('cargo','cargo.id' , '=', 'autordemanda.idcargo')
             ->leftJoin('orgao','orgao.id' , '=', 'autordemanda.idorgao');
 
@@ -40,7 +40,9 @@ class AutorDemandaController extends Controller
             SORT_NATURAL|SORT_FLAG_CASE
         );
 
-        $resultado = $consulta->paginate($request->per_page);
+        $resultado = $request->per_page > 0 
+            ? $consulta->paginate($request->per_page)
+            : $consulta->get();
         return response()->json($resultado);
     }
 
