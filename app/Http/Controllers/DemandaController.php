@@ -505,7 +505,7 @@ class DemandaController extends Controller
 
     public function relatorioAbertasPorDistribuicao($dataDe = null, $dataAte = null)
     {
-        $div = "\\\\";
+        $div = "\\";
 
         $sqlDeAte = $this->stringDataDocumentoDeAte('d.dataDocumento', $dataDe, $dataAte);
 
