@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Demanda;
-use Modules\Auth\Entities\DivisaoOrganograma;
+use \Modules\Auth\Entities\DivisaoOrganograma;
 use App\DistribuicaoDemanda;
 use App\SituacaoDemanda;
 use App\User;
@@ -190,7 +190,7 @@ class DemandaController extends Controller
 
     public function listarAtribuiveis() {
         $divisoes = DB::table('divisaoorganograma')
-            ->select(DB::raw("concat(id, ':Modules\Auth\Entities\DivisaoOrganograma') as id, sigla as text"));
+            ->select(DB::raw("concat(id, '\Modules\Auth\Entities\DivisaoOrganograma') as id, sigla as text"));
             //->get();
         $usuarios = DB::table('users')
             ->select(DB::raw("concat(id, ':User') as id, name as text"))
