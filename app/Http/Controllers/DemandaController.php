@@ -233,7 +233,7 @@ class DemandaController extends Controller
         $distribuidaParaOProprioUsuario = $distribuicao->assignable_type == 'App\User' 
             && $distribuicao->assignable_id == $user->id;
 
-        $distribuidaParaDivisaoUsuario = $distribuicao->assignable_type == 'Modules\Auth\Entities\DivisaoOrganograma';
+        $distribuidaParaDivisaoUsuario = $distribuicao->assignable_type == '\Modules\Auth\Entities\DivisaoOrganograma';
         if($distribuidaParaDivisaoUsuario) {
             $distribuidaParaDivisaoUsuario = $usuario->divisoesOrganograma()
                 ->where('divisaoorganograma.id', $distribuicao->assignable_id)->first();
@@ -505,7 +505,7 @@ class DemandaController extends Controller
 
     public function relatorioAbertasPorDistribuicao($dataDe = null, $dataAte = null)
     {
-        $div = "\\";
+        $div = '\\';
 
         $sqlDeAte = $this->stringDataDocumentoDeAte('d.dataDocumento', $dataDe, $dataAte);
 
@@ -522,7 +522,7 @@ class DemandaController extends Controller
                     JOIN distribuicaodemanda dd ON dd.idDemanda = d.id
                     JOIN situacaodemanda sd ON sd.id = d.idSituacaoDemanda
                     LEFT JOIN users u ON u.id = dd.assignable_id AND dd.assignable_type = "App'.$div.'User"
-                    LEFT JOIN divisaoorganograma do ON do.id = dd.assignable_id AND dd.assignable_type = "Modules'.$div.'Auth'.$div.'Entities'.$div.'DivisaoOrganograma"
+                    LEFT JOIN divisaoorganograma do ON do.id = dd.assignable_id AND dd.assignable_type = "\Modules'.$div.'Auth'.$div.'Entities'.$div.'DivisaoOrganograma"
                 WHERE 
                     sd.situacao = "Em análise" 
                     AND dd.dataAtendimento is null 
