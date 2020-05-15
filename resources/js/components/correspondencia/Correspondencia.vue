@@ -115,16 +115,16 @@
         <div v-if="entidadeAtual.codigo" >
           <v-layout style="width: 100%; margin: 0 " align-end>
             <v-flex xs3>
-              <h5>{{entidadeAtual.tipo}}</h5>
+              <h6>{{entidadeAtual.tipo}}</h6>
             </v-flex>
             <v-flex xs1>
-              <h5 align="right">{{entidadeAtual.sequencia}}/{{entidadeAtual.ano}} -</h5>
+              <h6 align="right">{{entidadeAtual.sequencia}}/{{entidadeAtual.ano}} -</h6>
             </v-flex>
             <v-flex xs2 style="margin-left: 4px ">              
-              <h5> {{entidadeAtual.assunto}}</h5> 
+              <h6> {{entidadeAtual.assunto}}</h6> 
             </v-flex>
             <v-flex>
-              <h5>{{entidadeAtual.referencia}}</h5>
+              <h6>{{entidadeAtual.referencia}}</h6>
             </v-flex>
             <v-flex align=right>
                 <v-tooltip bottom v-if="entidadeAtual.descartar" >
@@ -310,16 +310,16 @@
       <v-container grid-list-md >
         <v-layout style="width: 100%; margin: -4px ">
           <v-flex xs3>
-            <h5>{{entidadeAtual.tipo}}</h5>
+            <h6>{{entidadeAtual.tipo}}</h6>
           </v-flex>
           <v-flex xs1>
-            <h5 align="right">{{entidadeAtual.sequencia}}/{{entidadeAtual.ano}} -</h5>
+            <h6 align="right">{{entidadeAtual.sequencia}}/{{entidadeAtual.ano}} -</h6>
           </v-flex>
           <v-flex xs2 style="margin: 0 ">              
-            <h5>{{entidadeAtual.assunto}}</h5> 
+            <h6>{{entidadeAtual.assunto}}</h6> 
           </v-flex>
           <v-flex>
-            <h5>{{entidadeAtual.referencia}}</h5>
+            <h6>{{entidadeAtual.referencia}}</h6>
           </v-flex>
         </v-layout>
         <br><br>
@@ -477,6 +477,7 @@ export default {
       anoAtual:1,
       paginaCorrente:1,
       setorAtual:null,
+      setorDivisaoOrg:null,
       tipoAtual:null,
       entidadeAtual:[{codigo:null}],
       logradouros:[],
@@ -869,6 +870,7 @@ export default {
       this.codigoEtiqueta = '';
       this.codigoECT = '';
       this.verboAdicionar ='';
+      this.setorAtual = this.setorSelect;
     },
     novo() {
       this.verboAdicionar ='Cadastrar';
@@ -877,7 +879,7 @@ export default {
       this.cadastrarDestinatario=false;
       this.entidadeAtual = {
         codigo: null,
-        setor:this.setorSelect,
+        setor:this.setorDivisaoOrg,
         ano:this.anoSelectInclusao,
       };
       this.entidadeAtual.novo = this.novoDestinatario();
@@ -892,13 +894,20 @@ export default {
           response.body.forEach(element => {
             if (element.codigo){              
               this.setores.push({'text':element.descricao, 'value':element.codigo});
-              this.setoresInclusao.push({'text':element.descricao, 'value':element.codigo});
             }
             else{
               if(element.userSetor){
                 this.setorSelect = element.userSetor.setor.codigo;
                 this.userLegado  = element.userSetor.codigo;
                 this.setorAtual = this.setorSelect;
+                this.setorDivisaoOrg = element.userSetor.setor.setor_divisao_org.idDivisaoOrganograma;
+              }
+              else{
+                if(element.divisaoOrg){
+                  element.divisaoOrg.forEach(divisao => {
+                    this.setoresInclusao.push({'text':divisao.sigla, 'value':divisao.id});
+                  })
+                }
               }
             }
           });

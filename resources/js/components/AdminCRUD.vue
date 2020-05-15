@@ -21,7 +21,7 @@
               hide-details              
             ></v-select>
             <v-spacer></v-spacer>   
-            <v-select style="width: 100px; margin: 0 auto"
+            <v-select style="width: 150px; "
               :items="setores"
               v-model="setorSelectAtual"
               label="Setor de Origem"                

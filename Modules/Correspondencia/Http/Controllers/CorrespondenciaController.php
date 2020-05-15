@@ -12,6 +12,8 @@ use Modules\Correspondencia\Entities\TipoCorrespondencia;
 use Modules\Correspondencia\Entities\TipoLogradouro;
 use Modules\Correspondencia\Entities\Municipios;
 use Modules\Correspondencia\Entities\ListaPostagem;
+use Modules\Correspondencia\Entities\SetorDivisaoOrganograma;
+use Modules\Auth\Entities\DivisaoOrganograma;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -59,6 +61,7 @@ class CorrespondenciaController extends Controller
     {
         $cpf =  auth()->user()->cpf;
         $tecnico = Tecnicos::where('cpf', $cpf)->first();
+        $divisaoOrg = DivisaoOrganograma::get();
         if (is_null($tecnico))
         {
             $this->inserirTecnico($cpf);
@@ -66,6 +69,7 @@ class CorrespondenciaController extends Controller
         }
         $result = Setor::orderBy("descricao" , "asc")->get();
         $result[] = ['userSetor'=>$tecnico];
+        $result[] = ['divisaoOrg'=>$divisaoOrg];
         return $result;
     }
 
@@ -207,13 +211,20 @@ class CorrespondenciaController extends Controller
         if (!$seq){
             return response()->json(['message' => 'Documento SEI já existe'], 500);
         }
+        $setorDivisao = SetorDivisaoOrganograma::whereRaw('idDivisaoOrganograma = '.$request->setor)->first();
+        if (!$setorDivisao){
+            $setor = $this->criarSetor($request->setor);
+        }
+        else{
+            $setor = $setorDivisao->idSetor;
+        }
         $corr = new Correspondencia;
         $corr->tipo = $request->tipo;
         $corr->ano = $request->ano;
         $corr->sequencia = $seq;
         $corr->assunto = $request->assunto;
         $corr->referencia = $request->referencia;
-        $corr->setor = $request->setor;
+        $corr->setor = $setor;
         $corr->tecnico = $request->userLegado;
 
         return response()->json($corr->save());
@@ -224,6 +235,18 @@ class CorrespondenciaController extends Controller
         $seqResult = $tipo < 16 ?  1 : $seq;
         $corr = Correspondencia::Ativo()->whereRaw($whereRaw)->orderBy('sequencia', 'desc')->first();   
         return $corr == null ? $seqResult : ($tipo > 15 ?  null : $corr->sequencia + 1);                    
+    }
+    
+    public function criarSetor($divisao){
+        $resp = DivisaoOrganograma::find($divisao);
+        $setor = new Setor;
+        $setor->descricao = $resp->sigla;
+        $setor->save();
+        $setorDivisao = new SetorDivisaoOrganograma;
+        $setorDivisao->idSetor = $setor->codigo;
+        $setorDivisao->idDivisaoOrganograma = $divisao;
+        $setorDivisao->save();
+        return $setor->codigo;
     }
 
     public function inserirLista(Request $request)
