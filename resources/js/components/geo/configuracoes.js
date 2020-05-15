@@ -15,6 +15,16 @@ export default {
     },
     mapas: [
         {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", 
+            "ativo": true,
+            "configuracoes": {
+                "label": "Esri World Imagery",
+                "maxNativeZoom": 19,
+                "maxZoom": 100,
+                "attribution": "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+            }
+        },
+        {
             "url": "http://sigsc.sc.gov.br/sigserver/SIGSC/wms",
             "wms": true,
             "ativo": true,
@@ -23,7 +33,7 @@ export default {
                 "maxNativeZoom": 19,
                 "maxZoom": 100,
                 "layers": "OrtoRGB-Landsat-2012",
-                "iconURL": "sig-sc.png"
+                "iconURL": "/images/sig-sc.png"
             }
         }, 
         {
@@ -42,16 +52,6 @@ export default {
                 "label": "OpenTopoMap",
                 "maxZoom": 17,
                 "attribution": "Map data: &copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors, <a href='http://viewfinderpanoramas.org'>SRTM</a> | Map style: &copy; <a href='https://ap.org'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/'>CC-BY-SA</a>)"
-            }
-        },
-        {
-            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", 
-            "ativo": true,
-            "configuracoes": {
-                "label": "Esri World Imagery",
-                "maxNativeZoom": 19,
-                "maxZoom": 100,
-                "attribution": "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
             }
         },
         {
@@ -119,6 +119,7 @@ export default {
             titulo: "América Latina",
             grupo: "Limites Territoriais",
             url: "https://raw.githubusercontent.com/Cadastro-Marinho/LatinAmericaData/master/LatinAmerica.geojson",
+            ativo: true,
             callbacks: {
                 estilo: function(feature) {
                     return {
@@ -167,6 +168,7 @@ export default {
         {
             titulo: "Estados BR",
             url: "https://raw.githubusercontent.com/Cadastro-Marinho/BrasilData/master/unidades_federacao.geojson",
+            ativo: true,
             callbacks: {
                 estilo: () => {
                     return {
@@ -191,6 +193,7 @@ export default {
         {
             titulo: "Municípios",
             url: "https://raw.githubusercontent.com/lfpdroubi/SPUData/master/municipios.geojson",
+            ativo: true,
             callbacks: {
                 estilo: areaStyle,
                 onEachFeature: function( feature, layer ){

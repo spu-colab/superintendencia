@@ -21,7 +21,7 @@
                     <!-- Cargo -->
                     <v-flex xs12 lg3>
                         <v-autocomplete label="Cargo"
-                        :items="cargos" v-model="entidadeAtual.idcargo" 
+                        :items="cargos" v-model="entidadeAtual.idCargo" 
                         :rules="[validacao.obrigatorio]"
                         item-text="cargo" item-value="id"  />
                     </v-flex>
@@ -29,7 +29,7 @@
                     <!-- Órgão -->
                     <v-flex xs12 lg9>
                         <v-autocomplete label="Órgão"
-                        :items="orgaos" v-model="entidadeAtual.idorgao" 
+                        :items="orgaos" v-model="entidadeAtual.idOrgao" 
                         :rules="[validacao.obrigatorio]"
                         item-text="orgao" item-value="id"  />
                     </v-flex>
@@ -119,11 +119,11 @@ export default {
                 url = rotas.rotas().autorDemanda.editar + '' + this.entidadeAtual.id;
             }
             formData.append('autordemanda[nome]', this.entidadeAtual.nome)
-            if(this.entidadeAtual.idcargo) {
-                formData.append('autordemanda[idCargo]', this.entidadeAtual.idcargo)
+            if(this.entidadeAtual.idCargo) {
+                formData.append('autordemanda[idCargo]', this.entidadeAtual.idCargo)
             }
-            if(this.entidadeAtual.idorgao) {
-                formData.append('autordemanda[idOrgao]', this.entidadeAtual.idorgao)
+            if(this.entidadeAtual.idOrgao) {
+                formData.append('autordemanda[idOrgao]', this.entidadeAtual.idOrgao)
             }
             formData.append('autordemanda[email]', this.entidadeAtual.email)
             if(this.entidadeAtual.telefone) {

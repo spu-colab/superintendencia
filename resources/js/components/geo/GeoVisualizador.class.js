@@ -42,7 +42,7 @@ export default class Geovisualizador {
         }))
         // */
 
-        new L.Control.MiniMap(this.getMapasBase()[1], {
+        new L.Control.MiniMap(this.getMapasBase()[0], {
             position: 'topright',
             toggleDisplay: true
           }
@@ -183,7 +183,7 @@ export default class Geovisualizador {
                 : null
         })
         this.inserirCamadaNoGrupo(camadaGeoJson, leafletGeoJson)
-        if(camadaGeoJson.ativa) {
+        if(camadaGeoJson.ativo) {
             leafletGeoJson.addTo(this.mapa)
         }
         return leafletGeoJson

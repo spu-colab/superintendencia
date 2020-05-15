@@ -49,11 +49,11 @@
                     <v-layout row wrap>
                         <!-- Demandante -->
                         <v-flex xs6>
-                            <v-autocomplete
-                                v-model="entidadeAtual.autor" :items="demandantes" :loading="carregando" :search-input.sync="search" color="white"
+                            <v-autocomplete label="Demandante" v-model="entidadeAtual.autor" 
+                                :items="computedAutores" :loading="carregandoAutores" 
+                                :search-input.sync="termoBuscaAutores" color="white"
                                 hide-no-data hide-selected
                                 item-text="nome" item-value="id"
-                                label="Demandante"
                                 placeholder="Nome do autor da demanda"
                                 prepend-icon="record_voice_over"
                                 return-object tabindex="1"
@@ -65,7 +65,7 @@
                                     <template v-else>
                                         <v-list-item-content>
                                             <v-list-item-title v-html="data.item.nome"></v-list-item-title>
-                                            <v-list-item-subtitle v-html="data.item.cargo.cargo + ' - ' + data.item.orgao.sigla"></v-list-item-subtitle>
+                                            <v-list-item-subtitle v-html="(data.item.cargo ? (data.item.cargo.cargo + ' - ') : '') + (data.item.orgao ? data.item.orgao.sigla : '')"></v-list-item-subtitle>
                                         </v-list-item-content>
                                     </template>
                                 </template>
@@ -73,24 +73,16 @@
                         </v-flex>
                         <!-- Procedimento Externo -->
                         <v-flex xs6>
-                            <v-autocomplete tabindex="2"
-                                v-model="entidadeAtual.procedimento_externo"
-                                :items="computedProcedimentos"
-                                :loading="carregandoProcedimentos"
-                                :search-input.sync="termoBuscaProcedimentos"
-                                color="white"
-                                hide-no-data
-                                hide-selected
-                                item-text="procedimento"
-                                item-value="id"
-                                label="Procedimento Externo"
+                            <v-autocomplete label="Procedimento Externo" v-model="entidadeAtual.procedimento_externo"
+                                :items="computedProcedimentos" :loading="carregandoProcedimentos"
+                                :search-input.sync="termoBuscaProcedimentos" color="white"
+                                hide-no-data hide-selected
+                                item-text="procedimento" item-value="id"
                                 placeholder="Número/identificador do procedimento externo"
                                 prepend-icon="account_balance"
-                                return-object 
+                                return-object tabindex="2" 
                                 :rules="[validacao.obrigatorio]">
-                                <template
-                                slot="item"
-                                slot-scope="data">
+                                <template slot="item" slot-scope="data" required>
                                     <template v-if="typeof data.item !== 'object'">
                                         <v-list-item-content v-text="data.item"></v-list-item-content>
                                     </template>
@@ -531,8 +523,10 @@ export default {
                 email: v => /.+@.+\..+/.test(v) || 'E-mail precisa ser válido',
                 date: v => vm.dataValida(v) || 'Informe uma data válida'
             },
-            search: null,
             demandantes: [],
+            carregandoAutores: false,
+            termoBuscaAutores: null,
+
             tiposDocumento: [],
             situacoes: [],
             
@@ -619,10 +613,12 @@ export default {
                             // console.log(response)
                             this.carregarElementosTela()
                             response.body.forEach(element => {
-                                this.prepararDistribuicoes(element)
+                                // console.log(element)
                                 this.entidadeAtual = element
                                 this.dataDocumento = element.dataDocumento
                                 this.dataPrazo = element.dataPrazo
+                                this.prepararDistribuicoes(element)
+                                // console.log('this.entidadeAtual', this.entidadeAtual)
                             })
                         },
                         error => {
@@ -695,12 +691,12 @@ export default {
             formData.append('distribuicao[idDemanda]', this.entidadeAtual.id)
             formData.append('distribuicao[idUsuarioDe]', this.usuario.id)
             if(this.distribuicao.atribuirPara) {
-                // console.log(this.distribuicao.atribuirPara)
+                console.log(this.distribuicao.atribuirPara)
                 let splitAtribuirPara = this.distribuicao.atribuirPara.split(":")
                 formData.append('distribuicao[assignable_id]', splitAtribuirPara[0])
                 let prefixoEntidateAtribuivel = "App\\"
-                if(splitAtribuirPara[1] == 'DivisaoOrganograma') {
-                    prefixoEntidateAtribuivel = "Modules\\Auth\\Entities\\"
+                if(splitAtribuirPara[1].endsWith('DivisaoOrganograma')) {
+                    prefixoEntidateAtribuivel = "\\"
                 }
                 formData.append('distribuicao[assignable_type]', prefixoEntidateAtribuivel + splitAtribuirPara[1])
             }
@@ -786,26 +782,12 @@ export default {
             this.carregando = true;
             this.registros = [];
             let url = rotas.rotas().demanda.listar
-            /* PAGINACAO 
-            let config = {
-                params: {
-                    per_page: this.paginacao.per_page,
-                    page: pagina
-                }
-            }   
-            this.$http.get(url, config).then(
-            */
             this.$http.get(url).then(
                     response => {
-//                         console.log(response)
-                        // console.log(response);
-                        // PAGINACAO this.obterDadosPaginacao(response.body);
 
-                        // PAGINACAO response.body.data.forEach(element => {
                         response.body.forEach(element => {
                         element.orgao = element.autor.orgao.sigla
                         element.demandante = element.autor.nome
-                        
                         this.prepararDistribuicoes(element)
                         
                         element.situacao = element.situacao.situacao
@@ -878,20 +860,38 @@ export default {
                 )
         },
         carregarAutoresDemanda () {
-            this.carregando = true
             this.demandantes = []
             this.$http.get(rotas.rotas().autorDemanda.listar)
                 .then(res => {
-                    // console.log(res.data)
-                    res.data.forEach((autor) => {
+                    // console.log(res)
+                    res.body.forEach((autor) => {
+                        // console.log(autor)
                         this.demandantes.push(autor)
                     })
-                })
-                .catch(err => {
-                    console.log(err)
-                })
-                .finally(() => (this.carregando = false))
+                    this.carregandoAutores = false
+                },
+                    err => {
+                        console.log(err)
+                        this.carregandoAutores = false
+                    }
+                )
         },
+        carregarProcedimentosExternos() {
+            this.procedimentos = []
+            this.$http.get(rotas.rotas().procedimentoExterno.listar)
+                .then(response => {
+                    response.body.forEach(element => {
+                        this.procedimentos.push(element)
+                    })
+                    this.carregandoProcedimentos = false
+                },
+                    error => {
+                        console.log(error)
+                        this.carregandoProcedimentos = false
+                    }
+                )
+        },
+
         carregarTiposDocumento () {
             this.carregando = true
             this.tiposDocumento = []
@@ -942,23 +942,7 @@ export default {
                     })
         },
 
-        carregarProcedimentosExternos() {
-            this.$http.get(rotas.rotas().procedimentoExterno.listar)
-                .then(
-                    response => {
-                        response.body.forEach(element => {
-                            this.procedimentos.push(element)
-                            this.carregandoProcedimentos = false
-                        })
-                    },
-                    error => {
-                        error => {
-                            console.log(error)
-                            this.carregandoProcedimentos = false
-                        }
-                    }
-                )
-        },
+        
 
         formatDate (date) {
             if (!date) return null
@@ -1127,6 +1111,10 @@ export default {
         computedOrgaoSelecionado() {
         return this.entidadeAtual.autor ? "/" + this.entidadeAtual.autor.orgao.sigla : null
         },
+        computedAutores() {
+            return this.demandantes
+        },
+
         computedProcedimentos () {
             return this.procedimentos
         },
@@ -1178,11 +1166,13 @@ export default {
         }
     },
     watch: {
-        search (val) {
+        termoBuscaAutores (val) {
             // Items have already been loaded
-            if (this.demandantes.length > 0) return
+            if (this.computedAutores.length > 0) return
             // Items have already been requested
-            if (this.carregando) return
+            if (this.carregandoAutores) return
+
+            this.carregarAutoresDemanda()
         },
         termoBuscaProcedimentos (val) {
             // Items have already been loaded
