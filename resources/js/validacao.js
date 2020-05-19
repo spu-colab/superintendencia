@@ -43,12 +43,18 @@ var Validador = function() {
         return mensagem
     }
 
+    var data = function(valor) {
+        const msg = 'Data inválida'
+        return /\d{2}\/\d{2}\/\d{4}/.test(valor) || msg
+    }
+
     return { 
         email: email,
         obrigatorio: obrigatorio,
         tamanhoMinimo : tamanhoMinimo,
         tamanho: tamanho,
-        igual: igual
+        igual: igual,
+        data: data
     }
 } ();
 

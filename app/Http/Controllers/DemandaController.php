@@ -34,9 +34,27 @@ class DemandaController extends Controller
      */
     public function index(Request $request)
     {
+        $distribuicoes_usuarios =  DistribuicaoDemanda::
+            selectRaw('distribuicaodemanda.idDemanda, users.name as para')
+            ->join('users', function($join) {
+                $join->on('users.id', '=', 'distribuicaodemanda.assignable_id')
+                    ->where([
+                        ['distribuicaodemanda.dataAtendimento', NULL],
+                        ['distribuicaodemanda.assignable_type', 'LIKE', '%\User']
+                        ]);
+            });
+        $distribuicoes =  DistribuicaoDemanda:://with(['assignable'])
+            selectRaw('distribuicaodemanda.iddemanda, divisaoorganograma.sigla as para')
+            ->join('divisaoorganograma', function($join) {
+                $join->on('divisaoorganograma.id', '=', 'distribuicaodemanda.assignable_id')
+                    ->where([
+                        ['distribuicaodemanda.dataAtendimento', NULL],
+                        ['distribuicaodemanda.assignable_type', 'LIKE', '%\DivisaoOrganograma']
+                    ]);
+            })->union($distribuicoes_usuarios)->orderBy('iddemanda');
+        // return response()->json($distribuicoes->paginate(10));
         
-        $per_page = $request->input('per_page');
-        $result = Demanda::with(
+        $consulta = Demanda::with(
             [
                 'autor.cargo', 
                 'autor.orgao',
@@ -44,10 +62,68 @@ class DemandaController extends Controller
                 'situacao',
                 'distribuicoes.colaboradorDe',
                 'distribuicoes.assignable'
-            ]
-        )->orderBy('dataPrazo')->get();
-        // ->paginate($per_page);
-        return $result;
+            ])
+            ->selectRaw('demanda.*, autor.nome as demandante, procedimentoexterno.procedimento as procedimentoExterno, 
+                GROUP_CONCAT(distribuicoes.para, ",") as distribuidapara')
+            ->join('autordemanda as autor', 'autor.id', '=', 'demanda.idAutorDemanda')
+            ->join('cargo', 'cargo.id', '=', 'autor.idCargo')
+            ->join('orgao', 'orgao.id', '=', 'autor.idOrgao')
+            ->join('procedimentoexterno', 'procedimentoexterno.id', '=', 'demanda.idprocedimentoexterno')
+            ->join('tipoprocedimentoexterno', 'tipoprocedimentoexterno.id', '=', 'procedimentoexterno.idtipoprocedimentoexterno')
+            ->join('situacaodemanda', 'situacaodemanda.id', '=', 'demanda.idsituacaodemanda')
+            ->leftJoinSub($distribuicoes, 'distribuicoes', function($join) {
+                $join->on('distribuicoes.iddemanda', '=', 'demanda.id');
+            });
+
+        $where = [];
+        if(boolval($request->abertas)) {
+            $where[] = "situacaodemanda.situacao IN ('Nova', 'Em análise', 'Pronta', 'Aguardando assinatura', 'Aguardando AR')";
+        }
+        if(boolval($request->atrasadas)) {
+            $where[] = "(demanda.dataPrazo IS NOT NULL and demanda.dataPrazo < now())";
+        }
+        if(boolval($request->sentencas)) {
+            $where[] = "demanda.sentencajudicial = true";
+        }
+        foreach ($where as $w => $vWhere) {
+            $consulta = $w ? $consulta->whereRaw($vWhere) :
+                $consulta->whereRaw($vWhere); 
+        }
+
+        if($request->search) {
+            $termoBusca = '%'. $request->search .'%';
+
+            $searchWhere = '(false ';
+            $searchWhere .= " OR demanda.nupSEI LIKE '$termoBusca'";
+            $searchWhere .= " OR DATE_FORMAT(demanda.dataPrazo, '%d/%m/%Y') LIKE '$termoBusca'";
+            $searchWhere .= " OR demanda.documentoExterno LIKE '$termoBusca'";
+            $searchWhere .= " OR procedimentoexterno.procedimento LIKE '$termoBusca'";
+            $searchWhere .= " OR procedimentoexterno.resumo LIKE '$termoBusca'";
+            $searchWhere .= " OR autor.nome LIKE '$termoBusca'";
+            $searchWhere .= " OR distribuicoes.para LIKE '$termoBusca'";
+            $searchWhere .= " OR situacaodemanda.situacao LIKE '$termoBusca'";
+            $searchWhere .= " OR tipoprocedimentoexterno.tipoprocedimento LIKE '$termoBusca'";
+            $searchWhere .= " OR tipoprocedimentoexterno.tipoprocedimento LIKE '$termoBusca'";
+            $searchWhere .= " OR orgao.orgao LIKE '$termoBusca'";
+            $searchWhere .= " OR orgao.sigla LIKE '$termoBusca'";
+
+            $searchWhere .= ')';
+
+            $consulta->whereRaw($searchWhere);
+        }
+
+        $consulta->groupBy('demanda.id');
+
+        $orderBy = $request->order ?? 'dataDocumento';
+        $consulta = $consulta->orderBy($orderBy, 
+            $request->ascending === 'false' ? 'desc' : 'asc',
+            SORT_NATURAL|SORT_FLAG_CASE
+        );
+
+        $resultado = $request->per_page > 0 
+            ? $consulta->paginate($request->per_page)
+            : $consulta->get();
+        return response()->json($resultado);
     }
 
     /**

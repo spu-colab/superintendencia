@@ -2,7 +2,6 @@ export default {
     parseDate (date) {
         // console.log(date)
         if (!date) return null
-
         const [day, month, year] = date.split('/')
         let retorno = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
         // console.log('parseDate = ')

@@ -1,9 +1,13 @@
 <template>
-    <crud 
+    <crud v-if="urlBase" ref="crud"
         nomeEntidade="Demanda" nomeEntidadePlural="Demandas"
-        :headers="cabecalhos" :items="computedRegistros" :carregando="carregando" 
-        :podeSalvar="podeSalvar" :exibirPaginacaoCliente="true" :imprimir="true"
+        :headers="cabecalhos" 
+        :resource-url="computedUrlBase"
+        itemKey="id"
+
+        :podeSalvar="podeSalvar" :imprimir="true"
         :voltar-para-primeira-tela-ao-salvar="false" 
+        :for-each-item-callback="forEachItemCallBack"
         @clicou-item="selecionarParaEdicao" 
         @clicou-salvar="salvar"
         @clicou-cancelar="cancelar"
@@ -15,7 +19,7 @@
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" rounded 
                         :color="switchSomenteAbertas ? 'green' : 'grey'" 
-                        @click="switchSomenteAbertas = !switchSomenteAbertas">
+                        @click="toggleDemandasAbertas">
                         <v-icon>play_arrow</v-icon>
                     </v-btn>
                 </template>
@@ -25,7 +29,7 @@
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" rounded 
                         :color="switchSomenteAtrasadas ? 'red' : 'grey'" 
-                        @click="switchSomenteAtrasadas = !switchSomenteAtrasadas">
+                        @click="toggleDemandasAtrasadas">
                         <v-icon>access_alarm</v-icon>
                     </v-btn>
                 </template>
@@ -35,7 +39,7 @@
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" rounded 
                         :color="switchSomenteSentencas ? 'red' : 'grey'" 
-                        @click="switchSomenteSentencas = !switchSomenteSentencas">
+                        @click="toggleDemandasSentencas">
                         <v-icon>gavel</v-icon>
                     </v-btn>
                 </template>
@@ -136,7 +140,7 @@
                                         hint="DD/MM/AAAA"
                                         persistent-hint
                                         prepend-icon="event" 
-                                        :rules="[validacao.obrigatorio, validacao.date]" required 
+                                        :rules="[validacao.obrigatorio, validacao.data]" required 
                                         @blur="dataDocumento = parseDate(dataDocumentoFormatada)"
                                         />
                                 </template>
@@ -157,7 +161,7 @@
                         <v-flex xs3>
                             <v-text-field label="NUP SEI" tabindex="5" 
                                 v-model="entidadeAtual.nupSEI" 
-                                :rules="[validacao.obrigatorio, validacao.min15]" required 
+                                :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.nupSEI, 15)]" required 
                                 counter="20" maxlength="20"/>
                         </v-flex>
 
@@ -183,7 +187,7 @@
                                 <template v-slot:activator="{ on }">
                                     <v-text-field  tabindex="7" 
                                         mask="##/##/####" return-masked-value
-                                        :rules="[validacao.date]" 
+                                        :rules="[validacao.data]" 
                                         v-on="on" 
                                         v-model="dataPrazoFormatada"
                                         label="Prazo"
@@ -269,7 +273,7 @@
                             label="O demandante nos solicita..."
                             placeholder="informar sobre a situação das inscrições de ocupação..."
                             v-model="entidadeAtual.demanda"
-                            :rules="[validacao.obrigatorio, validacao.min8]" required>
+                            :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.demanda, 8)]" required>
                         </v-textarea>
                     </v-layout>
 
@@ -386,9 +390,10 @@
 
 <script>
 import rotas from './../../rotas-servico.js'
-import CRUD from './../CRUD'
-import { isNull } from 'util';
-import { setTimeout } from 'timers';
+import CRUD from './../ApiCrud'
+import Validador from './../../validacao';
+import Utils from './../../Utils'
+// import { setTimeout } from 'timers';
 export default {
     components: {
         'crud' : CRUD
@@ -398,14 +403,15 @@ export default {
             switchSomenteAbertas: true,
             switchSomenteAtrasadas: false,
             switchSomenteSentencas: false,
-            carregando: true,
+
+            urlBase: rotas.rotas().demanda.listar + '?abertas=1',
+            
             cabecalhos: [
                 {
                     text: 'Demanda',
-                    type: 'filter',
-                    valueProperty: 'nupSEI',
-                    align: 'left',
                     value: 'nupSEI',
+                    sortable: true,
+                    align: 'left',
                     subheader: 'documentoExterno',
                     icon: 'iconeSituacao',
                     color: 'corIconeSituacao',
@@ -413,7 +419,6 @@ export default {
                 },
                 {
                     text: 'Procedimento Externo', 
-                    type: 'filter',
                     valueProperty: 'procedimentoExterno',
                     value: 'procedimentoExterno',
                     sortable: true,
@@ -425,19 +430,20 @@ export default {
                 },
                 {
                     text: 'Demandante', 
-                    type: 'filter',
-                    valueProperty: 'demandante',
                     value: 'demandante',
+                    sortable: true,
                     subheader: 'orgao'
                 },
                 {
                     text: 'Distribuída para', 
                     value: 'distribuidaParaChips',
-                    type: 'chip'
+                    type: 'chip',
+                    sortable: false
                 },
                 {
                     text: 'Resumo/Situação', 
                     value: 'resumoSituacao',
+                    sortable: false,
                 },
                 {
                     text: 'Prazo', 
@@ -445,7 +451,8 @@ export default {
                     type: 'date',
                     icon: 'iconeAtrazo',
                     color: 'red',
-                    iconTooltip: 'iconTooltip'
+                    iconTooltip: 'iconTooltip',
+                    sortable: true
                 },
                 // colunas escondidas para tornar possível a busca por seus valores
                 {
@@ -496,17 +503,7 @@ export default {
                     align: ' d-none', type : 'hidden',
                 },
             ],
-            registros: [
-                ],
-            paginacao: {
-                current_page: 1,
-                per_page: 100,
-                from: 0,
-                to: 0,
-                total: 0,
-            },
-
-            //formulario
+            
             entidadeAtual: {
                 dataPrazo: new Date().toISOString().substr(0, 10),
                 dataDocumento: new Date().toISOString().substr(0, 10),
@@ -515,14 +512,9 @@ export default {
                     }
                 }
             },
-            validacao: {
-                obrigatorio: value => !!value || 'Preenchimento obrigatório.',
-                min15: v => !!v && v.length >= 15 || 'No mínimo 15 caracteres' ,
-                min8: v => !!v && v.length >= 8 || 'No mínimo 8 caracteres' ,
-                min2: v => !!v && v.length >= 2 || 'No mínimo 2 caracteres',
-                email: v => /.+@.+\..+/.test(v) || 'E-mail precisa ser válido',
-                date: v => vm.dataValida(v) || 'Informe uma data válida'
-            },
+
+            validacao: Validador,
+
             demandantes: [],
             carregandoAutores: false,
             termoBuscaAutores: null,
@@ -583,15 +575,7 @@ export default {
             console.log(obj)
             return obj
         },
-        dataValida(v) {
-            if(isNull(v)) return true
-            if(v.length == 0) return true
-            if(v.length != 10) return false
-            let date = this.parseDate(v)
-            // console.log('date: ' + date)
-            // console.log(!isNaN(new Date(this.parseDate(v))))
-            return !isNaN(new Date(this.parseDate(v)))
-        },
+        
 
         selecionarParaEdicao(item) {           
             // console.log('Item selecionado: ' + item.id)
@@ -778,87 +762,73 @@ export default {
                 total
             }
         },
-        carregarItens(pagina = 1) {
-            this.carregando = true;
-            this.registros = [];
-            let url = rotas.rotas().demanda.listar
-            this.$http.get(url).then(
-                    response => {
 
-                        response.body.forEach(element => {
-                        element.orgao = element.autor.orgao.sigla
-                        element.demandante = element.autor.nome
-                        this.prepararDistribuicoes(element)
-                        
-                        element.situacao = element.situacao.situacao
-                        switch (element.situacao) {
-                            case 'Nova':
-                                element.iconeSituacao = 'new_releases'
-                                element.corIconeSituacao = 'blue'
-                                break;
-                            case 'Em análise':
-                                element.iconeSituacao = 'hourglass_empty'
-                                element.corIconeSituacao = 'orange'
-                                break;
-                            case 'Pronta':
-                                element.iconeSituacao = 'hourglass_full'
-                                element.corIconeSituacao = 'green'
-                                break;
-                            case 'Aguardando assinatura':
-                                element.iconeSituacao = 'assignment_late'
-                                element.corIconeSituacao = 'black'
-                                break;
-                            case 'Aguardando AR':
-                                element.iconeSituacao = 'beenhere'
-                                element.corIconeSituacao = 'purple'
-                                break;                        
-                            case 'Resolvida':
-                                element.iconeSituacao = 'done'
-                                element.corIconeSituacao = 'grey'
-                                break;
-                            case 'Cancelada':
-                                element.iconeSituacao = 'delete'
-                                element.corIconeSituacao = 'grey'
-                                break;
-                            default:
-                                break;
-                        }
+        forEachItemCallBack(element) {
+            element.orgao = element.autor.orgao.sigla
+            this.prepararDistribuicoes(element)
+            
+            element.situacao = element.situacao.situacao
+            switch (element.situacao) {
+                case 'Nova':
+                    element.iconeSituacao = 'new_releases'
+                    element.corIconeSituacao = 'blue'
+                    break;
+                case 'Em análise':
+                    element.iconeSituacao = 'hourglass_empty'
+                    element.corIconeSituacao = 'orange'
+                    break;
+                case 'Pronta':
+                    element.iconeSituacao = 'hourglass_full'
+                    element.corIconeSituacao = 'green'
+                    break;
+                case 'Aguardando assinatura':
+                    element.iconeSituacao = 'assignment_late'
+                    element.corIconeSituacao = 'black'
+                    break;
+                case 'Aguardando AR':
+                    element.iconeSituacao = 'beenhere'
+                    element.corIconeSituacao = 'purple'
+                    break;                        
+                case 'Resolvida':
+                    element.iconeSituacao = 'done'
+                    element.corIconeSituacao = 'grey'
+                    break;
+                case 'Cancelada':
+                    element.iconeSituacao = 'delete'
+                    element.corIconeSituacao = 'grey'
+                    break;
+                default:
+                    break;
+            }
 
-                        if(element.procedimento_externo) {
-                            element.procedimentoExterno = element.procedimento_externo.procedimento
-                            if(element.procedimento_externo.tipo_procedimento_externo) {
-                                element.tipoProcedimentoExterno = element.procedimento_externo.tipo_procedimento_externo.tipoprocedimento
-                                if(element.procedimento_externo.resumo && element.procedimento_externo.resumo != 'null') {
-                                    element.procedimentoExternoResumo = element.procedimento_externo.resumo
-                                }
-                            }
-                        }
-                        if(element.sentencajudicial) {
-                            element.iconeSentenca = 'gavel'
-                            element.corIconeSentenca = 'red'
-                            element.iconTooltip = 'Cumprimento de sentença'
-
-                        }
-                        if(element.dataPrazo) {
-                            if(element.situacao != 'Cancelada' && element.situacao != 'Resolvida') {
-                                let prazo = new Date(element.dataPrazo)
-                                if(prazo < new Date()) {
-                                    element.iconeAtrazo = 'access_alarm'
-                                    element.iconTooltip = 'Resposta atrasada'
-                                }
-                            }
-                        }
-
-                        this.registros.push(element)
-                        })
-                        this.carregando = false;
-                    },
-                    error => {
-                        console.log(error)
-                        this.carregando = false;
+            if(element.procedimento_externo) {
+                element.procedimentoExterno = element.procedimento_externo.procedimento
+                if(element.procedimento_externo.tipo_procedimento_externo) {
+                    element.tipoProcedimentoExterno = element.procedimento_externo.tipo_procedimento_externo.tipoprocedimento
+                    if(element.procedimento_externo.resumo && element.procedimento_externo.resumo != 'null') {
+                        element.procedimentoExternoResumo = element.procedimento_externo.resumo
                     }
-                )
+                }
+            }
+
+            if(element.sentencajudicial) {
+                element.iconeSentenca = 'gavel'
+                element.corIconeSentenca = 'red'
+                element.iconTooltip = 'Cumprimento de sentença'
+
+            }
+            if(element.dataPrazo) {
+                if(element.situacao != 'Cancelada' && element.situacao != 'Resolvida') {
+                    let prazo = new Date(element.dataPrazo)
+                    if(prazo < new Date()) {
+                        element.iconeAtrazo = 'access_alarm'
+                        element.iconTooltip = 'Resposta atrasada'
+                    }
+                }
+            }
+            return element
         },
+        
         carregarAutoresDemanda () {
             this.demandantes = []
             this.$http.get(rotas.rotas().autorDemanda.listar)
@@ -876,6 +846,7 @@ export default {
                     }
                 )
         },
+
         carregarProcedimentosExternos() {
             this.procedimentos = []
             this.$http.get(rotas.rotas().procedimentoExterno.listar)
@@ -953,11 +924,7 @@ export default {
         },
 
         parseDate (date) {
-            if (!date) return null
-            // console.log(date)
-
-            const [day, month, year] = date.split('/')
-            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+            return Utils.parseDate(date)
         },
 
         expandirLinhaDistribuicao(props) {
@@ -1087,27 +1054,33 @@ export default {
                     this.$store.commit('sistema/alerta', error.body.message)
                 }
             )
+        },
+        atualizarUrlBase() {
+            let url = rotas.rotas().demanda.listar
+            url += '?abertas=' + (this.switchSomenteAbertas ? '1' : '0')
+            url += '&atrasadas=' + (this.switchSomenteAtrasadas ? '1' : '0')
+            url += '&sentencas=' + (this.switchSomenteSentencas ? '1' : '0')
+
+            this.urlBase = url
+        },
+        toggleDemandasAbertas() {
+            this.switchSomenteAbertas = !this.switchSomenteAbertas
+            this.atualizarUrlBase()
+        },
+        toggleDemandasAtrasadas() {
+            this.switchSomenteAtrasadas = !this.switchSomenteAtrasadas
+            if(this.switchSomenteAtrasadas) {
+                this.switchSomenteAbertas = true
+            }
+            this.atualizarUrlBase()
+            
+        },
+        toggleDemandasSentencas() {
+            this.switchSomenteSentencas = !this.switchSomenteSentencas
+            this.atualizarUrlBase()
         }
     },
     computed: {
-        computedRegistros() {           
-            return this.registros.filter(item => {
-                let filtroSomenteAbertas = true
-                if(this.switchSomenteAbertas) {
-                    filtroSomenteAbertas = item.situacao != 'Cancelada' && item.situacao != 'Resolvida'
-                }
-                let filtroSomenteAtrasadas = true
-                if(this.switchSomenteAtrasadas) {
-                    filtroSomenteAtrasadas = item.iconeAtrazo ? true : false
-                }
-                let filtroSomenteSentencas = true
-                if(this.switchSomenteSentencas) {
-                    filtroSomenteSentencas = item.sentencajudicial
-                }
-
-                return filtroSomenteAbertas && filtroSomenteAtrasadas && filtroSomenteSentencas;
-            });
-        },
         computedOrgaoSelecionado() {
         return this.entidadeAtual.autor ? "/" + this.entidadeAtual.autor.orgao.sigla : null
         },
@@ -1163,6 +1136,10 @@ export default {
                 return false;
             }
             return this.distribuicao.situacao != 'Atendida'
+        },
+        computedUrlBase() {
+            this.atualizarUrlBase()
+            return this.urlBase
         }
     },
     watch: {
@@ -1193,8 +1170,7 @@ export default {
         }
     },
     mounted() {
-        this.carregarItens()
-        
+        this.atualizarUrlBase()
         if(this.$route.params.id) {
             this.selecionarParaEdicao({ id: this.$route.params.id})
 

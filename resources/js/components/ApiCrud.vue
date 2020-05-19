@@ -60,7 +60,7 @@
                             </v-layout>
                         </h4>
                         <span else>{{ headers[index].text }}</span>
-                        <v-icon v-if="headers[index].value == options.order" small>{{ options.ascending ? 'arrow_upward' : 'arrow_downward' }}</v-icon>
+                        <v-icon v-if="headers[index].sortable && headers[index].value == options.order" small>{{ options.ascending ? 'arrow_upward' : 'arrow_downward' }}</v-icon>
                         </th>
                     </tr>
                 
@@ -178,6 +178,13 @@
 
           <v-card-actions>
             <v-container>
+
+                <v-row  v-if="paginationInfo" align="center" justify="center">    
+                  <v-col xs="12" md="8" class="text-center caption">
+                    {{ paginationInfo }}
+                  </v-col>
+                </v-row>
+                <!--
                 <v-row align="center" justify="center">
                     
                     <v-col xs="12" md="8" class="text-center caption">
@@ -185,7 +192,7 @@
                           ? 'Nenhum registro' 
                           : ( options.total == 1
                             ? "Exibindo o único registro" 
-                            : "Exibindo registros de " + options.from + " a " + options.to + " de um total de " + options.total) }}
+                            : "Exibindo registros de " + options.from + " a " + options.to + " do total de " + options.total) }}
                         {{ options.total <= 1 
                           ? ' encontrado'
                           : ' encontrados'}}
@@ -193,8 +200,8 @@
                           ? " para a pesquisa por '" + options.search + "'" 
                           : "" }}.
                     </v-col>
-                    
                 </v-row>
+                -->
                 <v-row align="center" justify="center">
                     <v-col xs="12" md="2">
                         <div class="v-data-footer">Registros por página:</div>
@@ -280,6 +287,7 @@ export default {
           { text: "Todos", value: -1 }
         ]
       },
+      paginationInfo: '',
 
       filteredItems: [],
       columnFilters: [],
@@ -344,6 +352,9 @@ export default {
     "item-key": {
       type: String,
       required: true
+    },
+    "for-each-item-callback": {
+      type: Function
     }
   },
 
@@ -389,14 +400,16 @@ export default {
     },
 
     toggleSort(index) {
-      let sortByColumnChanged = this.setSortByColumn(index)
-      if(sortByColumnChanged) {
-          this.options.ascending = true
-      } else {
-          this.options.ascending = !this.options.ascending;
+      if(this.headers[index].sortable) {
+        let sortByColumnChanged = this.setSortByColumn(index)
+        if(sortByColumnChanged) {
+            this.options.ascending = true
+        } else {
+            this.options.ascending = !this.options.ascending;
+        }
+  
+        this.loadItems();
       }
-
-      this.loadItems();
     },
 
     setSortByColumn(index) {
@@ -417,7 +430,8 @@ export default {
         ? this.options.current_page
         : 1;
 
-      let parametros = "?page=" + this.options.current_page;
+      let firstOp = this.resourceUrl.includes("?") ? "&" : "?"
+      let parametros = firstOp + "page=" + this.options.current_page;
 
       this.options.per_page = this.options.per_page ? this.options.per_page : 10;
       parametros += "&per_page=" + this.options.per_page;
@@ -447,7 +461,9 @@ export default {
           // console.log(response.body)
           this.fillPagination(response.body);
           response.body.data.forEach((element, e) => {
-              // console.log(e, element)
+              if(this.forEachItemCallback) {
+                element = this.forEachItemCallback(element)
+              }
             this.items.push(element);
           })
           // this.buscaPaginada.atualizar(response.body)
@@ -469,6 +485,8 @@ export default {
       this.options.total = Number.parseInt(apiResponse.total);
 
       this.options.itemsPerPage = Number.parseInt(apiResponse.per_page)
+
+      Vue.nextTick(this.updatePaginationInfo)
     },
 
     paginationPageValueChanged(newPage) {
@@ -511,6 +529,23 @@ export default {
         this.resetPagination()
         this.options.search = this.search
         this.loadItems();
+    },
+    updatePaginationInfo: function() {
+      let info = ''
+      if(this.items == null || this.items.last_page == 0 || this.options.total == 0) {
+        info = 'Nenhum registro encontrado'
+      } else {
+        if(this.items.length == 1 || this.options.total == 1) {
+          info = 'Exibindo o único registro encontrado'
+        } else {
+          info = 'Exibindo registros de ' + this.options.from + ' a ' + this.options.to + ' do total de ' + this.options.total + ' encontrados'
+        }
+      }
+      if(this.options.search != null && this.options.search != '') {
+        info = info + ' para a pesquisa por "' + this.options.search + '"'
+      }
+      this.paginationInfo = info + "."
+
     }
 
   },
@@ -528,7 +563,19 @@ export default {
     exibirGrid: function(val) {
       // console.log("CRUD.watch:exibirGrid", val);
       this.$emit("modou-tela", val);
+    },
+
+    resourceUrl: function(val) {
+      // console.log("CRUD.watch:resourceUrl", val);
+      this.loadItems()
+    },
+
+    "options.total": function(val, oldVal) {
+      // console.log("CRUD.watch:options", val, oldVal);
+      this.updatePaginationInfo()
     }
+    
+
   },
 
   mounted() {
