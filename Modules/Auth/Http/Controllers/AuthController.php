@@ -48,16 +48,18 @@ class AuthController extends Controller
 //        return response()->json(['message' => "CPF: ".$ascending." Já Existe na Base "], 404);
 
       if(strlen ($request->search)>0){
-          return User::with(['permissoes:Permissao.id,permissao,descricao',
-              'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])     
+          return User::with(['permissoes:permissao.id,permissao,descricao',
+              'divisoesOrganograma:divisaoorganograma.id,sigla,nome'])     
               ->whereRaw("name LIKE '%".strtolower($request->search)."%'")
               ->orWhereRaw("email LIKE '%".strtolower($request->search)."%'")
               ->orWhereRaw("telefone LIKE '%".strtolower($request->search)."%'")
               ->orWhereRaw("CONVERT(cpf , CHAR) LIKE '%" . strtolower($request->search) . "%'")
+              ->ativos()
               ->orderBy($request->ordem, $ascending)->paginate($request->per_page);
       }
-      return User::with(['permissoes:Permissao.id,permissao,descricao',
-          'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])     
+      return User::with(['permissoes:permissao.id,permissao,descricao',
+          'divisoesOrganograma:divisaoorganograma.id,sigla,nome'])
+          ->ativos()     
           ->orderBy($request->ordem , $ascending)->paginate($request->per_page);
     }
 
@@ -154,8 +156,8 @@ class AuthController extends Controller
      */
     public function edit($id)
     {
-        $user = User::with(['permissoes:Permissao.id,permissao,descricao',
-            'divisoesOrganograma:DivisaoOrganograma.id,sigla,nome'])->findOrFail($id);
+        $user = User::with(['permissoes:permissao.id,permissao,descricao',
+            'divisoesOrganograma:divisaoorganograma.id,sigla,nome'])->findOrFail($id);
         return response()->json($user);
     }
 
