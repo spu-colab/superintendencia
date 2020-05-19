@@ -140,7 +140,7 @@
                                         hint="DD/MM/AAAA"
                                         persistent-hint
                                         prepend-icon="event" 
-                                        :rules="[validacao.obrigatorio, validacao.date]" required 
+                                        :rules="[validacao.obrigatorio, validacao.data]" required 
                                         @blur="dataDocumento = parseDate(dataDocumentoFormatada)"
                                         />
                                 </template>
@@ -161,7 +161,7 @@
                         <v-flex xs3>
                             <v-text-field label="NUP SEI" tabindex="5" 
                                 v-model="entidadeAtual.nupSEI" 
-                                :rules="[validacao.obrigatorio, validacao.min15]" required 
+                                :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.nupSEI, 15)]" required 
                                 counter="20" maxlength="20"/>
                         </v-flex>
 
@@ -187,7 +187,7 @@
                                 <template v-slot:activator="{ on }">
                                     <v-text-field  tabindex="7" 
                                         mask="##/##/####" return-masked-value
-                                        :rules="[validacao.date]" 
+                                        :rules="[validacao.data]" 
                                         v-on="on" 
                                         v-model="dataPrazoFormatada"
                                         label="Prazo"
@@ -273,7 +273,7 @@
                             label="O demandante nos solicita..."
                             placeholder="informar sobre a situação das inscrições de ocupação..."
                             v-model="entidadeAtual.demanda"
-                            :rules="[validacao.obrigatorio, validacao.min8]" required>
+                            :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.demanda, 8)]" required>
                         </v-textarea>
                     </v-layout>
 
@@ -391,8 +391,9 @@
 <script>
 import rotas from './../../rotas-servico.js'
 import CRUD from './../ApiCrud'
-import { isNull } from 'util';
-import { setTimeout } from 'timers';
+import Validador from './../../validacao';
+import Utils from './../../Utils'
+// import { setTimeout } from 'timers';
 export default {
     components: {
         'crud' : CRUD
@@ -512,14 +513,7 @@ export default {
                 }
             },
 
-            validacao: {
-                obrigatorio: value => !!value || 'Preenchimento obrigatório.',
-                min15: v => !!v && v.length >= 15 || 'No mínimo 15 caracteres' ,
-                min8: v => !!v && v.length >= 8 || 'No mínimo 8 caracteres' ,
-                min2: v => !!v && v.length >= 2 || 'No mínimo 2 caracteres',
-                email: v => /.+@.+\..+/.test(v) || 'E-mail precisa ser válido',
-                date: v => vm.dataValida(v) || 'Informe uma data válida'
-            },
+            validacao: Validador,
 
             demandantes: [],
             carregandoAutores: false,
@@ -581,15 +575,7 @@ export default {
             console.log(obj)
             return obj
         },
-        dataValida(v) {
-            if(isNull(v)) return true
-            if(v.length == 0) return true
-            if(v.length != 10) return false
-            let date = this.parseDate(v)
-            // console.log('date: ' + date)
-            // console.log(!isNaN(new Date(this.parseDate(v))))
-            return !isNaN(new Date(this.parseDate(v)))
-        },
+        
 
         selecionarParaEdicao(item) {           
             // console.log('Item selecionado: ' + item.id)
@@ -938,11 +924,7 @@ export default {
         },
 
         parseDate (date) {
-            if (!date) return null
-            // console.log(date)
-
-            const [day, month, year] = date.split('/')
-            return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`
+            return Utils.parseDate(date)
         },
 
         expandirLinhaDistribuicao(props) {

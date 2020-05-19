@@ -566,12 +566,12 @@ export default {
     },
 
     resourceUrl: function(val) {
-      console.log("CRUD.watch:resourceUrl", val);
+      // console.log("CRUD.watch:resourceUrl", val);
       this.loadItems()
     },
 
     "options.total": function(val, oldVal) {
-      console.log("CRUD.watch:options", val, oldVal);
+      // console.log("CRUD.watch:options", val, oldVal);
       this.updatePaginationInfo()
     }
     
