@@ -37,4 +37,5 @@ class Demanda extends Model
     {
         return $this->hasOne('App\ProcedimentoExterno', 'id', 'idProcedimentoExterno');
     }
+
 }
