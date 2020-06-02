@@ -42,6 +42,16 @@ var Validador = function() {
         }
         return mensagem
     }
+    var maiorQue = function(valor, aComparar, mensagem) {
+        if(valor == null) {
+            return true
+        }
+
+        if(valor > aComparar) {
+            return true
+        }
+        return mensagem
+    }
 
     var data = function(valor) {
         const msg = 'Data inválida'
@@ -54,6 +64,7 @@ var Validador = function() {
         tamanhoMinimo : tamanhoMinimo,
         tamanho: tamanho,
         igual: igual,
+        maiorQue: maiorQue,
         data: data
     }
 } ();

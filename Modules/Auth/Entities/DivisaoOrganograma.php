@@ -22,5 +22,9 @@ class DivisaoOrganograma extends Model
             'Modules\Auth\Entities\UsuarioDivisaoOrganograma',
             'idDivisaoOrganograma',
             'idUsuario');   
-    } 
+    }
+    public function scopeAtivos($query)
+    {
+        return $query->where('divisaoorganograma.deleted_at', '=', null);
+    }
 }

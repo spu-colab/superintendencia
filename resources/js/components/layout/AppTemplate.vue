@@ -87,6 +87,24 @@ export default {
         rota: '/correspondencia',
       },
       { 
+        rotulo: 'Bens Patrimoniais',
+        icone: 'menu',         
+        model: true,
+        submenu: [
+          {
+            rotulo: 'Itens',
+            icone: 'laptop',
+            rota: '/patrimonio'
+
+          },
+          {
+            rotulo: 'Salas e Locais',
+            icone: 'domain', 
+            rota: '/locais'
+          },
+        ]
+      },
+      { 
         rotulo: 'Judiciais e Controle',
         icone: 'gavel', 
         rota: '/nujuc',
@@ -115,7 +133,7 @@ export default {
           },
           {
             rotulo: 'Relatórios',
-            icone: 'reports',
+            icone: 'menu',
             rota: '/nujuc'
           },
         ]

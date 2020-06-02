@@ -139,6 +139,18 @@ export default {
 //        permissao: this.base() + '/permissao',
 //        divisao: this.base() + '/divisaoOrganograma',
       },
+      patrimonio: {
+        listar: this.base() + '/patrimonio',
+        divisao: this.base() + '/patrimonio/divisao',
+        tabelas: this.base() + '/patrimonio/tabelas',
+        gerarRelatorio: this.base() + '/patrimonio/gerarRelatorio',
+        gerarTermo: this.base() + '/patrimonio/gerarTermo/',
+        criar: this.base() + '/patrimonio/criar',
+        editar: this.base() + '/patrimonio/editar/',
+        criarLocal: this.base() + '/patrimonio/criarLocal',
+        editarLocal: this.base() + '/patrimonio/editarLocal/',
+      },
+
       correspondencia: {
         listar: this.base() + '/correspondencia',
         setores: this.base() + '/correspondencia/setores',

@@ -3,5 +3,6 @@
     "Governanca": true,
     "Auth": true,
     "Demarcacao": true,
-    "Correspondencia": true
+    "Correspondencia": true,
+    "Patrimonio": true
 }

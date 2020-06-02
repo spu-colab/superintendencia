@@ -25,7 +25,7 @@ class DivisaoOrganogramaController extends Controller
             $ascending = "asc";
         }
         if (!$request->per_page){
-            return DivisaoOrganograma::with('usuarios:idUsuario,name,cpf','divisaoOrganogramaPai:id,nome,sigla')
+            return DivisaoOrganograma::ativos()->with('usuarios:idUsuario,name,cpf','divisaoOrganogramaPai:id,nome,sigla')
             ->get();
         }
         if(strlen ($request->search)>0){
@@ -33,8 +33,8 @@ class DivisaoOrganogramaController extends Controller
 //                ->whereRaw("divisaoorganograma.nome LIKE '%".strtolower($request->search)."%'")
 //                ->orWhereRaw("divisaoorganograma.sigla LIKE '%".strtolower($request->search)."%'")
 //                ->orderBy($request->ordem, $ascending)->paginate($request->per_page);
-            return DivisaoOrganograma::
-                    selectRaw("divisaoorganograma.id, divisaoorganograma.idDivisaoOrganogramaPai, divisaoorganograma.nome as nomeDiv, divisaoorganograma.sigla as siglaDiv, p.nome as nomePai,
+            return DivisaoOrganograma::ativos()
+                    ->selectRaw("divisaoorganograma.id, divisaoorganograma.idDivisaoOrganogramaPai, divisaoorganograma.nome as nomeDiv, divisaoorganograma.sigla as siglaDiv, p.nome as nomePai,
                     p.id as idPai")
                     ->leftJoin('divisaoorganograma AS p','p.id' , '=', 'divisaoorganograma.idDivisaoOrganogramaPai')
                     ->whereRaw("divisaoorganograma.nome LIKE '%".strtolower($request->search)."%'")
@@ -44,7 +44,8 @@ class DivisaoOrganogramaController extends Controller
                     ->paginate($request->per_page);
         }
 //        return DivisaoOrganograma::with('usuarios:idUsuario,name,cpf') 
-        return DivisaoOrganograma::selectRaw("divisaoorganograma.id, divisaoorganograma.idDivisaoOrganogramaPai, divisaoorganograma.nome as nomeDiv, divisaoorganograma.sigla as siglaDiv, p.nome as nomePai,
+        return DivisaoOrganograma::ativos()
+            ->selectRaw("divisaoorganograma.id, divisaoorganograma.idDivisaoOrganogramaPai, divisaoorganograma.nome as nomeDiv, divisaoorganograma.sigla as siglaDiv, p.nome as nomePai,
              p.id as idPai")
             ->leftJoin('divisaoorganograma AS p','p.id' , '=', 'divisaoorganograma.idDivisaoOrganogramaPai')
             ->with('usuarios:idUsuario,name,cpf')

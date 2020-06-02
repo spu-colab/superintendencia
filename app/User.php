@@ -7,12 +7,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\DistribuicaoDemanda;
 use Illuminate\Support\Facades\Mail;
+//use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Mail\RecuperarSenha;
 
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
-
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -85,6 +86,10 @@ class User extends Authenticatable implements JWTSubject
     public function sendPasswordResetNotification($token)
     {
         Mail::to($this)->send(new RecuperarSenha($this, $token));
+    }
+    public function scopeAtivos($query)
+    {
+        return $query->where('deleted_at', '=', null);
     }
 
 }

@@ -1,0 +1,13 @@
+{
+    "name": "Patrimonio",
+    "alias": "patrimonio",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Patrimonio\\Providers\\PatrimonioServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

@@ -45,7 +45,7 @@
             <template slot="body.prepend">
                 
                     <tr style="border-bottom: thin solid rgba(0,0,0,.12);">
-                        <th></th>
+                        <th v-if="imprimir"></th>
                         <th
                         v-for="(header, index) in headers"
                         :key="index"
@@ -68,7 +68,7 @@
 
             <template slot="item" slot-scope="props">
               <tr>
-                <td>
+                <td v-if="imprimir">
                   <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
                 </td>
                 <td
@@ -461,9 +461,10 @@ export default {
           // console.log(response.body)
           this.fillPagination(response.body);
           response.body.data.forEach((element, e) => {
+//            console.log(element)
               if(this.forEachItemCallback) {
                 element = this.forEachItemCallback(element)
-              }
+              }  
             this.items.push(element);
           })
           // this.buscaPaginada.atualizar(response.body)

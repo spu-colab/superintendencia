@@ -54,12 +54,12 @@ class AuthController extends Controller
               ->orWhereRaw("email LIKE '%".strtolower($request->search)."%'")
               ->orWhereRaw("telefone LIKE '%".strtolower($request->search)."%'")
               ->orWhereRaw("CONVERT(cpf , CHAR) LIKE '%" . strtolower($request->search) . "%'")
-//              ->ativos()
+              ->ativos()
               ->orderBy($request->ordem, $ascending)->paginate($request->per_page);
       }
       return User::with(['permissoes:permissao.id,permissao,descricao',
           'divisoesOrganograma:divisaoorganograma.id,sigla,nome'])
-//          ->ativos()     
+          ->ativos()     
           ->orderBy($request->ordem , $ascending)->paginate($request->per_page);
     }
 

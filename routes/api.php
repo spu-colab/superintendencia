@@ -21,6 +21,9 @@ Route::post('user/login', 'APILoginController@login');
 
 
 Route::middleware('jwt.auth')->group(function () {
+    Route::resource('patrimonio/tabelas', 'PatrimonioController@tabelas');
+    Route::resource('patrimonio/divisao', 'PatrimonioController@divisao');
+    Route::resource('patrimonio/gerarRelatorio', 'PatrimonioController@gerarRelatorio');
     
     Route::resource('correspondencia/setores', 'CorrespondenciaController@setores'); 
     Route::resource('correspondencia/tipos', 'CorrespondenciaController@tipos'); 

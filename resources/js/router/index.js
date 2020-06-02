@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import money from 'v-money'
 import Router from 'vue-router'
 import Home from './../components/Home'
 import Login from './../components/Login'
@@ -15,13 +16,15 @@ import Conteudo from './../components/Conteudo'
 import GeoVisualizador from './../components/geo/GeoVisualizador'
 import Usuario from './../components/permissoes/Usuario'
 import Perfil from './../components/permissoes/Perfil'
-import Correspondencia from './../components/correspondencia/Correspondencia'
+import Correspondencia  from './../components/correspondencia/Correspondencia'
+import Patrimonio       from './../components/patrimonio/Patrimonio'
+import Locais       from './../components/patrimonio/Localizacao'
 import Organograma from './../components/permissoes/Organograma'
 // import FileUpload from './../components/FileUpload'
 import store from './../store'
 
 Vue.use(Router)
-
+Vue.use(money, {precision: 4})
 let router = new Router({
   routes: [
     {
@@ -372,6 +375,42 @@ let router = new Router({
         ]
       }
     },
+    {
+      path: '/patrimonio',
+      name: 'Patrimônio',
+      component: Patrimonio,
+      meta: {
+        guest: false,
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Patrimônio',
+          }
+        ]
+      }
+    },
+    {
+    path: '/locais',
+    name: 'Local',
+    component: Locais,
+    meta: {
+      guest: false,
+      requiresAuth: true,
+      breadcrumb: [
+        {
+          text: 'Início',
+          href: '/#/'
+        },
+        {
+          text: 'Locais',
+        }
+      ]
+    }
+  },
 
     {
       path: '/organograma',
