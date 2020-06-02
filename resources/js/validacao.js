@@ -55,6 +55,7 @@ var Validador = function() {
 
     var data = function(valor) {
         const msg = 'Data inválida'
+        if(valor == null || valor.length == 0) return true
         return /\d{2}\/\d{2}\/\d{4}/.test(valor) || msg
     }
 
