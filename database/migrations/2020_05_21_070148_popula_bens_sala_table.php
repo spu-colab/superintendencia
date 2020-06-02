@@ -127,6 +127,8 @@ class PopulaBensSalaTable extends Migration
                 ['id'=>3,'idDivisaoOrganograma'=>1,'descricao'=>'SPU-SC/GABINETE','created_at' => date("Y-m-d H:i:s"),'idUser'=>15],
                 ['id'=>5,'idDivisaoOrganograma'=>1,'descricao'=>'SPU-SC/GARAGEM','created_at' => date("Y-m-d H:i:s"),'idUser'=>15],
                 ['id'=>6,'idDivisaoOrganograma'=>1,'descricao'=>'SPU-SC/RECEPÇÃO','created_at' => date("Y-m-d H:i:s"),'idUser'=>15],
+                ['id'=>131,'idDivisaoOrganograma'=>2,'descricao'=>'HOME OFFICE','created_at' => date("Y-m-d H:i:s"),'idUser'=>15],
+                ['id'=>132,'idDivisaoOrganograma'=>13,'descricao'=>'COORD/NUAVA','created_at' => date("Y-m-d H:i:s"),'idUser'=>15],
                 ['id'=>35,'idDivisaoOrganograma'=>1,'descricao'=>'SPU-SC/SEAPU','created_at' => date("Y-m-d H:i:s"),'idUser'=>15]            
             ]
         );
