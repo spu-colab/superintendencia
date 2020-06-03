@@ -31,6 +31,6 @@ class PopulaBensTermoDesfazimentoTable extends Migration
      */
     public function down()
     {
-            //
+        DB::table('bens_termo_desfazimento')->truncate();
     }
 }

@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 class PopulaSetorDivisaoOrganograma extends Migration
 {
+
+    const ENV_DB_VAR = "DB_DATABASE_ADMIN";
+
     /**
      * Run the migrations.
      *
@@ -13,7 +16,7 @@ class PopulaSetorDivisaoOrganograma extends Migration
      */
     public function up()
     {
-        DB::table('spusc-admin.setordivisaoorganograma')->insert(
+        DB::table(\env($this::ENV_DB_VAR).'.setordivisaoorganograma')->insert(
             [
                 ['idSetor'=>'5','idDivisaoOrganograma'=>'1'],
                 ['idSetor'=>'23','idDivisaoOrganograma'=>'13'],

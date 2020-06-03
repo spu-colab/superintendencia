@@ -102,7 +102,9 @@ class PopulaBensCategoriaTable extends Migration
                 ['id'=>95,'descricao'=>'SOFTWARE','idUser'=>15,'created_at' => date("Y-m-d H:i:s")],
                 ['id'=>96,'descricao'=>'POLTRONA','idUser'=>15,'created_at' => date("Y-m-d H:i:s")],
                 ['id'=>97,'descricao'=>'CASE','idUser'=>15,'created_at' => date("Y-m-d H:i:s")],
-                ['id'=>98,'descricao'=>'BATERIA','idUser'=>15,'created_at' => date("Y-m-d H:i:s")]
+                ['id'=>98,'descricao'=>'BATERIA','idUser'=>15,'created_at' => date("Y-m-d H:i:s")],
+                ['id'=>99,'descricao'=>'CELULAR','idUser'=>15,'created_at' => date("Y-m-d H:i:s")],
+                ['id'=>100,'descricao'=>'APARELHO TELEFONICO','idUser'=>15,'created_at' => date("Y-m-d H:i:s")]
             ]
         );
     }

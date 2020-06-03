@@ -192,7 +192,7 @@ class MigraTecnicosUsersTable extends Migration
                     [
                         'name'=>$p['name'],
                         'cpf'=>$p['cpf'],
-                        'email'=>$p['email'],
+                        'email'=>$p['email'] == "" ? $p['cpf'] : $p['email'] ,
                         'telefone'=>$p['telefone'],
                         'origem'=>'spu-sc-admin',
                         'deleted_at'=>$deleted_at,
