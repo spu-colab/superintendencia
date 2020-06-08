@@ -28,7 +28,7 @@ class DivisaoOrganogramaPolicy
 
     public function store()
     {
-        return $this->verificaUsuarioPermissao(['DIVISAO_ORGANOGRAMA_CADASTRAR']);
+        return $this->verificaUsuarioPermissao(['ORGANOGRAMA_CADASTRAR']);
     }
 
     public function show()
@@ -43,7 +43,7 @@ class DivisaoOrganogramaPolicy
 
     public function update()
     {
-        return $this->verificaUsuarioPermissao(['DIVISAO_ORGANOGRAMA_CADASTRAR']);
+        return $this->verificaUsuarioPermissao(['ORGANOGRAMA_CADASTRAR']);
     }
     
     public function destroy()

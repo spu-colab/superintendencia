@@ -19,7 +19,7 @@
                     <v-icon>picture_as_pdf</v-icon>
                     RELATÓRIOS
                 </v-btn>
-                <v-btn color="primary" dark class="mb-2"
+                <v-btn color="primary" dark class="mb-2" v-if ="podeCadastrar"
                     @click="novo()" >
                     <v-icon>add</v-icon>
                     CADASTRAR
@@ -54,8 +54,14 @@
                             <input type="radio" class="radio-button" value="2" v-model="relatorioAtual.agrupamento">Técnico
                             <input type="radio" class="radio-button" value="3" v-model="relatorioAtual.agrupamento">Geral
                             <br><br>
-                            <div style="text-align: right;">
-                            <v-btn color="blue-grey lighten-1" dark class="mb-2 text-right"
+                            <div style="text-align: center;"  v-if="carregando">
+                            <v-progress-circular 
+                                indeterminate
+                                color="primary"
+                                >Aguarde...</v-progress-circular>
+                            </div>
+                            <div style="text-align: right;" v-if="!carregando">                                
+                            <v-btn  color="blue-grey lighten-1" dark class="mb-2 text-right"
                                 @click="gerarRelatorio()" >
                                 <v-icon>picture_as_pdf</v-icon>
                                 emitir RELATÓRIO
@@ -224,10 +230,12 @@ export default {
                 idDivisaoOrganograma:1,
                 descricao:null,
             },
+            carregando:false,
             bensSala:null,
             bensCategoria:null,
             bensSituacao:null,
             bensSitRel:null,
+            podeCadastrar:false,
             bensLevantamento:null,
             bensConservacao:null,
             bensResponsavel:null,
@@ -251,12 +259,12 @@ export default {
             return `${day}/${month}/${year}`;
         },
         selecionarParaEdicao(item) {
-            this.podeSalvar=true;
+            this.podeSalvar=this.podeCadastrar;
             this.editaBem='Editar';
             this.entidadeAtual = item;
         },
         cancelar() {
-            this.podeSalvar=true;
+            this.podeSalvar=this.podeCadastrar;
             this.novoBem = 'Cadastrar';
             this.editaBem= 'Editar';
             this.exibirRelatorio = false;
@@ -281,7 +289,7 @@ export default {
             this.exibindoGrid = false;
         },        
         novo(item) {
-            this.podeSalvar=true;
+            this.podeSalvar=this.podeCadastrar;
             this.novoBem = 'Cadastrar';
             this.editaBem= 'Cadastrar';
             this.entidadeAtual = {
@@ -293,6 +301,7 @@ export default {
             this.exibindoGrid = false;
         },
         gerarRelatorio(){
+            this.carregando = true;
             let formData = new FormData()
             let agrupamento = this.relatorioAtual.agrupamento ? this.relatorioAtual.agrupamento : null;
             formData.append('agrupamento', agrupamento);
@@ -309,6 +318,7 @@ export default {
             let url = rotas.rotas().patrimonio.gerarRelatorio;
             this.$http.post(url, formData, { responseType: 'arraybuffer' }).then(
                 response => {
+                    this.carregando = false;
                     let blob = new Blob([response.data], {
                         type: response.headers.get('content-type'),
                     })
@@ -316,10 +326,12 @@ export default {
                     window.open(data,'_blank');
                 },
                 error => {
-                    console.log(error.body.message)
-                    //this.$store.commit('sistema/alerta', error.body.message)
+                    this.carregando = false;
+                    console.log(error)
+                    this.$store.commit('sistema/alerta', error.body.message)
                 }
             );
+            
         },
         gerarTermo(){
             let url = rotas.rotas().patrimonio.gerarTermo + this.relatorioAtual.idResponsavel;
@@ -387,6 +399,7 @@ export default {
                         this.bensResponsavel = response.body.responsavel;
                         this.bensDivisao = response.body.divisao;
                         this.bensSitRel = response.body.sitRel;
+                        this.podeCadastrar = response.body.podeCadastrar;
                     },
                     error => {
                         console.log(error)

@@ -14,6 +14,8 @@ use Modules\Patrimonio\Entities\BensLevantamento;
 use Modules\Patrimonio\Entities\BensResponsavel;
 use Modules\Auth\Entities\DivisaoOrganograma;
 use Modules\Auth\Entities\UsuarioDivisaoOrganograma;
+use Illuminate\Support\Facades\Auth;
+USE app\Permissao;
 use App\User;
 use PDF;
 class PatrimonioController extends Controller
@@ -80,6 +82,7 @@ class PatrimonioController extends Controller
         $levantamento = BensLevantamento::orderBy('descricao','asc')->get();
         $conservacao = BensConservacao::orderBy('descricao','asc')->get();
         $responsavel = User::selectRaw('name, id')->orderBy('name','asc')->Ativos()->get();
+        $podeCadastrar  = $this->podeCadastrar();
         $divisao = DivisaoOrganograma::selectRaw('sigla as descricao, id')->orderBy('descricao','asc')->Ativos()->get();
         $result['sala'] =  $sala;
         $result['categoria'] =  $categoria;
@@ -89,6 +92,7 @@ class PatrimonioController extends Controller
         $result['responsavel'] =  $responsavel;
         $result['divisao'] =  $divisao;
         $result['sitRel'] =  $sitRel;
+        $result['podeCadastrar'] =  $podeCadastrar;
         return response()->json($result);
     }
 
@@ -168,6 +172,15 @@ class PatrimonioController extends Controller
                     ->setOptions(['defaultFont' => 'Helvetica'])->setPaper('a4', 'portrait');                                  
         return $pdf->download('SPU_relatorioBens.pdf');
     }
+    public function podeCadastrar()
+    {
+        $user = Auth::user();
+        $usuario = User::with(['permissoes'])->find($user->id);
+        
+        return $usuario->permissoes()
+            ->where('permissao', Permissao::PATRIMONIO_PATRIMONIO_CADASTRAR)->first();
+        
+    }
     
     public function create()
     {
@@ -196,7 +209,9 @@ class PatrimonioController extends Controller
         $bem = new BensPatrimonio;
         $bem->descricao = $request->patrimonio['descricao'];
         $bem->codigo = $request->patrimonio['codigo'];
-        $bem->preco = str_replace(",",".",$request->patrimonio['preco']);
+        $preco = str_replace(".","",$request->patrimonio['preco']);
+        $preco = str_replace(",",".",$preco);
+        $bem->preco = $preco;
         $bem->garantia =  $request->patrimonio['garantia'] != 0 ? $request->patrimonio['garantia']: null;
         $bem->idCategoria = $request->patrimonio['idCategoria'];
         $bem->idUser = auth()->user()->id;
@@ -233,7 +248,9 @@ class PatrimonioController extends Controller
         $bem = BensPatrimonio::findOrFail($id);
         $bem->descricao = $request->patrimonio['descricao'];
         $bem->codigo = $request->patrimonio['codigo'];
-        $bem->preco = str_replace(",",".",$request->patrimonio['preco']);
+        $preco = str_replace(".","",$request->patrimonio['preco']);
+        $preco = str_replace(",",".",$preco);
+        $bem->preco = $preco;
         $bem->garantia =  $request->patrimonio['garantia'] != 0 ? $request->patrimonio['garantia']: null;
         $bem->idCategoria = $request->patrimonio['idCategoria'];
         $bem->idSituacao = $request->patrimonio['idSituacao'];

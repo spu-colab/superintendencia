@@ -129,7 +129,7 @@ class DivisaoOrganogramaController extends Controller
         }
         
         $divisao = DivisaoOrganograma::findOrFail($id);
-//        return $this->verificaUsuarioPermissao(['DIVISAO_ORGANOGRAMA_CADASTRAR']);
+//        return $this->verificaUsuarioPermissao(['ORGANOGRAMA_CADASTRAR']);
         $this->authorize('update', $divisao);    
 
         $divisao->nome = $request->nome;
