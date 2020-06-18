@@ -1,12 +1,15 @@
-DROP PROCEDURE `proc_distribuicaodemanda_atualiza_situacao`;
-CREATE DEFINER=`sistemaspu`@`localhost` PROCEDURE `proc_distribuicaodemanda_atualiza_situacao`(IN `pIdDemanda` INT(10)) NOT DETERMINISTIC CONTAINS SQL SQL SECURITY DEFINER BEGIN
+DROP PROCEDURE IF EXISTS proc_distribuicaodemanda_atualiza_situacao;
+
+CREATE
+    PROCEDURE `proc_distribuicaodemanda_atualiza_situacao`(pIdDemanda int(10))
+BEGIN
         DECLARE v_IdSituacaoCancelada INT;
         DECLARE v_IdSituacaoResolvida INT;
         DECLARE v_IdSituacaoEmAtendimento INT;
         DECLARE v_IdSituacaoPronta INT;
 
-        SELECT id INTO v_IdSituacaoCancelada FROM situacaodemanda WHERE situacao = "Cancelada";
-        SELECT id INTO v_IdSituacaoResolvida FROM situacaodemanda WHERE situacao = "Resolvida";
+        SELECT id INTO v_IdSituacaoCancelada FROM situacaodemanda WHERE situacao = `Cancelada`;
+        SELECT id INTO v_IdSituacaoResolvida FROM situacaodemanda WHERE situacao = `Resolvida`;
 
         IF (SELECT idSituacaoDemanda NOT IN (v_IdSituacaoCancelada, v_IdSituacaoResolvida) 
             FROM demanda WHERE id = pIdDemanda)
@@ -18,10 +21,10 @@ CREATE DEFINER=`sistemaspu`@`localhost` PROCEDURE `proc_distribuicaodemanda_atua
                     IF (SELECT count(dd.id) > 0
                         FROM distribuicaodemanda dd WHERE dd.iddemanda = pIdDemanda AND dd.dataAtendimento IS NULL) THEN
 
-                        SELECT id INTO v_IdSituacaoEmAtendimento FROM situacaodemanda WHERE situacao = "Em análise";
+                        SELECT id INTO v_IdSituacaoEmAtendimento FROM situacaodemanda WHERE situacao = `Em análise`;
                         UPDATE demanda SET idSituacaoDemanda = v_IdSituacaoEmAtendimento WHERE id = pIdDemanda;
                     ELSE 
-                        SELECT id INTO v_IdSituacaoPronta FROM situacaodemanda WHERE situacao = "Pronta";
+                        SELECT id INTO v_IdSituacaoPronta FROM situacaodemanda WHERE situacao = `Pronta`;
                         UPDATE demanda SET idSituacaoDemanda = v_IdSituacaoPronta WHERE id = pIdDemanda;
                     END IF;
                 END IF;

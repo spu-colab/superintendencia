@@ -7,12 +7,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\DistribuicaoDemanda;
 use Illuminate\Support\Facades\Mail;
-//use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Mail\RecuperarSenha;
 
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
+
+    public const ORIGEM_PADRAO = "sistema";
     
     /**
      * The attributes that are mass assignable.
