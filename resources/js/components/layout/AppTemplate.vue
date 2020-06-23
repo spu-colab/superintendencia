@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-navigation-drawer app :value="exibirMenu" clipped left>
+    <v-navigation-drawer v-if="usuarioAutenticado" app :value="exibirMenu" clipped left>
       <spu-menu :itensMenu="itensMenu"></spu-menu>      
     </v-navigation-drawer>
     
@@ -34,146 +34,59 @@ export default {
   data: () => ({
     menuEsquerda: true,
     miniMenu: false,
-    itensMenu: [
-      { 
-        rotulo: 'Início',
-        icone: 'home', 
-        rota: '/',
-      },
-      /*
-      {
-        divisor: true
-      },*/
-      {
-        rotulo: 'Base de Conhecimento',
-        icone: 'local_library',
-        url: 'http://conhecimento.spu.nossa.floripa.br'
-      },
-      {
-        rotulo: 'SPU-Admin (Interno)',
-        icone: 'desktop_windows',
-        url: 'http://10.209.232.190/'
-      },
-      /*
-      {
-        divisor: true
-      },
-      */
-      { 
-        rotulo: 'Atendimento',
-        icone: 'how_to_reg', 
-        rota: '/atendimento',
-      },
-      /*
-      { 
-        rotulo: 'Demarcação',
-        icone: 'linear_scale', 
-        rota: '/demarcacao',
-      },
-      */
-      { 
-        rotulo: 'Geovisualizador',
-        icone: 'map', 
-        rota: '/geo',
-      },
-      { 
-        rotulo: 'Governança',
-        icone: 'near_me', 
-        rota: '/governanca',
-      },
-      { 
-        rotulo: 'Correspondência',
-        icone: 'email', 
-        rota: '/correspondencia',
-      },
-      { 
-        rotulo: 'Bens Patrimoniais',
-        icone: 'menu',         
-        model: true,
-        submenu: [
-          {
-            rotulo: 'Itens',
-            icone: 'laptop',
-            rota: '/patrimonio'
-
-          },
-          {
-            rotulo: 'Salas e Locais',
-            icone: 'domain', 
-            rota: '/locais'
-          },
-        ]
-      },
-      { 
-        rotulo: 'Judiciais e Controle',
-        icone: 'gavel', 
-        rota: '/nujuc',
-        model: true,
-        submenu: [
-          {
-            rotulo: 'Demandas',
-            icone: 'assignment',
-            rota: '/demanda'
-
-          },
-          {
-            rotulo: 'Procedimentos',
-            icone: 'account_balance', 
-            rota: '/procedimento'
-          },
-          {
-            rotulo: 'Demandantes',
-            icone: 'record_voice_over', 
-            rota: '/demandante'
-          },
-          {
-            rotulo: 'Órgãos',
-            icone: 'business', 
-            rota: '/orgao'
-          },
-          {
-            rotulo: 'Relatórios',
-            icone: 'menu',
-            rota: '/nujuc'
-          },
-        ]
-      },
-      { 
-        rotulo: 'Configurações',
-        icone: 'build', 
-        submenu: [
-          {
-            rotulo: 'Usuários',
-            icone: 'perm_identity', 
-            rota: '/permissao'
-          },
-          {
-            rotulo: 'Permissões',
-            icone: 'recent_actors', 
-            rota: '/perfil'
-          },
-          {
-            rotulo: 'Divisões/Organograma',
-            icone: 'location_city', 
-            rota: '/organograma'
-          },
-        ]
-      },
-    ],
+    itensMenu: null,
   }),
+  
   props: {
     source: String
   },
+
+  methods: {
+    carregarMenu() {
+        // console.log("Menu.carregarMenu()")
+        this.$http.get("/api/auth/menu")
+            .then(response => {
+                // console.log(response)
+                this.itensMenu = response.body
+            },
+            error => {
+                console.log(error)
+            });
+    }
+  },
+  
   computed: {
     exibirMenu () {
       return this.$store.getters['sistema/exibirMenu']
-    }
+    },
+
+    usuarioAutenticado () {
+      // console.log("AppTemplate.computed.usuario()")
+      this.usuario = this.$store.getters['auth/usuario'];
+      return this.usuario
+    },
+
   },
+
   watch: {
     '$route' () {
       this.breadcrumb = this.$route.meta.breadcrumb
+    },
+
+    'usuario' () {
+      // console.log("AppTemplate.watch.usuario")
+      if(this.usuario) {
+        this.carregarMenu()
+      } else {
+        this.itensMenu = null
+      }
     }
+  },
+
+  mounted() {
+    this.carregarMenu();
   }
+
 }
 </script>
 

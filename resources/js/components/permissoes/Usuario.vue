@@ -92,7 +92,7 @@
 import rotas from "./../../rotas-servico.js";
 import CRUD from "./../CRUD";
 
-const PERMISSAO_CADASTRAR = "USUARIO_CADASTRAR"
+const PERMISSAO_CADASTRAR = "AUTH_USUARIO_CADASTRAR"
 
 export default {
   components: {

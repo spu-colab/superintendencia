@@ -99,9 +99,7 @@ class ConfiguracaoInicialCmd extends Command
             $usuarioPermissao->idPermissao = $permissao->id;
             $usuarioPermissao->saveOrFail();
         }
-    }
-
-    
+    }    
 
     private function executarScript($filename) {
         $query = file_get_contents(base_path("sql/scripts/") . $filename);

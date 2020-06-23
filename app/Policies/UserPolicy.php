@@ -22,12 +22,12 @@ class UserPolicy
     }
     public function create()
     {
-        return $this->verificaUsuarioPermissao([Permissao::USUARIO_CADASTRAR]);
+        return $this->verificaUsuarioPermissao([Permissao::AUTH_USUARIO_CADASTRAR]);
     }
 
     public function store()
     {
-        return $this->verificaUsuarioPermissao([Permissao::USUARIO_CADASTRAR]);
+        return $this->verificaUsuarioPermissao([Permissao::AUTH_USUARIO_CADASTRAR]);
     }
 
     public function show()
@@ -42,7 +42,7 @@ class UserPolicy
 
     public function update()
     {
-        return $this->verificaUsuarioPermissao([Permissao::USUARIO_CADASTRAR]);
+        return $this->verificaUsuarioPermissao([Permissao::AUTH_USUARIO_CADASTRAR]);
     }
     
     public function destroy()

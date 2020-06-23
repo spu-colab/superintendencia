@@ -1,5 +1,11 @@
 <?php
 
 return [
-    'name' => 'Correspondencia'
+    'name' => 'Correspondencia',
+    'menu' => [
+        "rotulo" => 'Correspondência',
+        "icone" => 'email', 
+        "rota" => '/correspondencia',
+
+    ],
 ];

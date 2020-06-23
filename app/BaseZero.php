@@ -92,73 +92,70 @@ class BaseZero
                  * Atendimento
                  */
                 [
-                    'permissao' => 'ATENDIMENTO_ATENDIMENTO_CRIAR_PRESENCIAL',
+                    'permissao' => Permissao::ATENDIMENTO_ATENDIMENTO_CRIAR_PRESENCIAL,
                     'descricao' => 'Permite iniciar/salvar/concluir um atendimento presencial'
                 ],
                 [
-                    'permissao' => 'ATENDIMENTO_ATENDIMENTO_CRIAR_TELEFONICO',
+                    'permissao' => Permissao::ATENDIMENTO_ATENDIMENTO_CRIAR_TELEFONICO,
                     'descricao' => 'Permite iniciar/salvar/concluir um atendimento telefônico'
                 ],
                 [
-                    'permissao' => 'ATENDIMENTO_ATENDIMENTO_CRIAR_EMAIL',
+                    'permissao' => Permissao::ATENDIMENTO_ATENDIMENTO_CRIAR_EMAIL,
                     'descricao' => 'Permite iniciar/salvar/concluir um atendimento por e-mail'
                 ],
                 [
-                    'permissao' => 'ATENDIMENTO_COMENTARIO_CRIAR',
+                    'permissao' => Permissao::ATENDIMENTO_COMENTARIO_CRIAR,
                     'descricao' => 'Permite criar um comentário em um atendimento'
                 ],
                 /**
                  * Auth
                  */
                 [
-                    'permissao' => 'PERMISSAO_CADASTRAR',
+                    'permissao' => Permissao::AUTH_PERMISSAO_CADASTRAR,
                     'descricao' => 'Permite ao usuário gerir permissões do sistema'
                 ],
                 [
-                    'permissao' => 'USUARIO_CADASTRAR',
+                    'permissao' => Permissao::AUTH_USUARIO_CADASTRAR,
                     'descricao' => 'Permite ao usuário gerir usuários'
                 ],
-                /**
-                 * Configurações
-                 */
                 [
-                    'permissao' => 'ORGANOGRAMA_CADASTRAR',
+                    'permissao' => Permissao::AUTH_ORGANOGRAMA_CADASTRAR,
                     'descricao' => 'Permite ao usuário gerir divisões do organograma'
                 ],
                 /**
                  * Correspondência
                  */
                 [
-                    'permissao' => 'CORRESPONDENCIA_CORRESPONDENCIA_POSTAR',
+                    'permissao' => Permissao::CORRESPONDENCIA_CORRESPONDENCIA_POSTAR,
                     'descricao' => 'Permite ao usuário da área de apoio gerir postagens'
                 ],
                 /**
                  * Demandas (Judicial)
                  */
                 [
-                    'permissao' => 'DEMANDA_DEMANDA_CADASTRAR',
+                    'permissao' => Permissao::DEMANDA_DEMANDA_CADASTRAR,
                     'descricao' => 'Permite cadastrar/editar demandas'
                 ],
                 [
-                    'permissao' => 'DEMANDA_DEMANDA_ALTERAR_RESUMO_GERENCIAL',
+                    'permissao' => Permissao::DEMANDA_DEMANDA_ALTERAR_RESUMO_GERENCIAL,
                     'descricao' => 'Permite ao usuário alterar o campo resumo gerencial'
                 ],
                 [
-                    'permissao' => 'DEMANDA_DEMANDA_ATENDER_DISTRIBUICAO',
+                    'permissao' => Permissao::DEMANDA_DEMANDA_ATENDER_DISTRIBUICAO,
                     'descricao' => 'Permite a um usuário atender distruição feita a si próprio ou ao seu núcleo'
                 ],
                 /**
                  * Demarcação
                  */
                 [
-                    'permissao' => 'DEMARCACAO_DEMARCACAO_CADASTRAR',
+                    'permissao' => Permissao::DEMARCACAO_DEMARCACAO_CADASTRAR,
                     'descricao' => 'Permite ao usuário gerenciar demarcações no módulo Demarcação'
                 ],
                 /**
                  * Patrimônio
                  */
                 [
-                    'permissao' => 'PATRIMONIO_PATRIMONIO_CADASTRAR',
+                    'permissao' => Permissao::PATRIMONIO_PATRIMONIO_CADASTRAR,
                     'descricao' => 'Permite ao usuário da área de apoio gerir bens patrimoniais'
                 ],
     

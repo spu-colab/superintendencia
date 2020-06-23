@@ -1,8 +1,9 @@
 {
     "Atendimento": true,
-    "Governanca": true,
+    "Governanca": false,
     "Auth": true,
-    "Demarcacao": true,
+    "Demarcacao": false,
     "Correspondencia": true,
-    "Patrimonio": true
+    "Patrimonio": true,
+    "Demandas": true
 }

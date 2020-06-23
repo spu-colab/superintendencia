@@ -28,7 +28,7 @@ class AuthPolicy
 
     public function store()
     {
-        return $this->verificaUsuarioPermissao([Permissao::USUARIO_CADASTRAR]);
+        return $this->verificaUsuarioPermissao([Permissao::AUTH_USUARIO_CADASTRAR]);
     }
 
     public function show()
@@ -43,7 +43,7 @@ class AuthPolicy
 
     public function update()
     {
-        return $this->verificaUsuarioPermissao([Permissao::USUARIO_CADASTRAR]);
+        return $this->verificaUsuarioPermissao([Permissao::AUTH_USUARIO_CADASTRAR]);
     }
     
     public function destroy()

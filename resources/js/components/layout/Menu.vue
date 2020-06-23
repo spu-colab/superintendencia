@@ -32,6 +32,7 @@
 <script>
 export default {
     name: 'spu-menu',
+
     props: {
         itensMenu: {
             type: Array,
@@ -42,6 +43,7 @@ export default {
         computedItensMenu() {
             return this.itensMenu
         }
-    }
+    },
+
 }
 </script>

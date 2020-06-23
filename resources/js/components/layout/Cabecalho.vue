@@ -29,7 +29,8 @@
           </v-btn>
       </div>
       <div v-else>
-        <v-btn icon title="Entrar" @click="entrar">
+        <v-btn color="primary" title="Entrar" @click="entrar">
+          Entrar
           <v-icon>launch</v-icon>
         </v-btn>
       </div>
