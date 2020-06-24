@@ -6,7 +6,7 @@
       app
       fixed
     >
-      <v-app-bar-nav-icon @click.stop="mostraEscondeMenu" />
+      <v-app-bar-nav-icon v-if="usuario" @click.stop="mostraEscondeMenu" />
       <v-toolbar-title style="width: 350px" class="ml-0 pl-0">
         <v-toolbar-title>SPU-SC</v-toolbar-title>
       </v-toolbar-title>

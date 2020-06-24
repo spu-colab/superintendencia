@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class SituacaoDemanda extends Model
 {
+
+    public const TABLE_NAME = "situacaodemanda";
+
     public const NOVA = 1;
     public const NOVA_DESC = "Nova";
 
@@ -27,5 +30,5 @@ class SituacaoDemanda extends Model
     public const AGUARDANDO_AR = 7;
     public const AGUARDANDO_AR_DESC = "Aguardando AR";
 
-    protected $table = 'situacaodemanda';
+    protected $table = SituacaoDemanda::TABLE_NAME;
 }

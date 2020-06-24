@@ -4,23 +4,37 @@ namespace App;
 use Illuminate\Support\Facades\DB;
 
 use App\SituacaoDemanda;
+use Modules\Atendimento\Entities\Assunto;
+use Modules\Atendimento\Entities\Atendimento_Assunto;
+use \Modules\Atendimento\Entities\Tipo as TipoAtendimento;
 
 class BaseZero
 {
 
     public function inserirRegistros()
     {
+        // Atendimento
+        $this->inserirTiposAtendimento();
+        $this->inserirAssuntosAtendimento();
+
+        // Auth
+        $this->inserirPermissoes();
+
+        // Demandas
         $this->inserirSituacoesDemanda();
         $this->inserirTiposDocumento();
-        $this->inserirPermissoes();
+        
     }
 
     public function removerRegistros()
     {
-        DB::table("permissao")->delete();
-        DB::table("tipodocumento")->delete();
-        DB::table("situacaodemanda")->delete();
-        
+        DB::table(TipoDocumento::TABLE_NAME)->delete();
+        DB::table(SituacaoDemanda::TABLE_NAME)->delete();
+
+        DB::table(Permissao::TABLE_NAME)->delete();
+
+        DB::table(Assunto::TABLE_NAME)->delete();
+        DB::table(TipoAtendimento::TABLE_NAME)->delete();
     }
 
     private function inserirSituacoesDemanda() {
@@ -58,8 +72,60 @@ class BaseZero
                     'situacao' => SituacaoDemanda::AGUARDANDO_AR_DESC
                 ],
             ];
-            DB::table('situacaodemanda')->insertOrIgnore($registrosAInserir);
+            DB::table(SituacaoDemanda::TABLE_NAME)->insertOrIgnore($registrosAInserir);
         });
+    }
+
+    private function inserirTiposAtendimento() {
+        /**
+         * Inserindo registros em situacaodemanda
+         */
+        DB::transaction(function () {
+            $registrosAInserir = [
+                [ 'tipo' => "Presencial" ],
+                [ 'tipo' => "Telefônico" ],
+                [ 'tipo' => "E-mail" ],
+            ];
+            DB::table(TipoAtendimento::TABLE_NAME)->insertOrIgnore($registrosAInserir);
+        });
+    }
+
+    private function inserirAssuntosAtendimento() {
+        $atend_assunto = [
+            ['assunto' => 'Outros (detalhar nos comentários)'],
+            ['assunto' => 'Demarcação - obter cartas e informações sobre demarcação'],
+            ['assunto' => 'Averbação de Transferência'],
+            ['assunto' => 'Revisão de área ou valor'],
+            ['assunto' => 'Aforamento'],
+            ['assunto' => 'TAUS - Termo de Autorização de Uso Sustentável'],
+            ['assunto' => 'Isenção de Pagamento das Taxas de Ocupação ou Foro'],
+            ['assunto' => 'Unificação/ Desmembramento/ Fracionamento'],
+            ['assunto' => 'Inscrição de Ocupação e regularização de área'],
+            ['assunto' => 'Permissão de Uso'],
+            ['assunto' => 'Reclamação sobre atendimento'],
+            ['assunto' => 'DARF - Como emitir'],
+            ['assunto' => 'Certidão de Provimento'],
+            ['assunto' => 'Certidão Negativa de Débito'],
+            ['assunto' => 'Cessão de Espaço Aquático'],
+            ['assunto' => 'Cópia de processo'],
+            ['assunto' => 'Cessão de Espaço Terrestre'],
+            ['assunto' => 'DARF - Consulta sobre DARF recebido sem conhecimento'],
+            ['assunto' => 'Consulta sobre legislação SPU'],
+            ['assunto' => 'Declaração de Domínio - Como saber se uma área é da União'],
+            ['assunto' => 'Ligação de Cartórios'],
+            ['assunto' => 'Ligação de Outros Órgão Públicos'],
+            ['assunto' => 'Reclamação sobre demora de conclusão de processo'],
+            ['assunto' => 'Reclamação sobre e-mail não respondido'],
+            ['assunto' => 'Reclamação sobre manifestação técnica equivocada'],
+            ['assunto' => 'Transferência de titularidade - CAT automática, laudêmio etc'],
+            ['assunto' => 'Transferência de titularidade - CAT Especial'],
+            ['assunto' => 'Usucapião Extrajudicial, Anuências, Confrontações'],
+            ['assunto' => 'Usucapião Judicial​'],
+            ['assunto' => 'Arquivos de LPM'],
+            ['assunto' => 'Ligações para Gabinente'],
+            ['assunto' => 'Ligações para Servidores']
+          ];
+        DB::table(Assunto::TABLE_NAME)->insertOrIgnore($atend_assunto);
     }
 
     private function inserirTiposDocumento() {
@@ -81,7 +147,7 @@ class BaseZero
                     'tipodocumento' => 'Carta'
                 ]
             ];
-            DB::table('tipodocumento')->insertOrIgnore($registrosAInserir);
+            DB::table(TipoDocumento::TABLE_NAME)->insertOrIgnore($registrosAInserir);
         });
     }
 
@@ -160,7 +226,7 @@ class BaseZero
                 ],
     
             ];
-            DB::table('permissao')->insertOrIgnore($registrosAInserir);
+            DB::table(Permissao::TABLE_NAME)->insertOrIgnore($registrosAInserir);
         });
     }
 

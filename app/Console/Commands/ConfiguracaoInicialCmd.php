@@ -106,7 +106,6 @@ class ConfiguracaoInicialCmd extends Command
         $this->atualizarSituacaoScript($filename, "Executando");
         $query = str_replace("{{ORIGEM_PADRAO}}", User::ORIGEM_PADRAO, $query);
         $resultado = DB::unprepared($query);
-        sleep(1);
         if($resultado) {
             $this->atualizarSituacaoScript($filename, "Pronto");
         } else {
