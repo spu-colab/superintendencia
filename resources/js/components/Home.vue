@@ -63,15 +63,15 @@
 
 <script>
 import rotas from './../rotas-servico.js'
-import CardGrafico from './relatorios/CardGrafico'
-import GraficoBarra from './relatorios/GraficoBarra'
-import GraficoBarraHorizontal from './relatorios/GraficoBarraHorizontal'
-import GraficoPizza from './relatorios/GraficoPizza'
-import CardIndicadoresEstrategicos from './governanca/CardIndicadoresEstrategicos'
+// import CardGrafico from './relatorios/CardGrafico'
+// import GraficoBarra from './relatorios/GraficoBarra'
+// import GraficoBarraHorizontal from './relatorios/GraficoBarraHorizontal'
+// import GraficoPizza from './relatorios/GraficoPizza'
+// import CardIndicadoresEstrategicos from './governanca/CardIndicadoresEstrategicos'
 
 export default {
     components: {
-        CardGrafico, GraficoBarra, GraficoBarraHorizontal, GraficoPizza
+        // CardGrafico, GraficoBarra, GraficoBarraHorizontal, GraficoPizza
     },
     data: () => {
         return {

@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class DivisaoOrganograma extends Model
 {
+    public const TABLE_NAME = 'divisaoorganograma';
     public const DEMANDA_REPRIMIDA = 10;
     
-    protected $table = 'divisaoorganograma';
-//    protected $touches = ['UsuarioDivisaoOrganograma'];
+    protected $table = DivisaoOrganograma::TABLE_NAME;
+
+    protected $fillable = ['nome', 'sigla', 'snSuperintendencia'];
+
     public function divisaoOrganogramaPai()
     {
         return $this->belongsTo(DivisaoOrganograma::class, 'idDivisaoOrganogramaPai');
@@ -23,6 +26,7 @@ class DivisaoOrganograma extends Model
             'idDivisaoOrganograma',
             'idUsuario');   
     }
+
     public function scopeAtivos($query)
     {
         return $query->where('divisaoorganograma.deleted_at', '=', null);

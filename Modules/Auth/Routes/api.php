@@ -13,6 +13,21 @@ use Illuminate\Http\Request;
 |
 */
 
+/**
+ * Rotas abertas do módulo
+ */
+Route::prefix('auth')
+    ->namespace("\Modules\Auth\Http\Controllers")
+    ->group(function() {
+    
+    Route::get('divisao-organograma/superintendencia', 'DivisaoOrganogramaController@obterSuperintendencia');
+
+});
+
+
+/**
+ * Rotas fechadas do módulo
+ */
 Route::prefix('auth')
     ->namespace("\Modules\Auth\Http\Controllers")
     ->middleware('jwt.auth')
@@ -21,6 +36,7 @@ Route::prefix('auth')
     Route::apiResource("menu", "MenuController");
 
 });
+
 
 Route::middleware('jwt.auth')->group(function () {     
     Route::apiResource('usuario', '\Modules\Auth\Http\Controllers\AuthController');

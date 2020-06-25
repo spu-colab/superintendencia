@@ -10,6 +10,8 @@ use App\Permissao;
 use App\UsuarioPermissao;
 
 use App\User;
+use Modules\Auth\Entities\DivisaoOrganograma;
+use Modules\Auth\Entities\UsuarioDivisaoOrganograma;
 
 class ConfiguracaoInicialCmd extends Command
 {
@@ -62,6 +64,7 @@ class ConfiguracaoInicialCmd extends Command
             $this->alimentarTabelasApoio();
             $administrador = $this->criarUsuarioAdministrador();
             $this->concederPermissoes($administrador);
+            $this->criarSuperintendencia();
             $this->info("Configuração finalizada");
         }
     }
@@ -133,14 +136,14 @@ class ConfiguracaoInicialCmd extends Command
     }
 
     private function criarUsuarioAdministrador() {
-        $this->info("Criando conta de administrador do sistema:");
+        $this->info("Dados do Administrador do Sistema:");
 
-        $name = $this->ask("Informe seu nome:", "Administrador");
-        $email = $this->ask("Informe seu e-mail:", "informe@email.valido");
-        $cpf = $this->ask("Informe seu CPF:", "00011122233");
+        $name = $this->ask("Nome:", "Administrador");
+        $email = $this->ask("E-mail:", "informe@email.valido");
+        $cpf = $this->ask("CPF (somente números):", "00011122233");
         $password = "";
         while(@strlen($password) < 8) {
-            $password = $this->secret("Defina uma senha:");
+            $password = $this->secret("Senha:");
         }
 
         $user = User::create([
@@ -152,6 +155,22 @@ class ConfiguracaoInicialCmd extends Command
         $user->saveOrFail();
         $this->info("id do usuario criado " . $user->id);
         return $user;
+    }
+
+    private function criarSuperintendencia() {
+        $this->info("Dados da Superintendência");
+
+        $nome = $this->ask("Nome:", "Superintendência do Patrimônio da União em Santa Catarina");
+        $sigla = $this->ask("Sigla:", "SPU-SC");
+
+        $superintendencia = new DivisaoOrganograma([
+            'nome' => $nome,
+            'sigla' => $sigla,
+            'snSuperintendencia' => 1
+        ]);
+        $superintendencia->saveOrFail();
+        $this->info("id DivisaoOrganograma criado: " . $superintendencia->id);
+        return $superintendencia;
     }
     
 }

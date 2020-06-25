@@ -175,6 +175,7 @@ export default {
         listar: this.base() + '/divisao-organograma',
         criar: this.base() + '/divisao-organograma',
         editar: this.base() + '/divisao-organograma/',
+        superintendencia: this.base() + '/auth/divisao-organograma/superintendencia',
       },
       
 

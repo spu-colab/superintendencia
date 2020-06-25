@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken'
 const state = {
     token: null,
     usuario: null,
-    token_expira_em: null
+    token_expira_em: null,
+    superintendencia: null,
 }
 
 const getters = {
@@ -15,6 +16,9 @@ const getters = {
     },
     token_expira_em: (state) => {
         return state.token_expira_em
+    },
+    superintendencia: (state) => {
+        return state.superintendencia
     }
 }
 
@@ -36,6 +40,9 @@ const mutations = {
             state.usuario = null
             state.token_expira_em = null
         }
+    },
+    setSuperintendencia(state, superintendencia) {
+        state.superintendencia = superintendencia
     },
     sair(state) {
         state.token = null

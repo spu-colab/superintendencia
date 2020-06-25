@@ -6,7 +6,32 @@
 
 <script>
 import Template from './layout/AppTemplate'
-export default {  
+import rotas from './../rotas-servico'
+export default {
+  data() {
+    return {
+      superintendencia: null
+    }
+  },
+  methods: {
+    carregarDadosSuperintendencia() {
+      // console.log("App.carregarDadosSuperintendencia()")
+      this.$http.get(rotas.rotas().organograma.superintendencia)
+        .then(
+          response => {
+            this.superintendencia = response.body
+            this.$store.commit('auth/setSuperintendencia', this.superintendencia)
+        },
+          error => {
+            console.log(error)
+          })
+    }
+
+  },
+  mounted() {
+    // console.log("App.mounted()");
+    this.carregarDadosSuperintendencia();
+  }
 }
 </script>
 

@@ -161,4 +161,8 @@ class DivisaoOrganogramaController extends Controller
     public function listarSuperintendencias() {
         return response()->json(DivisaoOrganograma::where('snSuperintendencia', 1)->get());
     }
+
+    public function obterSuperintendencia() {
+        return response()->json(DivisaoOrganograma::where('snSuperintendencia', 1)->first());
+    }
 }
