@@ -5,6 +5,7 @@ const state = {
     usuario: null,
     token_expira_em: null,
     superintendencia: null,
+    menu: null
 }
 
 const getters = {
@@ -19,6 +20,9 @@ const getters = {
     },
     superintendencia: (state) => {
         return state.superintendencia
+    },
+    menu: (state) => {
+        return state.menu
     }
 }
 
@@ -44,10 +48,15 @@ const mutations = {
     setSuperintendencia(state, superintendencia) {
         state.superintendencia = superintendencia
     },
+    menu(state, menu) {
+        console.log("$store.auth.setMenu", menu)
+        state.menu = menu
+    },
     sair(state) {
         state.token = null
         state.usuario = null
         state.token_expira_em = null
+        state.menu = null
     }
 }
 

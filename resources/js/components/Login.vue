@@ -79,7 +79,7 @@ export default {
                     error => {
                         console.log(error)
                         if(error.status == 401) {
-                            this.$store.commit('sistema/alerta', 'E-mail e ou senha inválidos')
+                            this.$store.commit('sistema/alerta', 'E-mail e/ou senha inválidos')
                         } else {
                             this.$store.commit('sistema/alerta', 'Erro ao tentar efetuar login')
                         }

@@ -20,8 +20,8 @@ import 'material-icons'
 import '@mdi/font/css/materialdesignicons.css' 
 window.Vue.use(Vuetify)
 
-import CKEditor from '@ckeditor/ckeditor5-vue';
-window.Vue.use( CKEditor );
+// import CKEditor from '@ckeditor/ckeditor5-vue';
+// window.Vue.use( CKEditor );
 
 /**
  * The following block of code may be used to automatically register your

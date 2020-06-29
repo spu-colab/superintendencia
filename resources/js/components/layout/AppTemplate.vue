@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer v-if="usuarioAutenticado" app :value="exibirMenu" clipped left>
-      <spu-menu :itensMenu="itensMenu"></spu-menu>      
+      <spu-menu :itensMenu="menuSistema"></spu-menu>      
     </v-navigation-drawer>
     
   <cabecalho/>
@@ -32,22 +32,19 @@ export default {
     MensagemSistema, Cabecalho, 'spu-menu' : Menu
   },
   data: () => ({
-    menuEsquerda: true,
-    miniMenu: false,
-    itensMenu: null,
+    usuario: null,
   }),
-  
-  props: {
-    source: String
-  },
 
   methods: {
     carregarMenu() {
-        // console.log("Menu.carregarMenu()")
+        // console.log("AppTemplate.carregarMenu()", this.usuarioAutenticado)
+        if(this.usuario == null) {
+          return 
+        }
         this.$http.get("/api/auth/menu")
             .then(response => {
                 // console.log(response)
-                this.itensMenu = response.body
+                this.$store.commit('auth/menu', response.body)
             },
             error => {
                 console.log(error)
@@ -56,13 +53,24 @@ export default {
   },
   
   computed: {
+
+    menuSistema () {
+      // console.log("AppTemplate.computed.menuSistema()")
+      let itensMenu = this.$store.getters['auth/menu']
+      if(itensMenu == null) {
+        this.$store.commit('sistema/exibirMenu', false)
+      }
+      return itensMenu
+    },
+
     exibirMenu () {
       return this.$store.getters['sistema/exibirMenu']
     },
 
     usuarioAutenticado () {
-      // console.log("AppTemplate.computed.usuario()")
+      // console.log("AppTemplate.computed.usuarioAutenticado()")
       this.usuario = this.$store.getters['auth/usuario'];
+      // console.log(this.usuario)
       return this.usuario
     },
 
@@ -73,18 +81,16 @@ export default {
       this.breadcrumb = this.$route.meta.breadcrumb
     },
 
-    'usuario' () {
-      // console.log("AppTemplate.watch.usuario")
-      if(this.usuario) {
-        this.carregarMenu()
-      } else {
-        this.itensMenu = null
-      }
-    }
+    usuario() {
+      // console.log("AppTemplate.watch.usuario", this.usuario)
+      this.carregarMenu()
+    },
+
   },
 
   mounted() {
-    this.carregarMenu();
+    // console.log("AppTemplate.mounted()")
+    // this.carregarMenu();
   }
 
 }

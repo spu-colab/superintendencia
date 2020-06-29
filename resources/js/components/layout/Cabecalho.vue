@@ -57,7 +57,9 @@ export default {
   methods: {
     sair () {
       this.$store.commit('auth/sair')
-      this.$router.push('/')
+      if(this.$router.history.current.path != '/') {
+        this.$router.push('/')
+      }
     },
     entrar () {
       this.$router.push('/login')
