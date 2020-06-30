@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Permissao;
 use App\User;
 use App\ProcedimentoExterno;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -32,7 +33,7 @@ class ProcedimentoExternoPolicy
     {
         $usuario = User::with(['permissoes'])->find($user->id);
         return $usuario->permissoes()
-            ->where('permissao', 'DEMANDA_PROCEDIMENTO_CADASTRAR')->first();
+            ->where('permissao', Permissao::DEMANDA_PROCEDIMENTO_CADASTRAR)->first();
     }
 
     /**
@@ -46,7 +47,7 @@ class ProcedimentoExternoPolicy
     {
         $usuario = User::with(['permissoes'])->find($user->id);
         return $usuario->permissoes()
-            ->where('permissao', 'DEMANDA_PROCEDIMENTO_CADASTRAR')->first();
+            ->where('permissao', Permissao::DEMANDA_PROCEDIMENTO_CADASTRAR)->first();
     }
 
     /**

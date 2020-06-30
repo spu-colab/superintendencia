@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class TipoProcedimentoExterno extends Model
 {
-    protected $table = "tipoprocedimentoexterno";
+    public const TABLE_NAME = "tipoprocedimentoexterno";
+
+    protected $table = TipoProcedimentoExterno::TABLE_NAME;
+
+    protected $fillable = ["tipoprocedimento"];
 }

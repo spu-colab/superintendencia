@@ -73,6 +73,7 @@ export default {
                 .then(
                     response => {
                         this.$store.commit('auth/setToken', response.data.token)
+                        this.$store.commit('sistema/exibirMenu', true)
                         this.$router.push(this.$route.query.redirect || '/')
                         this.carregando = false
                     },

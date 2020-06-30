@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PoloProcedimentoExterno extends Model
 {
-    protected $table = "poloprocedimentoexterno";
+    public const TABLE_NAME = "poloprocedimentoexterno";
+    
+    protected $table = PoloProcedimentoExterno::TABLE_NAME;
 }

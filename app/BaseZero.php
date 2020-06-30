@@ -23,11 +23,20 @@ class BaseZero
         // Demandas
         $this->inserirSituacoesDemanda();
         $this->inserirTiposDocumento();
+        $this->inserirTiposProcedimentoExterno();
+        $this->inserirPolosProcedimentoExterno();
+
+        // TODO
+        // - NaturezaOrgao
+        // - Cargo
+
         
     }
 
     public function removerRegistros()
     {
+        DB::table(PoloProcedimentoExterno::TABLE_NAME)->delete();
+        DB::table(TipoProcedimentoExterno::TABLE_NAME)->delete();
         DB::table(TipoDocumento::TABLE_NAME)->delete();
         DB::table(SituacaoDemanda::TABLE_NAME)->delete();
 
@@ -76,6 +85,31 @@ class BaseZero
         });
     }
 
+    private function inserirPolosProcedimentoExterno() {
+        $polosprocedimentoexterno = array(
+            array('polo' => 'Indefinido'),
+            array('polo' => 'Interessado'),
+            array('polo' => 'Ativo'),
+            array('polo' => 'Passivo')
+          );
+        DB::table(PoloProcedimentoExterno::TABLE_NAME)->insertOrIgnore($polosprocedimentoexterno);          
+    }
+    
+    private function inserirTiposProcedimentoExterno() {
+        $tiposprocedimentoexterno = array(
+            array('tipoprocedimento' => 'Inquérito Civil'),
+            array('tipoprocedimento' => 'Ação Civil Pública'),
+            array('tipoprocedimento' => 'Processo Judicial'),
+            array('tipoprocedimento' => 'Notícia de Fato'),
+            array('tipoprocedimento' => 'Procedimento MPSC'),
+            array('tipoprocedimento' => 'Inquérito Policial'),
+            array('tipoprocedimento' => 'Execução Fiscal'),
+            array('tipoprocedimento' => 'Outros'),
+            array('tipoprocedimento' => 'Mandado de Segurança')
+          );          
+          DB::table(TipoProcedimentoExterno::TABLE_NAME)->insertOrIgnore($tiposprocedimentoexterno);
+    }
+
     private function inserirTiposAtendimento() {
         /**
          * Inserindo registros em situacaodemanda
@@ -89,6 +123,7 @@ class BaseZero
             DB::table(TipoAtendimento::TABLE_NAME)->insertOrIgnore($registrosAInserir);
         });
     }
+
 
     private function inserirAssuntosAtendimento() {
         $atend_assunto = [
@@ -209,6 +244,10 @@ class BaseZero
                 [
                     'permissao' => Permissao::DEMANDA_DEMANDA_ATENDER_DISTRIBUICAO,
                     'descricao' => 'Permite a um usuário atender distruição feita a si próprio ou ao seu núcleo'
+                ],
+                [
+                    'permissao' => Permissao::DEMANDA_PROCEDIMENTO_CADASTRAR,
+                    'descricao' => 'Permite cadastrar/editar procedimentos'
                 ],
                 /**
                  * Demarcação
