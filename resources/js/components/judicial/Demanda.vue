@@ -663,7 +663,7 @@ export default {
         },
 
         cancelar() {
-            this.carregarItens();
+            // this.carregarItens();
         },
 
         salvarDistribuicao (marcarComoAtendida = false) {

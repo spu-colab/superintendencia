@@ -10,6 +10,7 @@ use App\User;
 use App\Http\Resources\DemandaResource;
 use App\Http\Requests\DemandaRequest;
 use App\Http\Requests\DistribuicaoDemandaRequest;
+use App\Permissao;
 use App\Repositories\DemandaRepositoryI;
 
 use Illuminate\Http\Request;
@@ -289,12 +290,12 @@ class DemandaController extends Controller
         $usuario = User::with(['permissoes'])->find($user->id);
 
         $usuarioPodeCadastrar = $usuario->permissoes()
-            ->where('permissao', 'DEMANDA_DEMANDA_CADASTRAR')->first();
+            ->where('permissao', Permissao::DEMANDA_DEMANDA_CADASTRAR)->first();
 
         $usuarioPodeAtenderDistribuicao = $usuarioPodeCadastrar;
         if(!$usuarioPodeAtenderDistribuicao) {
             $usuarioPodeAtenderDistribuicao = $usuario->permissoes()
-                ->where('permissao', 'DEMANDA_DEMANDA_ATENDER_DISTRIBUICAO')->first();
+                ->where('permissao', Permissao::DEMANDA_DEMANDA_ATENDER_DISTRIBUICAO)->first();
         }
         if(!$usuarioPodeCadastrar && !$usuarioPodeAtenderDistribuicao) {
             return response()->json(['error' => 'Transação não autorizada.'], 403);

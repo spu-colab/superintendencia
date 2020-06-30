@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\User;
 use App\AutorDemanda;
+use App\Permissao;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AutorDemandaPolicy
@@ -32,7 +33,7 @@ class AutorDemandaPolicy
     {
         $usuario = User::with(['permissoes'])->find($user->id);
         return $usuario->permissoes()
-            ->where('permissao', 'DEMANDA_AUTOR_CADASTRAR')->first();
+            ->where('permissao', Permissao::DEMANDA_AUTOR_CADASTRAR)->first();
     }
 
     /**
@@ -46,7 +47,7 @@ class AutorDemandaPolicy
     {
         $usuario = User::with(['permissoes'])->find($user->id);
         return $usuario->permissoes()
-            ->where('permissao', 'DEMANDA_AUTOR_CADASTRAR')->first();
+            ->where('permissao', Permissao::DEMANDA_AUTOR_CADASTRAR)->first();
     }
 
     /**

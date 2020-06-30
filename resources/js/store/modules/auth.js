@@ -49,7 +49,7 @@ const mutations = {
         state.superintendencia = superintendencia
     },
     menu(state, menu) {
-        console.log("$store.auth.setMenu", menu)
+        // console.log("$store.auth.setMenu", menu)
         state.menu = menu
     },
     sair(state) {

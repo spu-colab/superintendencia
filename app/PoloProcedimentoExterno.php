@@ -9,4 +9,6 @@ class PoloProcedimentoExterno extends Model
     public const TABLE_NAME = "poloprocedimentoexterno";
     
     protected $table = PoloProcedimentoExterno::TABLE_NAME;
+
+    protected $fillable = ["polo"];
 }

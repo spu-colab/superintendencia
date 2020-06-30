@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\User;
 use App\Orgao;
+use App\Permissao;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class OrgaoPolicy
@@ -30,11 +31,9 @@ class OrgaoPolicy
      */
     public function create(User $user)
     {
-        // $usuario = User::with(['permissoes'])->find($user->id);
-        // return $usuario->permissoes()->where('permissao', 'DEMANDA_ORGAO_CADASTRAR')->first();
         $usuario = User::with(['permissoes'])->find($user->id);
         return $usuario->permissoes()
-            ->where('permissao', 'DEMANDA_ORGAO_CADASTRAR')->first();
+            ->where('permissao', Permissao::DEMANDA_ORGAO_CADASTRAR)->first();
     }
 
     /**
@@ -48,7 +47,7 @@ class OrgaoPolicy
     {
         $usuario = User::with(['permissoes'])->find($user->id);
         return $usuario->permissoes()
-            ->where('permissao', 'DEMANDA_ORGAO_CADASTRAR')->first();
+            ->where('permissao', Permissao::DEMANDA_ORGAO_CADASTRAR)->first();
     }
 
     /**

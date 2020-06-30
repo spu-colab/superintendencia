@@ -27,14 +27,16 @@ class BaseZero
         $this->inserirPolosProcedimentoExterno();
 
         // TODO
-        // - NaturezaOrgao
-        // - Cargo
+        $this->inserirNaturezasOrgao();
+        $this->inserirCargos();
 
         
     }
 
     public function removerRegistros()
     {
+        DB::table(Cargo::TABLE_NAME)->delete();
+        DB::table(NaturezaOrgao::TABLE_NAME)->delete();
         DB::table(PoloProcedimentoExterno::TABLE_NAME)->delete();
         DB::table(TipoProcedimentoExterno::TABLE_NAME)->delete();
         DB::table(TipoDocumento::TABLE_NAME)->delete();
@@ -85,6 +87,40 @@ class BaseZero
         });
     }
 
+    private function inserirCargos() {
+        $cargo = array(
+            array('cargo' => 'Advogado'),
+            array('cargo' => 'Juíz'),
+            array('cargo' => 'Procurador'),
+            array('cargo' => 'Superintendente'),
+            array('cargo' => 'Chefe'),
+            array('cargo' => 'Diretor'),
+            array('cargo' => 'Procurador-Chefe'),
+            array('cargo' => 'Procurador Seccional'),
+            array('cargo' => 'Procurador Seccional Subst.'),
+            array('cargo' => 'Promotora'),
+            array('cargo' => 'Delegado'),
+            array('cargo' => 'Técnico'),
+            array('cargo' => 'Subprocurador Regional'),
+            array('cargo' => 'Chefe de Divisão'),
+            array('cargo' => 'Defensor'),
+            array('cargo' => 'Outro')
+          );
+          DB::table(Cargo::TABLE_NAME)->insertOrIgnore($cargo);
+        
+    }
+
+    private function inserirNaturezasOrgao() {
+        $naturezaorgao = array(
+            array('natureza' => 'Judicial'),
+            array('natureza' => 'Ministério Público Federal'),
+            array('natureza' => 'Ministério Público Estadual'),
+            array('natureza' => 'Polícia Federal'),
+            array('natureza' => 'Outros')
+          );
+        DB::table(NaturezaOrgao::TABLE_NAME)->insertOrIgnore($naturezaorgao);
+    }
+
     private function inserirPolosProcedimentoExterno() {
         $polosprocedimentoexterno = array(
             array('polo' => 'Indefinido'),
@@ -123,7 +159,6 @@ class BaseZero
             DB::table(TipoAtendimento::TABLE_NAME)->insertOrIgnore($registrosAInserir);
         });
     }
-
 
     private function inserirAssuntosAtendimento() {
         $atend_assunto = [
@@ -248,6 +283,14 @@ class BaseZero
                 [
                     'permissao' => Permissao::DEMANDA_PROCEDIMENTO_CADASTRAR,
                     'descricao' => 'Permite cadastrar/editar procedimentos'
+                ],
+                [
+                    'permissao' => Permissao::DEMANDA_ORGAO_CADASTRAR,
+                    'descricao' => 'Permite cadastrar/editar órgãos/instuições demandantes'
+                ],
+                [
+                    'permissao' => Permissao::DEMANDA_AUTOR_CADASTRAR,
+                    'descricao' => 'Permite cadastrar/editar autores de demandas'
                 ],
                 /**
                  * Demarcação

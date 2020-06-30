@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cargo extends Model
 {
-    protected $table = 'cargo';
-    
+    public const TABLE_NAME = 'cargo';
+
+    protected $table = Cargo::TABLE_NAME;
+
+    protected $fillable = ["cargo"];
 }
