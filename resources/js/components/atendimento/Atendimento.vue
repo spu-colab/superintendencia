@@ -333,14 +333,12 @@ export default {
         },
         
         formatarAtendimento(element) {
-            element.dataHoraInicio = Utils.obterDateCorretoServidor(element.dataHoraInicio)
             let dataHoraInicio = new Date(element.dataHoraInicio)
             element.data = dataHoraInicio.toLocaleDateString()
             element.inicio = dataHoraInicio.toLocaleTimeString()
 
             element.fim = '--'
             if(element.dataHoraFim) {
-                element.dataHoraFim = Utils.obterDateCorretoServidor(element.dataHoraFim)
                 let dataHoraFim = new Date(element.dataHoraFim)
                 element.fim = dataHoraFim.toLocaleTimeString()
             }

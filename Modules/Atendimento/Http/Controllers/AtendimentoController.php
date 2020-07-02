@@ -39,7 +39,6 @@ class AtendimentoController extends Controller
         $atendimento->idUsuario = Auth::id();        
         $atendimento->idtipo = $request->idtipo;
         $atendimento->atendido = $request->atendido;
-        date_default_timezone_set('America/Sao_Paulo');
         $atendimento->dataHoraInicio = date("Y-m-d H:i:s");
 
         if($atendimento->isPresencial()) {

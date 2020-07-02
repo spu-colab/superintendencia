@@ -40,12 +40,6 @@ export default {
         }
     },
 
-    obterDateCorretoServidor(date) {
-        let _date = new Date(date)
-        _date.setHours(_date.getHours() - 1)
-        return _date
-    },
-
     tempoDecorridoEntre(date2, date1) {
         let totalSegundos = Math.floor(Math.abs(date2 - date1) / 1000);
 

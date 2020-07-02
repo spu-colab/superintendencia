@@ -56,6 +56,7 @@ return [
             'prefix' => '',
             'strict' => true,
             'engine' => null,
+            'timezone' => '+01:00'
         ],
         'spuadmin' => [
             'driver'    => env('DB_CONNECTION_ADMIN'),
