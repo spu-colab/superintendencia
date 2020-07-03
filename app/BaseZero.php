@@ -25,16 +25,18 @@ class BaseZero
         $this->inserirTiposDocumento();
         $this->inserirTiposProcedimentoExterno();
         $this->inserirPolosProcedimentoExterno();
-
-        // TODO
         $this->inserirNaturezasOrgao();
         $this->inserirCargos();
 
+        //Geo
+        $this->inserirCamadasGeo();
         
     }
 
     public function removerRegistros()
     {
+        DB::table(GeoCamada::TABLE_NAME)->delete();
+
         DB::table(Cargo::TABLE_NAME)->delete();
         DB::table(NaturezaOrgao::TABLE_NAME)->delete();
         DB::table(PoloProcedimentoExterno::TABLE_NAME)->delete();
@@ -310,6 +312,14 @@ class BaseZero
             ];
             DB::table(Permissao::TABLE_NAME)->insertOrIgnore($registrosAInserir);
         });
+    }
+
+    private function inserirCamadasGeo() {
+        $geo_camada = array(
+            array('titulo' => 'Procedimentos Externos (NUJUC)','rotulo' => 'Procedimento Externo:','tabelaReferencia' => 'procedimentoexterno','colunaIdReferencia' => 'id','colunaTituloReferencia' => 'procedimento','colunaSubTituloReferencia' => 'resumo','cor' => 'red','rotaFrontEnd' => '/procedimento/[id]'),
+            // array('titulo' => 'Demarcações','rotulo' => 'Demarcação','tabelaReferencia' => 'demar_demarcacao','colunaIdReferencia' => 'id_demarcacao','colunaTituloReferencia' => 'processo','colunaSubTituloReferencia' => 'subtrecho','cor' => 'blue','rotaFrontEnd' => '/demarcacao/[id]')
+          );
+        DB::table(GeoCamada::TABLE_NAME)->insertOrIgnore($geo_camada);
     }
 
 }

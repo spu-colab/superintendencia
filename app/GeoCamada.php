@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class GeoCamada extends Model
 {
-    protected $table = "geo_camada";
+    public const TABLE_NAME = "geo_camada";
 
+    protected $table = GeoCamada::TABLE_NAME;
 }

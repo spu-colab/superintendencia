@@ -252,43 +252,6 @@ export default {
             }
         },
 
-        /*
-        carregarItens(page) {
-            this.carregando = true;
-            this.registros = [];
-
-            this.paginaAtual = page;
-            if (!page[1]){
-                page[1]=10
-            }
-            console.log(this.cabecalhos)
-            var parametros =  "?page="+page[0]+   "&per_page="+page[1]+
-                                "&search="+page[2]+ "&ordem="+this.cabecalhos[page[3]].value + 
-                                "&ascending="+page[4];
-
-            this.$http.get(rotas.rotas().procedimentoExterno.listar+parametros)
-                .then(
-                    response => {
-//                        console.log(response);
-                        this.paginas = response.body;
-//                        response.body.forEach(element => {
-                        response.body.data.forEach(element => {
-//                            element.tipoProcedimentoExterno = element.tipoprocedimento
-                            element.idProcedimento = element.idProcedimento.toString() +" ";
-                            console.log(element)
-                            this.registros.push(element)
-                        })
-                        this.carregando = false;
-                    },
-                    error => {
-                        this.carregando = false;
-                        console.log(error)
-                    }
-                )
-            
-        },
-        */
-
         carregarTiposProcedimento () {
             this.carregandoTiposProcedimento = true
             this.tiposProcedimento = []

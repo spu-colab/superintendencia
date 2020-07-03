@@ -216,6 +216,7 @@ export default {
                 this.camada = response.body.camada
                 this.camada.children = []
                 this.referencia = response.body.referencia
+                this.referencia.rotulo = this.camada.titulo
                 this.carregarReferencia()
                 this.carregandoCamada = false
               },
