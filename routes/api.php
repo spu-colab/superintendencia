@@ -21,39 +21,11 @@ Route::post('user/login', 'APILoginController@login');
 
 
 Route::middleware('jwt.auth')->group(function () {
-    Route::resource('patrimonio/tabelas', 'PatrimonioController@tabelas');
-    Route::resource('patrimonio/divisao', 'PatrimonioController@divisao');
-    Route::resource('patrimonio/gerarRelatorio', 'PatrimonioController@gerarRelatorio');
-    
-    Route::resource('correspondencia/setores', 'CorrespondenciaController@setores'); 
-    Route::resource('correspondencia/tipos', 'CorrespondenciaController@tipos'); 
-    Route::resource('correspondencia/pesquisaMunicipio', 'CorrespondenciaController@pesquisaMunicipio');
 
-    Route::get('correspondencia/postagem', 'CorrespondenciaController@postagem');
-    Route::get('correspondencia/gerarLista', 'CorrespondenciaController@gerarLista');
-    Route::get('correspondencia/concluirLista', 'CorrespondenciaController@concluirLista');    
-    Route::get('correspondencia/gerarEtiqueta/{codigo}', 'CorrespondenciaController@gerarEtiqueta');
-    Route::get('correspondencia/criarDestinatario', 'CorrespondenciaController@criarDestinatario');
-    Route::post('correspondencia/inserirLista', 'CorrespondenciaController@inserirLista');
-    Route::resource('correspondencia/autocomplete', 'CorrespondenciaController@autocomplete');
-    Route::resource('correspondencia/logradouros', 'CorrespondenciaController@tipoLogradouro'); 
-    Route::post('correspondencia/descartaCorresp', 'CorrespondenciaController@descartaCorresp');
-    Route::post('correspondencia/receberAR/{id}', 'CorrespondenciaController@receberAR'); 
-    Route::post('correspondencia/descartaDest', 'CorrespondenciaController@descartaDest'); 
-    Route::post('correspondencia/descartarDestLista', 'CorrespondenciaController@descartarDestLista');
-    
-//Route::get('correspondencia/pesquisaMunicipio', 'CorrespondenciaController@pesquisaMunicipio');
-
-    Route::resource('usuario/reduzido', 'AuthController@listarReduzido');
-    Route::resource('divisaoOrganograma/listarPai', 'DivisaoOrganogramaController@listarPai');
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
     Route::get('procedimentoExterno/buscar/{search}', 'ProcedimentoExternoController@search');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
     Route::resource('poloProcedimentoExterno', 'PoloProcedimentoExternoController');
-
-//    Route::post('correspondencia/criarCorrespondencia', 'CorrespondenciaController@criarCorrespondencia');
-
-
 
     // Route::resource('conteudo', 'ConteudoController');
     Route::get('demanda/entidadeAtribuivel', 'DemandaController@listarAtribuiveis');
@@ -75,8 +47,7 @@ Route::middleware('jwt.auth')->group(function () {
 
     Route::resource('tipoDocumento', 'TipoDocumentoController');
     Route::resource('situacaoDemanda', 'SituacaoDemandaController');
-    Route::resource('usuario/reduzido', '\Modules\Auth\Http\Controllers\AuthController@listarReduzido');
-    // Route::resource('divisaoOrganograma/listarPai', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController@listarPai');
+    
     Route::resource('procedimentoExterno', 'ProcedimentoExternoController');
     Route::get('procedimentoExterno/buscar/{search}', 'ProcedimentoExternoController@search');
     Route::resource('tipoProcedimentoExterno', 'TipoProcedimentoExternoController');
@@ -92,16 +63,6 @@ Route::middleware('jwt.auth')->group(function () {
     Route::middleware('jwt.refresh')->get('user/refresh', function () {
         return "OK";
     });
-
-    Route::post('geo/referencia', 'GeoController@salvarReferencia');
-    Route::get('geo/camada', 'GeoController@listarCamadas');
-    Route::get('geo/camada/{camada}/referencia', 'GeoController@listarReferenciasPorCamada');
-    Route::get('geo/camada/{id}', 'GeoController@obterCamada');
-    Route::get('geo/camada/{tabelaReferenciaCamada}/referencia/{idReferenciado}', 'GeoController@obterReferencia')
-        ->where([
-            'tabelaReferenciaCamada' => '[A-Za-z/_]+',
-            'idReferenciado' => '[0-9]+'
-        ]);
     
     //RELATÓRIOS
     Route::get('demanda/relatorio/entrada-saida-diaria', 'DemandaController@relatorioEntradaSaidaDiaria');

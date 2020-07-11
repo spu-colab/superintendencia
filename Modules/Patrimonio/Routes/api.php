@@ -12,7 +12,9 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::middleware('jwt.auth')->group(function () {
+Route::middleware('jwt.auth')
+    ->namespace("\Modules\Patrimonio\Http\Controllers")
+    ->group(function () {
     Route::apiResource('patrimonio', 'PatrimonioController');
     Route::get('patrimonio/tabelas', 'PatrimonioController@tabelas');
     Route::get('patrimonio/divisao', 'PatrimonioController@divisao');

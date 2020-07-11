@@ -39,15 +39,18 @@ Route::prefix('auth')
 
 
 Route::middleware('jwt.auth')->group(function () {     
+    Route::resource('usuario/reduzido', '\Modules\Auth\Http\Controllers\AuthController@listarReduzido');
+    Route::resource('divisaoOrganograma/listarPai', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController@listarPai');
+
     Route::apiResource('usuario', '\Modules\Auth\Http\Controllers\AuthController');
     Route::get('usuario/reduzido', '\Modules\Auth\Http\Controllers\AuthController@listarReduzido');    
 
-    Route::resource('permissao', 'PermissaoController');
-    Route::get('permissao/usuario/{permissaoId}', 'PermissaoController@usuarioPossuiPermissao');
+    Route::resource('permissao', '\Modules\Auth\Http\Controllers\PermissaoController');
+    Route::get('permissao/usuario/{permissaoId}', '\Modules\Auth\Http\Controllers\PermissaoController@usuarioPossuiPermissao');
 
     Route::apiResource('divisao-organograma', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController');
 });
 
     
-Route::get('divisaoOrganograma/listarPai', 'DivisaoOrganogramaController@listarPai');
+Route::get('divisaoOrganograma/listarPai', '\Modules\Auth\Http\Controllers\DivisaoOrganogramaController@listarPai');
     

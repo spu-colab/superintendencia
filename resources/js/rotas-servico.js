@@ -76,6 +76,9 @@ export default {
       geo: {
         camada: {
           listar: this.base() + '/geo/camada',
+          criar: this.base() + '/geo/camada',
+          obter: this.base() + '/geo/camada/',
+          editar: this.base() + '/geo/camada/',
           referencia: {
             listar: this.base() + '/geo/camada/[idCamada]/referencia',
             obter: this.base() + '/geo/camada/[tabelaReferenciaCamada]/referencia/[idReferenciado]',

@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UsuarioPermissao extends Model
 {
-    protected $table = "usuariopermissao";
+    public const TABLE_NAME = "usuariopermissao";
+    
+    protected $table = UsuarioPermissao::TABLE_NAME;
 }

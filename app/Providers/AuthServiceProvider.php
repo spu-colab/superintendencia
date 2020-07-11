@@ -15,6 +15,8 @@ use Modules\Correspondencia\Policies\CorrespondenciaPolicy;
 
 //use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Modules\Geo\Entities\GeoCamada;
+use Modules\Geo\Policies\GeoCamadaPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -29,7 +31,8 @@ class AuthServiceProvider extends ServiceProvider
         DivisaoOrganograma::class => DivisaoOrganogramaPolicy::class,
         CorrespDest::class => CorrespondenciaPolicy::class,
         ListaPostagem::class => CorrespondenciaPolicy::class,
-        Demarcacao::class => DemarcacaoPolicy::class
+        Demarcacao::class => DemarcacaoPolicy::class,
+        GeoCamada::class => GeoCamadaPolicy::class
     ];
 
 

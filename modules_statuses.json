@@ -1,9 +1,10 @@
 {
     "Atendimento": true,
-    "Governanca": false,
     "Auth": true,
-    "Demarcacao": false,
     "Correspondencia": true,
-    "Patrimonio": true,
-    "Demandas": true
+    "Demandas": true,
+    "Demarcacao": false,
+    "Geo": true,
+    "Governanca": false,
+    "Patrimonio": true
 }

@@ -29,11 +29,6 @@ class MenuController extends Controller
                 "url" => 'http://10.209.232.190/'
             ]
             */
-            'Geovisualizador' => [
-                "rotulo" => 'Geovisualizador',
-                "icone" => 'map', 
-                "rota" => '/geo',
-            ],
         ];
         foreach (Module::getOrdered() as $m => $module) {
             if($module->isEnabled()) {

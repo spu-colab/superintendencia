@@ -13,14 +13,22 @@ import Atendimento from './../components/atendimento/Atendimento'
 import Demarcacao from './../components/demarcacao/Demarcacao'
 import Governanca from './../components/governanca/Governanca'
 import Conteudo from './../components/Conteudo'
-import GeoVisualizador from './../components/geo/GeoVisualizador'
 import Usuario from './../components/permissoes/Usuario'
 import Perfil from './../components/permissoes/Perfil'
 import Correspondencia  from './../components/correspondencia/Correspondencia'
+
+// Patrimonio
 import Patrimonio       from './../components/patrimonio/Patrimonio'
 import Locais       from './../components/patrimonio/Localizacao'
 import Organograma from './../components/permissoes/Organograma'
+
+// GEO
+import GeoVisualizador from './../../../Modules/Geo/Resources/assets/js/GeoVisualizador'
+import GeoCamada from './../../../Modules/Geo/Resources/assets/js/GeoCamada'
+
+// Laboratório
 // import FileUpload from './../components/FileUpload'
+
 import store from './../store'
 
 Vue.use(Router)
@@ -303,8 +311,8 @@ let router = new Router({
       }
     },
     {
-      path: '/geo',
-      name: 'Geo',
+      path: '/geo/visualizador',
+      name: 'GeoVisualizador',
       component: GeoVisualizador,
       meta: {
         requiresAuth: true,
@@ -314,7 +322,30 @@ let router = new Router({
             href: '/#/'
           },
           {
-            text: 'Geovisualizador',
+            text: 'Geo Informação',
+          },
+          {
+            text: 'Visualizador',
+          }
+        ]
+      }
+    },
+    {
+      path: '/geo/camadas',
+      name: 'GeoCamadas',
+      component: GeoCamada,
+      meta: {
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Geo Informação',
+          },
+          {
+            text: 'Camadas',
           }
         ]
       }
