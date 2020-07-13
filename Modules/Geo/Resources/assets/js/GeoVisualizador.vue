@@ -255,7 +255,13 @@ export default {
                 if(camada.geojson.crs != L.CRS.EPSG3857.code) {
                     feature.geometry.coordinates = this.converterLongLatParaLagLongs(feature.geometry.coordinates)
                 }
-                feature.leafletVector = this.geovisualizador.createLeafletVector(feature.geometry)
+                let options = {}
+                if(camada.cor != null) {
+                    options.color = camada.cor
+                    options.fillColor = camada.cor
+                }
+                // console.log(camada, options)
+                feature.leafletVector = this.geovisualizador.createLeafletVector(feature.geometry, options)
             }
         },
 

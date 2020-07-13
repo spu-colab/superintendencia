@@ -19,7 +19,7 @@ class GeoController extends Controller
     
     public function listarCamadas(Request $request) {
 
-        $consulta = GeoCamada::selectRaw("id, titulo, rotulo, ativa, estatica, propriedadeTitulo, propriedadeSubTitulo, rotaFrontEnd, idUsuarioCriacao, idUsuarioAlteracao, created_at, updated_at");
+        $consulta = GeoCamada::selectRaw("id, titulo, rotulo, ativa, estatica, propriedadeTitulo, propriedadeSubTitulo, rotaFrontEnd, cor, idUsuarioCriacao, idUsuarioAlteracao, created_at, updated_at");
 
         if($request->search) {
             $consulta->where("titulo", "LIKE",  "%".strtolower($request->search)."%");

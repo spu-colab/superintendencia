@@ -13,37 +13,40 @@
             <div v-if="entidadeAtual">
                 <v-container fluid>
                     <v-row>
-                        <v-col xs12 md6>
+                        <v-col xs=12 md=6>
                             <v-text-field label="Título" v-model="entidadeAtual.titulo" 
                                 :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.titulo, 8)]" required 
                                 counter="100" maxlength="100"/>
                         </v-col>
-                        <v-col xs12 md6>
+                        <v-col xs=12 md=6>
                             <v-text-field label="Rótulo" v-model="entidadeAtual.rotulo" 
                                 :rules="[validacao.obrigatorio, validacao.tamanhoMinimo(entidadeAtual.rotulo, 3)]" required 
                                 counter="150" maxlength="150"/>
                         </v-col>
                     </v-row>
                     <v-row>
-                        <v-col>
+                        <v-col xs=12 md=3>
                             <v-checkbox label="Ativa?" v-model="entidadeAtual.ativa"></v-checkbox>
                         </v-col>
-                        <v-col>
+                        <v-col xs=12 md=3>
                             <v-checkbox label="Dados Estáticos?" v-model="entidadeAtual.estatica"></v-checkbox>
+                        </v-col>
+                        <v-col xs=12 md=6>
+                            <v-text-field label="Cor (em inglês ou código RGB Hexadecimal)" v-model="entidadeAtual.cor" counter="100" maxlength="100"/>
                         </v-col>
                     </v-row>
 
                     <template v-if="entidadeAtual.estatica">
                         <v-row>
-                            <v-col xs12 md6>
+                            <v-col xs=12 md=6>
                                 <v-text-field label="Propiedade Título" v-model="entidadeAtual.propriedadeTitulo" counter="100" maxlength="100"/>
                             </v-col>
-                            <v-col xs12 md6>
+                            <v-col xs=12 md=6>
                                 <v-text-field label="Propriedade SubTítulo" v-model="entidadeAtual.propriedadeSubTitulo" counter="100" maxlength="100"/>
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-col xs12>
+                            <v-col xs=12>
                                 <vue-json-editor v-model="entidadeAtual.geojson" :show-btns="false" :exapndedOnStart="true" style="width: 100%; height: 100%;">
                                 </vue-json-editor>
                                 <!--
@@ -54,26 +57,23 @@
                     </template>
                     <template v-else>
                         <v-row>
-                            <v-col xs12 md6>
+                            <v-col xs=12 md=6>
                                 <v-text-field label="Tabela Referência" v-model="entidadeAtual.tabelaReferencia" counter="100" maxlength="100"/>
                             </v-col>
-                            <v-col xs12 md6>
+                            <v-col xs=12 md=6>
                                 <v-text-field label="Coluna Id da Referência" v-model="entidadeAtual.colunaIdReferencia" counter="100" maxlength="100"/>
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-col xs12 md6>
+                            <v-col xs=12 md=6>
                                 <v-text-field label="Coluna Título da Referência" v-model="entidadeAtual.colunaTituloReferencia" counter="100" maxlength="100"/>
                             </v-col>
-                            <v-col xs12 md6>
+                            <v-col xs=12 md=6>
                                 <v-text-field label="Coluna Subtítulo da Referência" v-model="entidadeAtual.colunaSubTituloReferencia" counter="100" maxlength="100"/>
                             </v-col>
                         </v-row>
                         <v-row>
-                            <v-col xs12 md6>
-                                <v-text-field label="Cor" v-model="entidadeAtual.cor" counter="100" maxlength="100"/>
-                            </v-col>
-                            <v-col xs12 md6>
+                            <v-col xs=12 md=6>
                                 <v-text-field label="Rota Front-end" v-model="entidadeAtual.rotaFrontEnd" counter="100" maxlength="100"/>
                             </v-col>
                         </v-row>
