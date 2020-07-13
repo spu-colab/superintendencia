@@ -68,33 +68,6 @@
                                             </div>
                                         </v-flex>
                                     </v-row>
-                                    <!--
-                                    <div class="featureRow" v-for="(feature, f) in camada.geojson.features" v-bind:key="f">
-                                        <div class="icone">
-                                            <v-icon @click="trocarVisibilidadeFeature(camada, feature, f)" small>{{ feature.visible ? 'visibility' : 'visibility_off' }}</v-icon>
-                                        </div>
-                                        <div class="feature">  
-                                            <div class="titulo">{{ feature.getTitulo() }}</div>
-                                            <div>{{ feature.getSubTitulo() }}</div>
-                                            <div>
-                                                <v-tooltip bottom>
-                                                    <template v-slot:activator="{ on }">
-                                                        <v-icon small 
-                                                            @click="clicouZoomItemCamada(camada, feature, f)" v-on="on">zoom_in</v-icon>
-                                                    </template>
-                                                    Mostrar no Mapa
-                                                </v-tooltip>
-                                                <v-tooltip bottom v-if="!camada.estatica">
-                                                    <template v-slot:activator="{ on }">
-                                                        <v-icon small 
-                                                            @click="clicouAbrirCadastroItemCamada(feature)" v-on="on">launch</v-icon>
-                                                    </template>
-                                                    Abrir Cadastro
-                                                </v-tooltip>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    -->
                                 </v-container>
                             </div>
 
@@ -277,13 +250,42 @@ export default {
         },
 
         montarLeafletVector(camada, feature) {
-            feature.geometry.popupContent = "TESTE"
             if(feature.leafletVector == null) {
+                feature.geometry.popupContent = this.montarPopupContent(camada, feature)
                 if(camada.geojson.crs != L.CRS.EPSG3857.code) {
                     feature.geometry.coordinates = this.converterLongLatParaLagLongs(feature.geometry.coordinates)
                 }
                 feature.leafletVector = this.geovisualizador.createLeafletVector(feature.geometry)
             }
+        },
+
+        montarPopupContent(camada, feature) {
+            // console.log("GeoVisualizador.montarPopupContent", camada, feature)
+            // titulo
+            let conteudo = "<table cellpadding=10>"
+            conteudo += "   <tbody>"
+            /*
+            conteudo += "       <tr>"
+            conteudo += "           <th>" + camada.rotulo + "</th>"
+            conteudo += "           <td>" + feature.getTitulo() + "</td>"
+            conteudo += "       </tr>"
+            // subtitulo
+            conteudo += "       <tr>"
+            conteudo += "           <td colspan=2>" + feature.getSubTitulo() + "</td>"
+            conteudo += "       </tr>"
+            */
+            if(typeof feature.properties === "object") {
+                for(let propriedade in feature.properties) {
+                    conteudo += "<tr>"
+                    conteudo += "   <th style='padding:5px; vertical-align: top;'>" + propriedade + "</th>"
+                    conteudo += "   <td style='padding:5px;'>" + feature.properties[propriedade] + "</td>"
+                    conteudo += "</tr>"
+                }
+            }
+            conteudo += "   </tbody>"
+            conteudo += "</table>"
+
+            return conteudo
         },
 
         trocarVisibilidadeCamada(camada) {
@@ -451,6 +453,19 @@ div.icone {
   float: left;
   display: table-column;
   padding: 3%;
+}
+
+div.featureContent_row {
+    display: block;
+}
+
+div.featureContent_label {
+    float: left;
+    display: table-column;
+}
+
+div.featureContent_value {
+    float: left;
 }
 
 </style>
