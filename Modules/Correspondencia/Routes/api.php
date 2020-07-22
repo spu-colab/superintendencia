@@ -16,42 +16,25 @@ use Illuminate\Http\Request;
 Route::middleware('jwt.auth')
     ->namespace("\Modules\Correspondencia\Http\Controllers")
     ->group(function () {     
-        
-    Route::resource('correspondencia/setores', 'CorrespondenciaController@setores'); 
-    Route::resource('correspondencia/tipos', 'CorrespondenciaController@tipos'); 
-    Route::resource('correspondencia/pesquisaMunicipio', 'CorrespondenciaController@pesquisaMunicipio');
-    Route::resource('correspondencia/autocomplete', 'CorrespondenciaController@autocomplete');
-    Route::resource('correspondencia/logradouros', 'CorrespondenciaController@tipoLogradouro'); 
-    Route::post('correspondencia/descartaCorresp', 'CorrespondenciaController@descartaCorresp');
-    Route::post('correspondencia/receberAR/{id}', 'CorrespondenciaController@receberAR'); 
-    Route::post('correspondencia/descartaDest', 'CorrespondenciaController@descartaDest'); 
-    Route::post('correspondencia/descartarDestLista', 'CorrespondenciaController@descartarDestLista');
-    
-    Route::apiResource('correspondencia', 'CorrespondenciaController');
-
-    Route::get('correspondencia/setores', 'CorrespondenciaController@setores');
-    Route::get('correspondencia/tipos', 'CorrespondenciaController@tipos');
-    Route::get('correspondencia/logradouros', 'CorrespondenciaController@tipoLogradouro');   
-    
-
-//    Route::resource('correspondencia/pesquisaMunicipio', 'CorrespondenciaController@pesquisaMunicipio');    
-    Route::get('correspondencia/pesquisaMunicipio', 'CorrespondenciaController@pesquisaMunicipio');
-    Route::get('correspondencia/autocomplete', 'CorrespondenciaController@autocomplete');
-
-    Route::get('correspondencia/gerarEtiqueta/{codigo}', 'CorrespondenciaController@gerarEtiqueta'); 
-    Route::get('correspondencia/postagem', 'CorrespondenciaController@postagem');
-    Route::put('correspondencia/postagem/{userLegado}', 'CorrespondenciaController@postagem');
-    Route::get('correspondencia/gerarLista', 'CorrespondenciaController@gerarLista');
-    Route::get('correspondencia/concluirLista', 'CorrespondenciaController@concluirLista');    
-    Route::put('correspondencia/descartaCorresp/{id}', 'CorrespondenciaController@descartaCorresp');
-    
-    Route::put('correspondencia/receberAR/{id}', 'CorrespondenciaController@receberAR');
-
-    Route::put('correspondencia/descartaDest/{id}', 'CorrespondenciaController@descartaDest');
-    Route::put('correspondencia/descartarDestLista/{id}', 'CorrespondenciaController@descartarDestLista');
-    Route::get('correspondencia/criarDestinatario', 'CorrespondenciaController@criarDestinatario');
-    Route::post('correspondencia/criarCorrespondencia', 'CorrespondenciaController@criarCorrespondencia');
-    Route::post('correspondencia/inserirLista', 'CorrespondenciaController@inserirLista');
-
-
+    Route::prefix('correspondencia')->group(function () {
+        Route::get('listar', 'CorrespondenciaController@index');
+        Route::get('destinatarios/{codigo}', 'CorrespondenciaController@show');
+        Route::get('setores', 'CorrespondenciaController@setores');
+        Route::get('tipos', 'CorrespondenciaController@tipos');
+        Route::get('tipoPostagem', 'CorrespondenciaController@tipoPostagem');
+        Route::get('logradouros', 'CorrespondenciaController@tipoLogradouro');   
+        Route::get('pesquisaMunicipio', 'CorrespondenciaController@pesquisaMunicipio');
+        Route::get('gerarEtiqueta/{codigo}', 'CorrespondenciaController@gerarEtiqueta');
+        Route::get('postagem', 'CorrespondenciaController@postagem');
+        Route::put('postagem/{userLegado}', 'CorrespondenciaController@postagem');
+        Route::get('gerarLista', 'CorrespondenciaController@gerarLista');
+        Route::get('concluirLista', 'CorrespondenciaController@concluirLista');    
+        Route::put('descartaCorresp/{id}', 'CorrespondenciaController@descartaCorresp');
+        Route::put('receberAR/{id}', 'CorrespondenciaController@receberAR');
+        Route::put('descartaDest/{id}', 'CorrespondenciaController@descartaDest');
+        Route::put('descartarDestLista/{id}', 'CorrespondenciaController@descartarDestLista');
+        Route::get('criarDestinatario', 'CorrespondenciaController@criarDestinatario');
+        Route::post('criarCorrespondencia', 'CorrespondenciaController@criarCorrespondencia');
+        Route::post('inserirLista', 'CorrespondenciaController@inserirLista');
+    });
 });

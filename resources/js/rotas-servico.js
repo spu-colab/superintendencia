@@ -153,14 +153,14 @@ export default {
         criarLocal: this.base() + '/patrimonio/criarLocal',
         editarLocal: this.base() + '/patrimonio/editarLocal/',
       },
-
       correspondencia: {
-        listar: this.base() + '/correspondencia',
+        listar: this.base() + '/correspondencia/listar',
+        destinatarios:this.base() + '/correspondencia/destinatarios/',
         setores: this.base() + '/correspondencia/setores',
         tipos: this.base() + '/correspondencia/tipos',
+        tipoPostagem: this.base() + '/correspondencia/tipoPostagem',
         logradouros: this.base() + '/correspondencia/logradouros',
         pesquisaMunicipio: this.base() + '/correspondencia/pesquisaMunicipio',
-        autocomplete:this.base() + '/correspondencia/autocomplete',
         descartaCorresp: this.base() + '/correspondencia/descartaCorresp/',
         descartaDest: this.base() + '/correspondencia/descartaDest/',
         criarDestinatario: this.base() + '/correspondencia/criarDestinatario',
