@@ -600,7 +600,7 @@ class DemandaController extends Controller
                     JOIN distribuicaodemanda dd ON dd.idDemanda = d.id
                     JOIN situacaodemanda sd ON sd.id = d.idSituacaoDemanda
                     LEFT JOIN users u ON u.id = dd.assignable_id AND dd.assignable_type = "App'.$div.'User"
-                    LEFT JOIN divisaoorganograma do ON do.id = dd.assignable_id AND dd.assignable_type = "Modules'.$div.'Auth'.$div.'Entities'.$div.'DivisaoOrganograma"
+                    LEFT JOIN divisaoorganograma do ON do.id = dd.assignable_id AND dd.assignable_type LIKE "%DivisaoOrganograma"
                 WHERE 
                     sd.situacao = "Em análise" 
                     AND dd.dataAtendimento is null 
