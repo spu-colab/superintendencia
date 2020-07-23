@@ -913,8 +913,6 @@ export default {
                     })
         },
 
-        
-
         formatDate (date) {
             if (!date) return null
             // console.log(date)
@@ -1025,6 +1023,7 @@ export default {
         },
 
         imprimir(selecionados) {
+            // console.log(__filename + "imprimir()", selecionados)
             let ids = []
             selecionados.forEach(element => {
                 ids.push(element.id)
@@ -1055,6 +1054,7 @@ export default {
                 }
             )
         },
+
         atualizarUrlBase() {
             let url = rotas.rotas().demanda.listar
             url += '?abertas=' + (this.switchSomenteAbertas ? '1' : '0')

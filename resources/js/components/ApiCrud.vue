@@ -69,7 +69,7 @@
             <template slot="item" slot-scope="props">
               <tr>
                 <td v-if="imprimir">
-                  <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
+                  <v-checkbox v-model="selected" :value="props.item" primary hide-details></v-checkbox>
                 </td>
                 <td
                   v-for="(header, index2) in headers"
