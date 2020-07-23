@@ -21,15 +21,15 @@ class DemandaRepository implements DemandaRepositoryI {
     }
 
     public function listarIdsDemandasDistribuidasPara(Model $assignable) : array {
-        $assignable_type = 'App\\User';
+        $assignable_type = '%App\\User';
         if($assignable instanceof DivisaoOrganograma) {
-            $assignable_type = 'Modules\Auth\Entities\\DivisaoOrganograma';
+            $assignable_type = '%\\DivisaoOrganograma';
         }
 
         $ids = DB::table('demanda')
             ->join('distribuicaodemanda', 'demanda.id', '=', 'distribuicaodemanda.idDemanda')
             ->where([
-                ['assignable_type', '=', $assignable_type],
+                ['assignable_type', 'LIKE', "%".$assignable_type],
                 ['assignable_id', '=', $assignable->id],
                 ['dataAtendimento', '=', null]
             ])
