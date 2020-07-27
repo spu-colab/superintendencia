@@ -311,7 +311,8 @@ class DemandaController extends Controller
         $distribuidaParaOProprioUsuario = $distribuicao->assignable_type == 'App\User' 
             && $distribuicao->assignable_id == $user->id;
 
-        $distribuidaParaDivisaoUsuario = $distribuicao->assignable_type == 'Modules\Auth\Entities\DivisaoOrganograma';
+        
+        $distribuidaParaDivisaoUsuario = $this->endsWith($distribuicao->assignable_type, 'Modules\Auth\Entities\DivisaoOrganograma', false);
         if($distribuidaParaDivisaoUsuario) {
             $distribuidaParaDivisaoUsuario = $usuario->divisoesOrganograma()
                 ->where('divisaoorganograma.id', $distribuicao->assignable_id)->first();
@@ -345,6 +346,11 @@ class DemandaController extends Controller
         }
 
         return response()->json($distribuicao);
+    }
+
+    function endsWith($haystack,$needle,$case=true) {
+        if($case){return (strcmp(substr($haystack, strlen($haystack) - strlen($needle)),$needle)===0);}
+        return (strcasecmp(substr($haystack, strlen($haystack) - strlen($needle)),$needle)===0);
     }
 
     public function cancelar(Request $request) {
