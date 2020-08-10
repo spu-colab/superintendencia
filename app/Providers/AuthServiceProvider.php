@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Providers;
+
+use App\Arquivo;
 use App\User;
 use App\Permissao;
+use App\Policies\ArquivoPolicy;
 use Modules\Auth\Entities\DivisaoOrganograma;
 use Modules\Demarcacao\Entities\Demarcacao;
 use Modules\Correspondencia\Entities\CorrespDest;
@@ -32,7 +35,8 @@ class AuthServiceProvider extends ServiceProvider
         CorrespDest::class => CorrespondenciaPolicy::class,
         ListaPostagem::class => CorrespondenciaPolicy::class,
         Demarcacao::class => DemarcacaoPolicy::class,
-        GeoCamada::class => GeoCamadaPolicy::class
+        GeoCamada::class => GeoCamadaPolicy::class,
+        Arquivo::class => ArquivoPolicy::class,
     ];
 
 

@@ -79,10 +79,14 @@
             onUploadFileError(error) {
                 console.log(__filename + ".onUploadFileError()", error)
                 let mensagemErro = ''
-                for (const campo in error.body.errors) {
-                    if (error.body.errors.hasOwnProperty(campo)) {
-                        mensagemErro += " " + error.body.errors[campo];
-                        
+                if(error.body.status = 403) {
+                    mensagemErro = "Operação não autorizada";
+                } else {
+                    for (const campo in error.body.errors) {
+                        if (error.body.errors.hasOwnProperty(campo)) {
+                            mensagemErro += " " + error.body.errors[campo];
+                            
+                        }
                     }
                 }
                 this.$store.commit("sistema/alerta", "Erro ao enviar arquivo: " + mensagemErro )

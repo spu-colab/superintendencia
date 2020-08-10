@@ -32,6 +32,8 @@ class Permissao extends Model
     public const GEO_CAMADA_CADASTRAR = 'GEO_CAMADA_CADASTRAR';
     
     public const PATRIMONIO_PATRIMONIO_CADASTRAR  =  'PATRIMONIO_PATRIMONIO_CADASTRAR';
+
+    public const ARQUIVO_ARQUIVO_UPLOAD = 'ARQUIVO_ARQUIVO_UPLOAD';
     
     /**
      * Não usar! Use Permissao::AUTH_USUARIO_CADASTRAR.

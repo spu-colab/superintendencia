@@ -29,15 +29,17 @@ class ArquivoController extends Controller
         $rules['arquivo'] = "required|" . Arquivo::getRegrasValidacao($request->disco, $request->diretorio);
         $request->validate($rules);
 
+        
         $parametros = [
             "disco" => $request->disco,
             "diretorio" => $request->diretorio
         ];
-
+        
         $file = $request->file("arquivo");
         $path = $file->store($parametros["diretorio"]);
         #/*
         $arquivo = new Arquivo();
+        $this->authorize('upload', $arquivo);
         
         $arquivo->disco = $parametros["disco"];
         $arquivo->diretorio = $parametros["diretorio"];
