@@ -9,7 +9,7 @@
                         </v-card-title>
                         <v-card-text>
                             <v-text-field v-model="email" 
-                                :rules="[emailRules.required]" label="Login" required @keyup.enter="submit"></v-text-field>
+                                :rules="[emailRules.required]" label="Login" placeholder="Informe seu CPF, somente os números" required @keyup.enter="submit"></v-text-field>
                             <v-text-field
                                 v-model="password"
                                 :append-icon="showPassword ? 'visibility_off' : 'visibility'"

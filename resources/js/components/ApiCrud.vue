@@ -36,7 +36,7 @@
             :options="options"
             show-select
             :item-key="itemKey"
-            :loading="carregando"
+            :loading="carregando" loading-text="Carregando registros..."
             :hide-default-header="true"
             :hide-default-footer="true"
           >
@@ -69,7 +69,7 @@
             <template slot="item" slot-scope="props">
               <tr>
                 <td v-if="imprimir">
-                  <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
+                  <v-checkbox v-model="selected" :value="props.item" primary hide-details></v-checkbox>
                 </td>
                 <td
                   v-for="(header, index2) in headers"
@@ -184,24 +184,6 @@
                     {{ paginationInfo }}
                   </v-col>
                 </v-row>
-                <!--
-                <v-row align="center" justify="center">
-                    
-                    <v-col xs="12" md="8" class="text-center caption">
-                        {{ options.total == 0 
-                          ? 'Nenhum registro' 
-                          : ( options.total == 1
-                            ? "Exibindo o único registro" 
-                            : "Exibindo registros de " + options.from + " a " + options.to + " do total de " + options.total) }}
-                        {{ options.total <= 1 
-                          ? ' encontrado'
-                          : ' encontrados'}}
-                        {{ (options.search.length > 0) 
-                          ? " para a pesquisa por '" + options.search + "'" 
-                          : "" }}.
-                    </v-col>
-                </v-row>
-                -->
                 <v-row align="center" justify="center">
                     <v-col xs="12" md="2">
                         <div class="v-data-footer">Registros por página:</div>
@@ -284,7 +266,7 @@ export default {
           50,
           100,
           200,
-          { text: "Todos", value: -1 }
+          { text: "Todos", value: 999999 }
         ]
       },
       paginationInfo: '',
@@ -456,6 +438,7 @@ export default {
       // console.log(url);
 
       this.items = [];
+      this.carregando = true
       this.$http.get(url).then(
         response => {
           // console.log(response.body)
@@ -533,6 +516,9 @@ export default {
     },
     updatePaginationInfo: function() {
       let info = ''
+      if(this.carregando) {
+        return
+      }
       if(this.items == null || this.items.last_page == 0 || this.options.total == 0) {
         info = 'Nenhum registro encontrado'
       } else {

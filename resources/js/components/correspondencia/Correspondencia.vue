@@ -553,14 +553,17 @@ export default {
       }
     },
     mudaPagina(page){
+      //console.log("muda pagina " + page)
       this.carregarItens(page);
     },
     mudaAnoSetor(dados){
       var page = dados
       this.setorAtual = dados[5];
+      this.setorSelect = dados[5];
       this.anoAtual = dados[6];
       this.tipoAtual = dados[7];
-      this.carregarItens(page);
+      if (dados[1] && dados[5])
+        this.carregarItens(page);
     },
     gerarEtiqueta(codcor){
       let url = rotas.rotas().correspondencia.gerarEtiqueta +  codcor;
@@ -870,7 +873,7 @@ export default {
       this.codigoEtiqueta = '';
       this.codigoECT = '';
       this.verboAdicionar ='';
-      this.setorAtual = this.setorSelect;
+      //this.setorAtual = this.setorSelect;
     },
     novo() {
       this.verboAdicionar ='Cadastrar';
@@ -949,6 +952,11 @@ export default {
       );
     },
     carregarItens(page) {
+      //console.log(page)
+      //console.log("ano " + this.anoApoio[this.anoAtual])
+      //console.log("setor atual " + this.setorAtual)
+      //console.log("setor select " + this.setorSelect)
+      //console.log("tipo " + this.tipoAtual)
       this.exibirGrid= true;
       var situacao_ar =['', 'Aguardando Retorno', 'Recebido na SPU', 'Não Definico'];
       this.cadastrarDestinatario = false;      
@@ -969,6 +977,7 @@ export default {
         response => {
           this.paginas = response.body;
           response.body.data.forEach(element => {
+            //console.log(element)
             element.id = element.codigo
             element.ano = element.ano.toString();
             element.sequencia = element.sequencia.toString();
