@@ -2,6 +2,7 @@
 
 use App\Arquivo;
 use App\Permissao;
+use App\UsuarioPermissao;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -52,7 +53,8 @@ class CriaArquivo extends Migration
      */
     public function down()
     {
+        $permissaoADeletar = Permissao::where("permissao", "=", Permissao::ARQUIVO_ARQUIVO_UPLOAD)->first();
+        DB::table(UsuarioPermissao::TABLE_NAME)->where("idPermissao", "=", $permissaoADeletar->id)->delete();
         DB::table(Permissao::TABLE_NAME)->where("permissao", "=", Permissao::ARQUIVO_ARQUIVO_UPLOAD)->delete();
-        Schema::dropIfExists(Arquivo::TABLE_NAME);
     }
 }

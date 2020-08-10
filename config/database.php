@@ -55,7 +55,7 @@ return [
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
             'strict' => true,
-            'engine' => null,
+            'engine' => "InnoDB",
             'timezone' => '+01:00'
         ],
         'spuadmin' => [
