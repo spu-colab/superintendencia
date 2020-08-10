@@ -20,9 +20,9 @@ class CriaArquivo extends Migration
 
         Schema::create(Arquivo::TABLE_NAME, function (Blueprint $table) {
             $table->id();
-            $table->string('disco');
-            $table->string('diretorio');
-            $table->string('nome');
+            $table->string('disco', 100);
+            $table->string('diretorio', 100);
+            $table->string('nome', 100);
             $table->string('nome_real');            
             $table->string('caminho_absoluto');
             $table->string('mime');
