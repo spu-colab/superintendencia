@@ -252,6 +252,8 @@ export default {
         montarLeafletVector(camada, feature) {
             if(feature.leafletVector == null) {
                 feature.geometry.popupContent = this.montarPopupContent(camada, feature)
+                // console.log("CRS: ", camada.geojson.crs)
+                //if(camada.geojson.crs != "urn:ogc:def:crs:EPSG::29192") {
                 if(camada.geojson.crs != L.CRS.EPSG3857.code) {
                     feature.geometry.coordinates = this.converterLongLatParaLagLongs(feature.geometry.coordinates)
                 }

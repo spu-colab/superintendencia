@@ -60,7 +60,6 @@
         "raw-loader": "^0.5.1",
         "v-money": "^0.8.1",
         "vue-json-edit": "^1.4.3",
-        "vue-json-editor": "^1.4.1",
         "vue2-leaflet": "^2.5.2"
     }
 }

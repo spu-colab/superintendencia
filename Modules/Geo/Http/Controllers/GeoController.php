@@ -8,6 +8,7 @@ use Grimzy\LaravelMysqlSpatial\Types\GeometryCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Modules\Geo\Entities\GeoCamada;
 use Modules\Geo\Entities\GeoReferencia;
 use Modules\Geo\Http\Requests\GeoCamadaRequest;
@@ -19,7 +20,8 @@ class GeoController extends Controller
     
     public function listarCamadas(Request $request) {
 
-        $consulta = GeoCamada::selectRaw("id, titulo, rotulo, ativa, estatica, propriedadeTitulo, propriedadeSubTitulo, rotaFrontEnd, cor, idUsuarioCriacao, idUsuarioAlteracao, created_at, updated_at");
+        $consulta = GeoCamada::with(['arquivoGeo'])
+            ->selectRaw("id, titulo, rotulo, ativa, estatica, idArquivoGeo, propriedadeTitulo, propriedadeSubTitulo, rotaFrontEnd, cor, idUsuarioCriacao, idUsuarioAlteracao, created_at, updated_at");
 
         if($request->search) {
             $consulta->where("titulo", "LIKE",  "%".strtolower($request->search)."%");
@@ -71,7 +73,10 @@ class GeoController extends Controller
         $geoCamada->colunaSubTituloReferencia = $request->colunaSubTituloReferencia;
         $geoCamada->cor = $request->cor;
         $geoCamada->rotaFrontEnd = $request->rotaFrontEnd;
-        $geoCamada->geojson = json_decode(stripslashes($request->geojson));
+        $geoCamada->idArquivoGeo = $request->idArquivoGeo ?? null;
+        $geoCamada->propriedadeTitulo = $request->propriedadeTitulo;
+        $geoCamada->propriedadeSubTitulo = $request->propriedadeSubTitulo;
+        // $geoCamada->geojson = json_decode(stripslashes($request->geojson));
         
         $geoCamada = $geoCamada->save();
         return response()->json($geoCamada);
@@ -79,18 +84,24 @@ class GeoController extends Controller
     }
 
     public function obterCamada(GeoCamada $geoCamada) {
+        return GeoCamada::with(['arquivoGeo'])->findOrFail($geoCamada->id);
+    }
+    /*
+    public function obterCamada(GeoCamada $geoCamada) {
         if(!$geoCamada->estatica) {
             $geoCamada->geojson = $this->montarGeoJson($geoCamada);
         }
         $geoCamada["propriedadeTitulo"] = "titulo";
         return $geoCamada;
     }
+    */
 
     public function obterGeojson(GeoCamada $geoCamada) {
         if(!$geoCamada->estatica) {
             $geoCamada->geojson = $this->montarGeoJson($geoCamada);
+            return $geoCamada->geojson;
         }
-        return response()->json($geoCamada->geojson);
+        return Storage::get($geoCamada->arquivoGeo->caminho_absoluto, ['ResponseContentType' => 'application/json']);
     }
 
     private function montarGeoJson(GeoCamada $geoCamada) {
@@ -107,11 +118,11 @@ class GeoController extends Controller
             $geometry = array();
             $geometry["type"] = "MultiPolygon";
             $geometry["coordinates"] = array();
-            #/*
-            foreach($geoReferencia->poligonais->getGeometries() as $geometry2) {
-                $geometry["coordinates"][] = $geometry2->jsonSerialize()->getCoordinates();
-            }
-            # */
+            #
+            # foreach($geoReferencia->poligonais->getGeometries() as $geometry2) {
+            #    $geometry["coordinates"][] = $geometry2->jsonSerialize()->getCoordinates();
+            # }
+            #
             $feature["properties"] = $this->montarPropriedades($geoCamada, $geoReferencia);
             $feature["geometry"] = $geometry;
             $features[] = $feature;

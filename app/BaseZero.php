@@ -7,6 +7,7 @@ use App\SituacaoDemanda;
 use Modules\Atendimento\Entities\Assunto;
 use Modules\Atendimento\Entities\Atendimento_Assunto;
 use \Modules\Atendimento\Entities\Tipo as TipoAtendimento;
+use Modules\Geo\Entities\GeoCamada;
 
 class BaseZero
 {

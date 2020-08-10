@@ -1,0 +1,1 @@
+SELECT DATE_FORMAT(a.created_at, "%Y-%m-%d"), count(a.id) FROM atend_atendimento a GROUP BY 1 ORDER BY 1;

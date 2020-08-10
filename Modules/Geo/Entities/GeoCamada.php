@@ -10,8 +10,15 @@ class GeoCamada extends Model
 
     protected $table = GeoCamada::TABLE_NAME;
     
+    /*
     protected $casts = [
         'geojson' => 'array'
     ];
+    */
+
+    public function arquivoGeo()
+    {
+        return $this->hasOne('App\Arquivo', 'id', 'idArquivoGeo');
+    }
     
 }

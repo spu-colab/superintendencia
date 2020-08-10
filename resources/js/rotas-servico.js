@@ -181,13 +181,12 @@ export default {
         superintendencia: this.base() + '/auth/divisao-organograma/superintendencia',
       },
       
-
-      /*
-      
       arquivo: {
         listar: this.base() + '/arquivo',
-        upload: this.base() + '/arquivo'
+        upload: this.base() + '/arquivo/upload'
       },
+      
+      /*
       
       conteudo: {
         consultar: this.base() + '/conteudo/',

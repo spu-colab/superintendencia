@@ -95,13 +95,10 @@ Route::middleware('jwt.auth')->group(function () {
             'dataDe' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
             'dataAte' => '[0-9]{4}-[0-9]{2}-[0-9]{2}',
         ]);
-        
-    //Route::resource('usuario', 'UsuarioController');
     
-    // Route::get('arquivo', 'ArquivoController@index');
-    // Route::get('arquivo/criar', 'ArquivoController@create');
-    // Route::post('arquivo', 'ArquivoController@uploadFile');
-});
-
+        Route::post("arquivo/upload", "ArquivoController@upload");
+        
+    });
+Route::get("arquivo", "ArquivoController@listar");
 
  

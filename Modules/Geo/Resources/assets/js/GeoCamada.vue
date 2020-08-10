@@ -47,9 +47,12 @@
                         </v-row>
                         <v-row>
                             <v-col xs=12>
+                                <arquivo-input label="Arquivo:" mimes="text/plain,application/octet-stream,application/json" 
+                                    disco="public" diretorio="static/geo" uploadURL="/api/arquivo/upload" 
+                                    :arquivo="entidadeAtual.arquivo_geo" @arquivo-selecionado="arquivoSelecionado" />
+                                <!--
                                 <vue-json-editor v-model="entidadeAtual.geojson" :show-btns="false" :exapndedOnStart="true" style="width: 100%; height: 100%;">
                                 </vue-json-editor>
-                                <!--
                                 <editor :conteudo="JSON.stringify(entidadeAtual.geojson)"/>
                                 -->
                             </v-col>
@@ -91,13 +94,12 @@
 import rotas from './../../../../../resources/js/rotas-servico'
 import CRUD from './../../../../../resources/js/components/ApiCrud'
 import Validador from './../../../../../resources/js/validacao'
-import vueJsonEditor from 'vue-json-editor'
+import ArquivoInput from './../../../../../resources/js/components/ArquivoInput'
 // import Editor from './../../../../../resources/js/components/Editor'
 
 export default {
     components: {
         "crud": CRUD,
-        "vue-json-editor": vueJsonEditor
     },
 
     data() {
@@ -158,8 +160,14 @@ export default {
             formData.append('ativa', this.entidadeAtual.ativa ? 1 : 0)
             formData.append('estatica', this.entidadeAtual.estatica ? 1 : 0)
             if(this.entidadeAtual.estatica) {
-                if(this.entidadeAtual.geojson != null) {
-                    formData.append('geojson', JSON.stringify(this.entidadeAtual.geojson))
+                if(this.entidadeAtual.arquivo_geo != null && this.entidadeAtual.arquivo_geo.id != null) {
+                    formData.append('idArquivoGeo', JSON.stringify(this.entidadeAtual.arquivo_geo.id))
+                }
+                if(this.entidadeAtual.propriedadeTitulo != null) {
+                    formData.append('propriedadeTitulo', this.entidadeAtual.propriedadeTitulo)
+                }
+                if(this.entidadeAtual.propriedadeSubTitulo != null) {
+                    formData.append('propriedadeSubTitulo', this.entidadeAtual.propriedadeSubTitulo)
                 }
             } else {
                 if(this.entidadeAtual.tabelaReferencia != null) {
@@ -207,15 +215,15 @@ export default {
         },
 
         paraCadaItemDoResultado(item) {
-            /*
-            console.log("GeoCamada.paraCadaItemDoResultado", item.geojson)
-            item.geojson = item.geojson
-            console.log(item.geojson)
-            */
            item.txtAtiva = item.ativa ? 'Ativada' : 'Desativada'
            item.txtEstatica = item.estatica ? 'Estática' : 'Dinâmica'
             return item
-        }
+        },
+
+        arquivoSelecionado(arquivo) {
+            // console.log('GeoCamada.arquivoSelecionado()', arquivo)
+            this.entidadeAtual.arquivo_geo = arquivo
+        },
 
     },
 

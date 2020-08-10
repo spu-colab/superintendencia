@@ -2,46 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\File;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Storage;
-use App\Http\Controllers\Controller;
-
 use App\Arquivo;
+use App\Http\Requests\ArquivoRequest;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ArquivoController extends Controller
 {
 
-    public function index() {
+    /**
+     * TODO     - criar ArquivoPolicy com as regras de autorizacao
+     *          - criar permissao para cada disco/diretorio
+     */
+
+    public function listar(ArquivoRequest $request) {
+        $request->validated();
+
         $files = Arquivo::all();
-        // return view('arquivo.index', compact('files'));
         return response()->json($files);
     }
+    
+    public function upload(ArquivoRequest $request) {
+        #$file = $request->file("arquivo");
+        #return response()->json($file->getExtension());
 
-    public function create() {
-        return view('arquivo.create');
+        $rules = $request->rules();
+        $rules['arquivo'] = "required|" . Arquivo::getRegrasValidacao($request->disco, $request->diretorio);
+        $request->validate($rules);
+
+        $parametros = [
+            "disco" => $request->disco,
+            "diretorio" => $request->diretorio
+        ];
+
+        $file = $request->file("arquivo");
+        $path = $file->store($parametros["diretorio"]);
+        #/*
+        $arquivo = new Arquivo();
+        
+        $arquivo->disco = $parametros["disco"];
+        $arquivo->diretorio = $parametros["diretorio"];
+        $arquivo->nome = $file->getClientOriginalName();
+
+        $path_exploded = explode(DIRECTORY_SEPARATOR, $path);
+        $arquivo->nome_real = end($path_exploded);
+
+        $arquivo->caminho_absoluto = $path;
+        $arquivo->mime = $file->getMimeType();
+        $arquivo->tamanho = $file->getSize();
+        $arquivo->idUsuarioCriacao = JWTAuth::user()->id;
+        $arquivo->save();
+        return $arquivo;
+        # */
     }
 
-    public function uploadFile(Request $request) {
-        $file = Input::file('file');
-        $path = '';
-        $filename = hash( 'sha256', $file).'.'.$file->getClientOriginalName();      
-
-        if($request->file('file')->storeAs($path, $filename, 'uploads')) {
-            $input['filename'] = $filename;
-            $input['mime'] = $file->getClientMimeType();
-            $input['path'] = $path;
-            $input['size'] = $file->getClientSize();
-            $file = Arquivo::create($input);
-
-            return response()->json([
-                'success' => true,
-                'id' => $file->id
-            ], 200);
-        }
-        return response()->json([
-            'success' => false
-        ], 500);
-    }
 }

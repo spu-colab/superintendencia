@@ -27,7 +27,7 @@ import GeoVisualizador from './../../../Modules/Geo/Resources/assets/js/GeoVisua
 import GeoCamada from './../../../Modules/Geo/Resources/assets/js/GeoCamada'
 
 // Laboratório
-// import FileUpload from './../components/FileUpload'
+import Laboratorio from './../components/Laboratorio'
 
 import store from './../store'
 
@@ -458,6 +458,23 @@ let router = new Router({
           {
             text: 'Divisões/Organograma',
           }
+        ]
+      }
+    },
+    {
+      path: '/lab',
+      name: 'Laboratorio',
+      component: Laboratorio,
+      meta: {
+        requiresAuth: true,
+        breadcrumb: [
+          {
+            text: 'Início',
+            href: '/#/'
+          },
+          {
+            text: 'Laboratório'
+          },
         ]
       }
     },
