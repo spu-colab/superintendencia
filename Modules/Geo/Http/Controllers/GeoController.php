@@ -49,6 +49,10 @@ class GeoController extends Controller
         // return GeoCamada::orderBy('titulo')->get();
     }
 
+    public function listarAtivas(Request $request) {
+        return GeoCamada::where([['ativa', '=', 1]])->get();
+    }
+
     public function salvarCamada(GeoCamadaRequest $request) {
 
         $request->validated();
@@ -118,11 +122,9 @@ class GeoController extends Controller
             $geometry = array();
             $geometry["type"] = "MultiPolygon";
             $geometry["coordinates"] = array();
-            #
-            # foreach($geoReferencia->poligonais->getGeometries() as $geometry2) {
-            #    $geometry["coordinates"][] = $geometry2->jsonSerialize()->getCoordinates();
-            # }
-            #
+            foreach($geoReferencia->poligonais->getGeometries() as $geometry2) {
+                $geometry["coordinates"][] = $geometry2->jsonSerialize()->getCoordinates();
+            }
             $feature["properties"] = $this->montarPropriedades($geoCamada, $geoReferencia);
             $feature["geometry"] = $geometry;
             $features[] = $feature;

@@ -20,6 +20,7 @@ Route::prefix('geo')
     ->group(function() {
 
         Route::get('camada', 'GeoController@listarCamadas');
+        Route::get('camada/ativas', 'GeoController@listarAtivas');
         Route::get('camada/{geoCamada}', 'GeoController@obterCamada');
         Route::get('camada/{geoCamada}/geojson', 'GeoController@obterGeojson');
 

@@ -138,9 +138,9 @@ export default {
         },
 
         carregarCamadas() {
-            this.$http.get("/api/geo/camada").then(
+            this.$http.get("/api/geo/camada/ativas").then(
                 response => {
-                    this.camadas = response.body.data
+                    this.camadas = response.body
                 },
                 error => {
                     console.log(error)
@@ -270,7 +270,7 @@ export default {
         montarPopupContent(camada, feature) {
             // console.log("GeoVisualizador.montarPopupContent", camada, feature)
             // titulo
-            let conteudo = "<table cellpadding=10>"
+            let conteudo = "<div style='height:80%; max-height:300px; overflow:auto;'><table cellpadding=10>"
             conteudo += "   <tbody>"
             /*
             conteudo += "       <tr>"
@@ -291,7 +291,7 @@ export default {
                 }
             }
             conteudo += "   </tbody>"
-            conteudo += "</table>"
+            conteudo += "</table></div>"
 
             return conteudo
         },

@@ -35,8 +35,8 @@ class CriaModuloGeo extends Migration
             $table->boolean('estatica')->default(true);
             $table->json('geojson')->nullable();
 
-            $table->string('propriedadeTitulo', 100)->default('titulo');
-            $table->string('propriedadeSubTitulo', 100)->default('subtitulo');
+            $table->string('propriedadeTitulo', 100)->nullable()->default('titulo');
+            $table->string('propriedadeSubTitulo', 100)->nullable()->default('subtitulo');
             $table->foreignId('idUsuarioCriacao');
             $table->foreignId('idUsuarioAlteracao')->nullable();
             $table->timestamps();
