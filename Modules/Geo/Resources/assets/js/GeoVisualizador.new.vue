@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import LeafletSimpleSet from '@spu-colab/leaflet-simple-set'
+// import LeafletSimpleSet from '@spu-colab/leaflet-simple-set'
 
 export default {
 

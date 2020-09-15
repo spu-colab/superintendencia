@@ -468,7 +468,7 @@ CREATE TABLE `geo_referencia` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `idCamada` bigint(20) UNSIGNED NOT NULL,
   `idReferenciado` bigint(20) UNSIGNED NOT NULL,
-  `poligonais` geomcollection NOT NULL,
+  `poligonais` geometrycollection NOT NULL,
   `idUsuarioCriacao` int(10) UNSIGNED NOT NULL,
   `idUsuarioAlteracao` int(10) UNSIGNED NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,

@@ -54,8 +54,7 @@ class MenuController extends Controller
             ],
             [
                 "divisor" => true
-            ],
-        );
+            ]);
         $menu = $this->filtrarPorPermissao($menu);
         return $menu;
     }

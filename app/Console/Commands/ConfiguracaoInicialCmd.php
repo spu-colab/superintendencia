@@ -74,7 +74,7 @@ class ConfiguracaoInicialCmd extends Command
         $files = scandir(base_path("sql/scripts/"));
         foreach ($files as $f => $file) {
             if(strpos($file, "base_zero") === 0 && strpos($file, ".sql") === strlen($file) - strlen(".sql")) {
-                $this->scripts[] = [$file, "Aguardandando"];
+                $this->scripts[] = [$file, "Aguardando"];
             }
         }
         $this->imprimeSituacaoScripts();
