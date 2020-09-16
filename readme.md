@@ -17,7 +17,7 @@
 ## Instalação
 
 1. Baixar código fonte:
-`git clone https://github.com/spu-colab/judiciais.git spu`
+`git clone https://github.com/spu-colab/superintendencia.git spu`
 Este comando faz o download do código fonte do projeto na pasta spu, este diretório será chamado a partir de agora de 'diretório do projeto'. 
 Observe o caminho da pasta spu. Dependendo da forma de instalação, spu poderá ser uma subpasta. Ex. 'C:/xampp/spu'
 
