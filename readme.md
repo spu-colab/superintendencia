@@ -21,11 +21,7 @@
 Este comando faz o download do código fonte do projeto na pasta spu, este diretório será chamado a partir de agora de 'diretório do projeto'. 
 Observe o caminho da pasta spu. Dependendo da forma de instalação, spu poderá ser uma subpasta. Ex. 'C:/xampp/spu'
 
-2. Instalar as dependências do projeto:
-no diretório do projeto:
-`composer install`
-
-3. No diretório do projeto, copie o arquivo .env.example como .env
+2. No diretório do projeto, copie o arquivo .env.example como .env
     - Configure o arquivo `.env` com:
         - nome da aplicação
             - APP_NAME=escolha um nome. ex.:SPU-SC
@@ -41,6 +37,10 @@ no diretório do projeto:
     - salve o arquivo .env e, no diretório do projeto, execute: php artisan key:generate
     
     - [incrementar documentação aqui]
+
+3. Instalar as dependências do projeto:
+no diretório do projeto:
+`composer install`
 
 4. Executar script de instalação:
 `php artisan spu:instalar`
