@@ -58,7 +58,7 @@ class ConfiguracaoInicialCmd extends Command
         $this->error("*** !!! ATENÇÃO !!! ***");
         $this->info("Este script inicializa todas as tabelas de banco de dados. Somente execute-o em uma instalação pré-existente caso realmente deseje limpar todos os dados do sistema.");
 
-        if($this->confirm("Deseja realmente continuar?")) {
+        # if($this->confirm("Deseja realmente continuar?")) {
             $this->executarScriptsBaseZero();
             $this->executarMigracoes();
             $this->alimentarTabelasApoio();
@@ -66,7 +66,7 @@ class ConfiguracaoInicialCmd extends Command
             $this->concederPermissoes($administrador);
             $this->criarSuperintendencia();
             $this->info("Configuração finalizada");
-        }
+        # }
     }
 
     private function executarScriptsBaseZero() {
@@ -108,12 +108,16 @@ class ConfiguracaoInicialCmd extends Command
         $query = file_get_contents(base_path("sql/scripts/") . $filename);
         $this->atualizarSituacaoScript($filename, "Executando");
         $query = str_replace("{{ORIGEM_PADRAO}}", User::ORIGEM_PADRAO, $query);
+
+        DB::beginTransaction();
         $resultado = DB::unprepared($query);
         if($resultado) {
             $this->atualizarSituacaoScript($filename, "Pronto");
         } else {
             $this->atualizarSituacaoScript($filename, "Erro");
+            DB::rollBack();
         }
+        DB::commit();
     }
 
     private function imprimeSituacaoScripts() {
@@ -139,8 +143,14 @@ class ConfiguracaoInicialCmd extends Command
         $this->info("Dados do Administrador do Sistema:");
 
         $name = $this->ask("Nome:", "Administrador");
+        
         $email = $this->ask("E-mail:", "informe@email.valido");
-        $cpf = $this->ask("CPF (somente números):", "00011122233");
+
+        $cpf = "";
+        while(@strlen($cpf) < 11) {
+            $cpf = $this->ask("CPF (somente números):", "00000000000");
+        }
+
         $password = "";
         while(@strlen($password) < 8) {
             $password = $this->secret("Senha:");
@@ -158,10 +168,13 @@ class ConfiguracaoInicialCmd extends Command
     }
 
     private function criarSuperintendencia() {
-        $this->info("Dados da Superintendência");
+        #$this->info("Dados da Superintendência");
 
-        $nome = $this->ask("Nome:", "Superintendência do Patrimônio da União em Santa Catarina");
-        $sigla = $this->ask("Sigla:", "SPU-SC");
+        #$this->ask("Nome:", "Superintendência do Patrimônio da União em Santa Catarina");
+        $nome = "Secretaria de Coordenação e Governança do Patrimônio da União";
+        
+        #$this->ask("Sigla:", "SPU-SC");
+        $sigla = "SPU";
 
         $superintendencia = new DivisaoOrganograma([
             'nome' => $nome,
